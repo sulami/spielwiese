@@ -1,6 +1,6 @@
 def is_prime (i)
-a = 2
-b = 0
+	a = 2
+	b = 0
 	while (a < i && b == 0)
 		if (i % a == 0)
 			b = i / a
