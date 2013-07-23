@@ -22,12 +22,12 @@ void rotate(char i)
         }
         printf("Output: %c\n", i);
     } else if ( (i >= 78 && i <= 90) | (i >= 110 && i <= 122) ) { /* Nn-Zz */
-        for ( n = 0; n > -13; --n )
+        for ( n = 0; n < 13; ++n )
         {
             i -= 1;
         }
         printf("Output: %c\n", i);
-    } else {
+    } else { /* Non-alphabet chars */
         printf("The entered char is not a letter.\n");
     }
 }
