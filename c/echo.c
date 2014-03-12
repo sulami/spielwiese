@@ -1,10 +1,15 @@
 #include <stdio.h>
 
-int main(void)
-{
-    char s[128];
-    printf("Input first message: ");
-    scanf("%s", &s);
-    printf("Echo: %s\n", s);
-    return 0;
+/* my personal echo clone */
+
+main(int argc, char *argv[]) {
+	int i;
+
+	for (i = 1; i < argc; i++) {
+		printf("%s%s", argv[i], (i < argc - 1) ? " " : "");
+	}
+
+	printf("\n");
+
+	return 0;
 }
