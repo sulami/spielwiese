@@ -33,7 +33,7 @@ struct node *insert(struct node *node, int key, int data) {
     }
 }
 
-static int lookup(struct node *node, int target) {
+int lookup(struct node *node, int target) {
     if (node == NULL) {
         return(false);
     } else {
