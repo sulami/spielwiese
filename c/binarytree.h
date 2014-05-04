@@ -84,13 +84,13 @@ struct node *btree_remove(struct node *node, int key) {
     }
     if (node->key == key) {
         /* Root node */
-        struct node *new = malloc(sizeof(node));
-        if ((node->left != NULL) && (node->right != NULL)){
-            int left_side = _left_path(node, 0);
-            int right_side = _right_path(node, 0);
+        struct node *new_node = malloc(sizeof(node));
+        if ((node->left != NULL) && (node->right != NULL)) {
+            int left_side = _left_path(node->left, 0);
+            int right_side = _right_path(node->right, 0);
             if (left_side <= right_side) {
                 /* left side is shorter, attach right to left */
-                new = node->left;
+                new_node = node->left;
                 struct node *leaf = node->left;
                 while (leaf->right != NULL) {
                     leaf = leaf->right;
@@ -98,7 +98,7 @@ struct node *btree_remove(struct node *node, int key) {
                 leaf->right = node->right;
             } else {
                 /* right side is shorter, attach left to right */
-                new = node-> right;
+                new_node = node->right;
                 struct node *leaf = node->right;
                 while (leaf->left != NULL) {
                     leaf = leaf->left;
@@ -106,12 +106,12 @@ struct node *btree_remove(struct node *node, int key) {
                 leaf->left = node->left;
             }
         } else if ((node->left != NULL) && (node->right == NULL)) {
-            new = node->left;
+            new_node = node->left;
         } else if ((node->left == NULL) && (node->right != NULL)) {
-            new = node->right;
+            new_node = node->right;
         }
         free(node);
-        return(new);
+        return(new_node);
     } else if (btree_lookup(node, key)) {
         /* Child node */
         struct node *parent = _parent(node, key);
@@ -122,8 +122,8 @@ struct node *btree_remove(struct node *node, int key) {
             old = parent->right;
         }
         if ((old->left != NULL) && (old->right != NULL)){
-            int left_side = _left_path(parent, 0);
-            int right_side = _right_path(parent, 0);
+            int left_side = _left_path(old->right, 0);
+            int right_side = _right_path(old->left, 0);
             if (left_side <= right_side) {
                 /* left side is shorter, attach right to left */
                 if (parent->left == old) {
