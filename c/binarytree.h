@@ -85,33 +85,72 @@ struct node *btree_remove(struct node *node, int key) {
         /* TODO delete root node */
     } else if (btree_lookup(node, key)) {
         struct node *parent = _parent(node, key);
-        int left_side = _left_path(parent, 0);
-        int right_side = _right_path(parent, 0);
-        if (left_side <= right_side) {
-            if (parent->left->key == key) {
-                struct node *old = parent->left;
-                parent->left = old->left;
-                /* TODO put right side onto left side */
-                free(old);
-            } else {
-                struct node *old = parent->right;
-                parent->right = old->left;
-                /* TODO put left side onto right side */
-                free(old);
-            }
+        struct node *old = NULL;
+        if (parent->left->key == key) {
+            old = parent->left;
         } else {
-            if (parent->left->key == key) {
-                struct node *old = parent->left;
-                parent->left = old->right;
-                /* TODO put right side onto left side */
-                free(old);
+            old = parent->right;
+        }
+        if ((old->left != NULL) && (old->right != NULL)){
+            int left_side = _left_path(parent, 0);
+            int right_side = _right_path(parent, 0);
+            if (left_side <= right_side) {
+                /* left side is shorter, attach right to left */
+                if (parent->left == old) {
+                    /* deleted node is left of parent */
+                    struct node *old = parent->left;
+                    parent->left = old->left;
+                    struct node *leaf = old->left;
+                    while (leaf->right != NULL) {
+                        leaf = leaf->right;
+                    }
+                    leaf->right = old->right;
+                } else {
+                    /* deleted node is right of parent */
+                    struct node *old = parent->right;
+                    parent->right = old->left;
+                    struct node *leaf = old->left;
+                    while (leaf->right != NULL) {
+                        leaf = leaf->right;
+                    }
+                    leaf->right = old->right;
+                }
             } else {
-                struct node *old = parent->right;
+                /* right side is shorter, attach left to right */
+                if (parent->left == old) {
+                    /* deleted node is left of parent */
+                    struct node *old = parent->left;
+                    parent->left = old->right;
+                    struct node *leaf = old->right;
+                    while (leaf->left != NULL) {
+                        leaf = leaf->left;
+                    }
+                    leaf->left = old->left;
+                } else {
+                    /* deleted node is right of parent */
+                    struct node *old = parent->right;
+                    parent->right = old->right;
+                    struct node *leaf = old->right;
+                    while (leaf->left != NULL) {
+                        leaf = leaf->left;
+                    }
+                    leaf->left = old->left;
+                }
+            }
+        } else if ((old->left != NULL) && (old->right == NULL)) {
+            if (parent->left == old) {
+                parent->left = old->left;
+            } else {
+                parent->right = old->left;
+            }
+        } else if ((old->left == NULL) && (old->right != NULL)) {
+            if (parent->left == old) {
+                parent->left = old->right;
+            } else {
                 parent->right = old->right;
-                /* TODO put left side onto right side */
-                free(old);
             }
         }
+        free(old);
     }
     return(node);
 }

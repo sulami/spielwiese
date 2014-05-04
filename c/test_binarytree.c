@@ -28,19 +28,20 @@ void test_second_node() {
 void test_delete_node() {
     struct node *tree = btree_insert(NULL, 5, 50);
     tree = btree_insert(tree, 3, 30);
+    tree = btree_insert(tree, 4, 40);
     tree = btree_insert(tree, 7, 70);
     tree = btree_insert(tree, 6, 60);
     tree = btree_insert(tree, 1, 10);
     tree = btree_insert(tree, 2, 20);
 
+    tree = btree_remove(tree, 6);
     tree = btree_remove(tree, 3);
 
     assert(btree_lookup(tree, 1));
     assert(btree_lookup(tree, 2));
     assert(btree_lookup(tree, 3) == false);
-    assert(btree_lookup(tree, 4));
     assert(btree_lookup(tree, 5));
-    assert(btree_lookup(tree, 6));
+    assert(btree_lookup(tree, 6) == false);
     assert(btree_lookup(tree, 7));
 }
 
