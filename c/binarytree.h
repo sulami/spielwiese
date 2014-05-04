@@ -79,13 +79,43 @@ int btree_lookup(struct node *node, int target) {
 
 struct node *btree_remove(struct node *node, int key) {
     if (node == NULL) {
+        /* No node */
         return(NULL);
     }
     if (node->key == key) {
-        /* TODO delete root node */
+        /* Root node */
+        struct node *new = malloc(sizeof(node));
+        if ((node->left != NULL) && (node->right != NULL)){
+            int left_side = _left_path(node, 0);
+            int right_side = _right_path(node, 0);
+            if (left_side <= right_side) {
+                /* left side is shorter, attach right to left */
+                new = node->left;
+                struct node *leaf = node->left;
+                while (leaf->right != NULL) {
+                    leaf = leaf->right;
+                }
+                leaf->right = node->right;
+            } else {
+                /* right side is shorter, attach left to right */
+                new = node-> right;
+                struct node *leaf = node->right;
+                while (leaf->left != NULL) {
+                    leaf = leaf->left;
+                }
+                leaf->left = node->left;
+            }
+        } else if ((node->left != NULL) && (node->right == NULL)) {
+            new = node->left;
+        } else if ((node->left == NULL) && (node->right != NULL)) {
+            new = node->right;
+        }
+        free(node);
+        return(new);
     } else if (btree_lookup(node, key)) {
+        /* Child node */
         struct node *parent = _parent(node, key);
-        struct node *old = NULL;
+        struct node *old = malloc(sizeof(node));
         if (parent->left->key == key) {
             old = parent->left;
         } else {
@@ -151,7 +181,7 @@ struct node *btree_remove(struct node *node, int key) {
             }
         }
         free(old);
+        return(node);
     }
-    return(node);
 }
 

@@ -34,15 +34,55 @@ void test_delete_node() {
     tree = btree_insert(tree, 1, 10);
     tree = btree_insert(tree, 2, 20);
 
-    tree = btree_remove(tree, 6);
-    tree = btree_remove(tree, 3);
+    tree = btree_remove(tree, 6); /* Leaf node */
+
+    assert(btree_lookup(tree, 1));
+    assert(btree_lookup(tree, 2));
+    assert(btree_lookup(tree, 3));
+    assert(btree_lookup(tree, 4));
+    assert(btree_lookup(tree, 5));
+    assert(btree_lookup(tree, 6) == false);
+    assert(btree_lookup(tree, 7));
+
+    tree = btree_remove(tree, 3); /* Middle node, 2 children */
 
     assert(btree_lookup(tree, 1));
     assert(btree_lookup(tree, 2));
     assert(btree_lookup(tree, 3) == false);
+    assert(btree_lookup(tree, 4));
     assert(btree_lookup(tree, 5));
     assert(btree_lookup(tree, 6) == false);
     assert(btree_lookup(tree, 7));
+
+    tree = btree_remove(tree, 1); /* Middle node, 1 child */
+
+    assert(btree_lookup(tree, 1) == false);
+    assert(btree_lookup(tree, 2));
+    assert(btree_lookup(tree, 3) == false);
+    assert(btree_lookup(tree, 4));
+    assert(btree_lookup(tree, 5));
+    assert(btree_lookup(tree, 6) == false);
+    assert(btree_lookup(tree, 7));
+
+    tree = btree_remove(tree, 5); /* Root node, 2 children */
+
+    assert(btree_lookup(tree, 1) == false);
+    assert(btree_lookup(tree, 2));
+    assert(btree_lookup(tree, 3) == false);
+    assert(btree_lookup(tree, 4));
+    assert(btree_lookup(tree, 5) == false);
+    assert(btree_lookup(tree, 6) == false);
+    assert(btree_lookup(tree, 7));
+
+    tree = btree_remove(tree, 7); /* Root node, 1 child */
+
+    assert(btree_lookup(tree, 1) == false);
+    assert(btree_lookup(tree, 2));
+    assert(btree_lookup(tree, 3) == false);
+    assert(btree_lookup(tree, 4));
+    assert(btree_lookup(tree, 5) == false);
+    assert(btree_lookup(tree, 6) == false);
+    assert(btree_lookup(tree, 7) == false);
 }
 
 int main(int argc, const char *argv[])
