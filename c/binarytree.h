@@ -21,31 +21,28 @@ static struct node *_new_node(int key, int data) {
 }
 
 static struct node *_parent(struct node *node, int key) {
-    if ((node->left->key == key) || (node->right->key == key)) {
-        return(node);
-    } else {
+    while ((node->left->key != key) && (node->right->key != key)) {
         if (key <= node->key) {
-            return _parent(node->left, key);
+            node = node->left;
         } else {
-            return _parent(node->right, key);
+            node = node->right;
         }
     }
+    return(node);
 }
 
 static int _left_path(struct node *node) {
     if (node->right != NULL) {
         return(1 + _left_path(node->right));
-    } else {
-        return(0);
     }
+    return(0);
 }
 
 static int _right_path(struct node *node) {
     if (node->left != NULL) {
         return(1 + _right_path(node->left));
-    } else {
-        return(0);
     }
+    return(0);
 }
 
 static struct node *_remove_node(struct node *node) {
@@ -54,7 +51,6 @@ static struct node *_remove_node(struct node *node) {
         int left_side = _left_path(node->left);
         int right_side = _right_path(node->right);
         if (left_side <= right_side) {
-            /* left side is shorter, attach right to left */
             new_node = node->left;
             struct node *leaf = node->left;
             while (leaf->right != NULL) {
@@ -62,7 +58,6 @@ static struct node *_remove_node(struct node *node) {
             }
             leaf->right = node->right;
         } else {
-            /* right side is shorter, attach left to right */
             new_node = node->right;
             struct node *leaf = node->right;
             while (leaf->left != NULL) {
@@ -75,50 +70,42 @@ static struct node *_remove_node(struct node *node) {
     } else if ((node->left == NULL) && (node->right != NULL)) {
         new_node = node->right;
     }
+    free(node);
     return(new_node);
 }
 
 struct node *btree_insert(struct node *node, int key, int data) {
     if (node == NULL) {
         return(_new_node(key, data));
-    } else {
-        if (key <= node->key) {
-            node->left = btree_insert(node->left, key, data);
-        } else {
-            node->right = btree_insert(node->right, key, data);
-        }
-        return(node);
     }
+    if (key <= node->key) {
+        node->left = btree_insert(node->left, key, data);
+    } else {
+        node->right = btree_insert(node->right, key, data);
+    }
+    return(node);
 }
 
 int btree_lookup(struct node *node, int target) {
     if (node == NULL) {
         return(false);
-    } else {
-        if (target == node->key) {
-            return(node->data);
-        } else {
-            if (target < node->key) {
-                return(btree_lookup(node->left, target));
-            } else {
-                return(btree_lookup(node->right, target));
-            }
-        }
     }
+    if (target == node->key) {
+        return(node->data);
+    }
+    if (target < node->key) {
+        return(btree_lookup(node->left, target));
+    }
+    return(btree_lookup(node->right, target));
 }
 
 struct node *btree_remove(struct node *node, int key) {
-    if (node == NULL) {
-        /* No node */
+    if (node == NULL) { /* No node */
         return(NULL);
-    }
-    if (node->key == key) {
-        /* Root node */
+    } else if (node->key == key) { /* Root node */
         struct node *new_node = _remove_node(node);
-        free(node);
         return(new_node);
-    } else if (btree_lookup(node, key)) {
-        /* Child node */
+    } else if (btree_lookup(node, key)) { /* Child/leaf node */
         struct node *parent = _parent(node, key);
         struct node *old = malloc(sizeof(node));
         if (parent->left->key == key) {
@@ -128,17 +115,15 @@ struct node *btree_remove(struct node *node, int key) {
             old = parent->right;
             parent->right = _remove_node(old);
         }
-        free(old);
-        return(node);
     }
+    return(node);
 }
 
 int btree_size(struct node *node) {
     if (node == NULL) {
         return(0);
-    } else {
-        return(btree_size(node->left) + 1 + btree_size(node->right));
     }
+    return(btree_size(node->left) + 1 + btree_size(node->right));
 }
 
 int btree_depth(struct node *node) {
