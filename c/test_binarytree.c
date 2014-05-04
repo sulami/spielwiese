@@ -14,10 +14,21 @@ void test_first_node() {
     assert(node->data == 50);
 }
 
+void test_second_node() {
+    struct node *tree = insert(NULL, 5, 50);
+    tree = insert(tree, 3, 30);
+    assert(tree != NULL);
+    assert(tree->key == 5);
+    assert(tree->data == 50);
+    assert(lookup(tree, 5));
+    assert(lookup(tree, 3));
+}
+
 int main(int argc, const char *argv[])
 {
     printf("\nRunning tests:\n");
     run_test(test_first_node);
+    run_test(test_second_node);
     printf("\x1B[32mAll tests successful!\x1B[0m\n");
     return 0;
 }
