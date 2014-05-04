@@ -79,12 +79,11 @@ int btree_lookup(struct node *node, int target) {
 
 struct node *btree_remove(struct node *node, int key) {
     if (node == NULL) {
-        return(false);
+        return(NULL);
     }
     if (node->key == key) {
         /* TODO delete root node */
-    }
-    if (btree_lookup(node, key)) {
+    } else if (btree_lookup(node, key)) {
         struct node *parent = _parent(node, key);
         int left_side = _left_path(parent, 0);
         int right_side = _right_path(parent, 0);
@@ -113,8 +112,7 @@ struct node *btree_remove(struct node *node, int key) {
                 free(old);
             }
         }
-    } else {
-        return(false);
     }
+    return(node);
 }
 
