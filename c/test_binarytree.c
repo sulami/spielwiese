@@ -1,6 +1,7 @@
 /* Tests for binarytree.h */
 #include <stdio.h>
 #include <assert.h>
+#include <stdlib.h>
 #include "binarytree.h"
 
 #define run_test(fn_name) \
@@ -142,6 +143,16 @@ void test_tree_size() {
     assert(btree_size(tree) == 7);
 }
 
+void test_massive_load() {
+    struct node *tree = btree_insert(NULL, 5000000, 1);
+    int i;
+    for (i = 0; i < 10000000; i++) {
+        tree = btree_insert(tree, rand(), rand());
+    }
+
+    assert(btree_size(tree) == 10000001);
+}
+
 int main(int argc, const char *argv[])
 {
     printf("\nRunning tests:\n");
@@ -151,6 +162,7 @@ int main(int argc, const char *argv[])
     run_test(test_delete_mid);
     run_test(test_delete_root);
     run_test(test_tree_size);
+    /* run_test(test_massive_load); */
     printf("\x1B[32mAll tests successful!\x1B[0m\n\n");
     return 0;
 }
