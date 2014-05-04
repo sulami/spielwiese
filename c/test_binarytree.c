@@ -22,6 +22,7 @@ void test_second_node() {
     assert(tree->data == 50);
     assert(lookup(tree, 5));
     assert(lookup(tree, 3));
+    assert(lookup(tree, 2) == false);
 }
 
 int main(int argc, const char *argv[])
