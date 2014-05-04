@@ -59,6 +59,22 @@ static int _size(struct node *node, int size) {
     return(size);
 }
 
+static int _depth(struct node *node, int depth) {
+    if (node == NULL) {
+        return(0);
+    }
+    depth++;
+    int depth_left = _depth(node->left, depth);
+    int depth_right = _depth(node->right, depth);
+    if ((depth_left == 0) && (depth_right == 0)) {
+        return(depth);
+    } else if (depth_left >= depth_right) {
+        return(depth_left);
+    } else {
+        return(depth_right);
+    }
+}
+
 struct node *btree_insert(struct node *node, int key, int data) {
     if (node == NULL) {
         return(_new_node(key, data));
@@ -202,5 +218,9 @@ int btree_size(struct node *node) {
     } else {
         return(_size(node, 0));
     }
+}
+
+int btree_depth(struct node *node) {
+    return(_depth(node, 0));
 }
 
