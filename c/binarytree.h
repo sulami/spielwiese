@@ -85,8 +85,34 @@ struct node *btree_remove(struct node *node, int key) {
         /* TODO delete root node */
     }
     if (btree_lookup(node, key)) {
-        /* TODO find and delete node */
         struct node *parent = _parent(node, key);
+        int left_side = _left_path(parent, 0);
+        int right_side = _right_path(parent, 0);
+        if (left_side <= right_side) {
+            if (parent->left->key == key) {
+                struct node *old = parent->left;
+                parent->left = old->left;
+                /* TODO put right side onto left side */
+                free(old);
+            } else {
+                struct node *old = parent->right;
+                parent->right = old->left;
+                /* TODO put left side onto right side */
+                free(old);
+            }
+        } else {
+            if (parent->left->key == key) {
+                struct node *old = parent->left;
+                parent->left = old->right;
+                /* TODO put right side onto left side */
+                free(old);
+            } else {
+                struct node *old = parent->right;
+                parent->right = old->right;
+                /* TODO put left side onto right side */
+                free(old);
+            }
+        }
     } else {
         return(false);
     }

@@ -38,7 +38,7 @@ int main(int argc, const char *argv[])
     printf("\nRunning tests:\n");
     run_test(test_first_node);
     run_test(test_second_node);
-    /* run_test(test_delete_node); */
+    run_test(test_delete_node);
     printf("\x1B[32mAll tests successful!\x1B[0m\n\n");
     return 0;
 }
