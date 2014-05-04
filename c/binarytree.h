@@ -48,6 +48,17 @@ static int _right_path(struct node *node, int count) {
     }
 }
 
+static int _size(struct node *node, int size) {
+    size++;
+    if (node->left != NULL) {
+        size = _size(node->left, size);
+    }
+    if (node->right != NULL) {
+        size = _size(node->right, size);
+    }
+    return(size);
+}
+
 struct node *btree_insert(struct node *node, int key, int data) {
     if (node == NULL) {
         return(_new_node(key, data));
@@ -182,6 +193,14 @@ struct node *btree_remove(struct node *node, int key) {
         }
         free(old);
         return(node);
+    }
+}
+
+int btree_size(struct node *node) {
+    if (node == NULL) {
+        return(0);
+    } else {
+        return(_size(node, 0));
     }
 }
 

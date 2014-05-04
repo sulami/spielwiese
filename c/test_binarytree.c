@@ -130,6 +130,18 @@ void test_delete_root() {
     assert(btree_lookup(tree, 7));
 }
 
+void test_tree_size() {
+    struct node *tree = btree_insert(NULL, 5, 50);
+    tree = btree_insert(tree, 3, 30);
+    tree = btree_insert(tree, 4, 40);
+    tree = btree_insert(tree, 7, 70);
+    tree = btree_insert(tree, 6, 60);
+    tree = btree_insert(tree, 1, 10);
+    tree = btree_insert(tree, 2, 20);
+
+    assert(btree_size(tree) == 7);
+}
+
 int main(int argc, const char *argv[])
 {
     printf("\nRunning tests:\n");
@@ -138,6 +150,7 @@ int main(int argc, const char *argv[])
     run_test(test_delete_leaf);
     run_test(test_delete_mid);
     run_test(test_delete_root);
+    run_test(test_tree_size);
     printf("\x1B[32mAll tests successful!\x1B[0m\n\n");
     return 0;
 }
