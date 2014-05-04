@@ -48,33 +48,6 @@ static int _right_path(struct node *node, int count) {
     }
 }
 
-static int _size(struct node *node, int size) {
-    size++;
-    if (node->left != NULL) {
-        size = _size(node->left, size);
-    }
-    if (node->right != NULL) {
-        size = _size(node->right, size);
-    }
-    return(size);
-}
-
-static int _depth(struct node *node, int depth) {
-    if (node == NULL) {
-        return(0);
-    }
-    depth++;
-    int depth_left = _depth(node->left, depth);
-    int depth_right = _depth(node->right, depth);
-    if ((depth_left == 0) && (depth_right == 0)) {
-        return(depth);
-    } else if (depth_left >= depth_right) {
-        return(depth_left);
-    } else {
-        return(depth_right);
-    }
-}
-
 struct node *btree_insert(struct node *node, int key, int data) {
     if (node == NULL) {
         return(_new_node(key, data));
@@ -216,11 +189,20 @@ int btree_size(struct node *node) {
     if (node == NULL) {
         return(0);
     } else {
-        return(_size(node, 0));
+        return(btree_size(node->left) + 1 + btree_size(node->right));
     }
 }
 
 int btree_depth(struct node *node) {
-    return(_depth(node, 0));
+    if (node == NULL) {
+        return(0);
+    }
+    int depth_left = btree_depth(node->left);
+    int depth_right = btree_depth(node->right);
+    if (depth_left >= depth_right) {
+        return(depth_left + 1);
+    } else {
+        return(depth_right + 1);
+    }
 }
 
