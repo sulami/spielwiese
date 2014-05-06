@@ -26,8 +26,8 @@ class Node:
                 return None
             return self.right._get(key)
 
-    def _del_get(self, key):
-        """Returns the parent of a node for tree reordering on deletion"""
+    def _get_parent(self, key):
+        """Returns the parent of a node for deletion"""
         if self.left is not None:
             if self.left.key == key:
                 return self
@@ -37,11 +37,11 @@ class Node:
         if key < self.key:
             if self.left is None:
                 return None
-            return self.left._del_get(key)
+            return self.left._get_parent(key)
         else:
             if self.right is None:
                 return None
-            return self.right._del_get(key)
+            return self.right._get_parent(key)
 
     def _get_left(self, results):
         """Returns the path when always going left"""
@@ -124,18 +124,68 @@ class Node:
             else:
                 self.right.insert(key, data)
 
-    def remove(self, key):
-        """Removes an entry from the tree, returns None on failure"""
-        if self.key == key:
-            # TODO delete root node
-            pass
-        parent = self._del_get(key)
-        if parent is None:
+    def _del_left(self):
+        """Removes entry on the left side"""
+        obj = self.left
+        if obj.left is None and obj.right is None:
+            self.left = None
+        elif obj.left is not None and obj.right is None:
+            self.left = obj.left
+        elif obj.left is None and obj.right is not None:
+            self.left = obj.right
+        else:
+            if len(obj.left._get_right([])) <= len(obj.right._get_left([])):
+                self.left = obj.left
+                self.left._get_left([])[-1].left = obj.right
+            else:
+                self.left = obj.right
+                self.left._get_right([])[-1].right = obj.left
+
+    def _del_right(self):
+        """Removes entry on the right side"""
+        obj = self.right
+        if obj.left is None and obj.right is None:
+            self.right = None
+        elif obj.left is not None and obj.right is None:
+            self.right = obj.left
+        elif obj.left is None and obj.right is not None:
+            self.right = obj.right
+        else:
+            if len(obj.left._get_right([])) <= len(obj.right._get_left([])):
+                self.right = obj.left
+                self.right._get_left([])[-1].left = obj.right
+            else:
+                self.right = obj.right
+                self.right._get_right([])[-1].right = obj.left
+
+    def _del_self(self):
+        """Removes an entry itself"""
+        if self.left is None and self.right is None:
             return None
+        elif self.left is not None and self.right is None:
+            return self.right
+        elif self.left is None and self.right is not None:
+            return self.left
+
+    def remove(self, key):
+        """Removes an entry, returns new root node or None"""
+        if self.key == key:
+            return self._del_self()
+        else:
+            parent = self._get_parent(key)
+            if parent is None:
+                return None
+        if parent.left is not None:
+            if parent.left.key == key:
+                parent._del_left()
+            else:
+                parent._del_right()
+        else:
+            parent._del_right()
         return parent
 
     def multi_remove(self, key):
-        """Removes all occurences of an entry, returns None on failure"""
+        """Removes all matching entries, returns None on failure"""
         results = self._multi_get(key, [])
         if results is not None:
             for result in results:
