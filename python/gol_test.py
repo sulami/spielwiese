@@ -36,7 +36,7 @@ class golTestCase(unittest.TestCase):
 
     def test_lives(self):
         # game = Game(width=119, height=60)
-        game = Game(width=239, height=65, length=1000, interval=0)
+        game = Game(width=239, height=64, length=1000, interval=0)
         # game = Game(width=23, height=35, length=50, interval=.1)
         game.live()
 

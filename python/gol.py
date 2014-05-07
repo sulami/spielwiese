@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import datetime
 import os
 import random
 import time
@@ -29,7 +30,7 @@ class Game():
         screen = {}
         weight = [
             1,
-            0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0,
             ]
         for y in range(self.height):
             screen[y] = {}
@@ -39,13 +40,18 @@ class Game():
 
     def print_screen(self):
         clear()
+        time = datetime.datetime.now()
+        alive = 0
         for y in range(10, self.height - 10):
             for x in range(10, self.width - 10):
                 if self.screen[y][x]:
                     print('█', end='')
+                    alive += 1
                 else:
                     print(' ', end='')
             print('')
+        delta = round((datetime.datetime.now() - time).total_seconds(), 5)
+        print('Stats: {} frames left, {} of {} dots alive ({}%), {} seconds per frame ({} fps)'.format(self.length, alive, self.width * self.height, round(self.width * self.height / alive, 2), delta, round(1 / delta, 2) ))
 
     def gen_next_generation(self):
         nextgen = {}
