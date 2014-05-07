@@ -2,8 +2,7 @@
 
 """
 This takes an directory as argument and plays all music in this
-directory (and subdirectories) using mplayer. Enter skips songs, for
-whatever reason, ctrl-c exits as usual.
+directory (and subdirectories) using mplayer.
 
 Future features:
  - automatic restart
@@ -17,6 +16,8 @@ import subprocess
 import sys
 from getch import getch
 
+FILETYPES = ('flac', 'ogg', 'mp3', 'wav')
+
 class Song:
     def __init__(self, path):
         self.name = os.path.split(path)[1]
@@ -24,10 +25,12 @@ class Song:
 
     def play(self):
         print('Playing %s' % self.name)
-        self.process = subprocess.Popen(['mplayer', '-really-quiet', self.path],
-                                   stdout=subprocess.DEVNULL,
-                                   stderr=subprocess.DEVNULL,
-                                   stdin=subprocess.DEVNULL)
+        self.process = subprocess.Popen(
+            ['mplayer', '-really-quiet', self.path],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            stdin=subprocess.DEVNULL
+        )
 
     def skip(self):
         self.process.kill()
@@ -38,10 +41,7 @@ def generateSongList(path):
     for dirname, dirnames, filenames in os.walk(path):
         for filename in filenames:
             filetype = filename.split('.')[-1]
-            if ((filetype == 'flac') or
-                (filetype == 'ogg') or
-                (filetype == 'mp3') or
-                (filetype == 'wav')):
+            if filetype in FILETYPES:
                 song = Song(os.path.join(dirname, filename))
                 songlist.append(song)
     print('Collected %i songs, starting playback...' % len(songlist))
