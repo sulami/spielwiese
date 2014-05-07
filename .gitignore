@@ -1,0 +1,10 @@
+*
+!/*
+!.gitignore
+!*.[c|h]
+!*.py
+!*.pl
+!*.sh
+!*.cpp
+!*.rb
+
