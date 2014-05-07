@@ -2,13 +2,17 @@
 
 """
 This takes an directory as argument and plays all music in this
-directory (and subdirectories) using mplayer.
+directory (and subdirectories) using a mediaplayer of your choice (per
+default mplayer).
 
 Future features:
  - automatic restart
  - keeping a sqlite-db for music
  - generating stats about music played based around various stats
  - ranking the music to play by those stats
+
+ Written by sulami (peerwire.de). Published under CC BY-SA 4.0
+ http://creativecommons.org/licenses/by-sa/4.0/
 """
 
 import os
@@ -16,6 +20,7 @@ import subprocess
 import sys
 from getch import getch
 
+PLAYER = 'mplayer' # options: mplayer, cvlc, ...
 FILETYPES = ('flac', 'ogg', 'mp3', 'wav')
 
 class Song:
@@ -26,7 +31,7 @@ class Song:
     def play(self):
         print('Playing %s' % self.name)
         self.process = subprocess.Popen(
-            ['mplayer', '-really-quiet', self.path],
+            [PLAYER, self.path],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
             stdin=subprocess.DEVNULL
