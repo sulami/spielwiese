@@ -16,14 +16,23 @@ Future features:
 """
 
 import os
+import sqlite3
 import subprocess
 import sys
 from getch import getch
 
 PLAYER = 'mplayer' # options: mplayer, cvlc, ...
 FILETYPES = ('flac', 'ogg', 'mp3', 'wav')
+DB = '/home/sulami/build/codevibe.db'
 
 class Player:
+    def __init__(self, db=DB):
+        try:
+            self.db = sqlite3.connect(db)
+        except:
+            print('Error: database connection failed')
+            sys.exit(1)
+
     def generate_song_list(self, path):
         print('Generating songlist from %s...' % path)
         self.songlist = []
@@ -34,6 +43,23 @@ class Player:
                     song = Song(os.path.join(dirname, filename))
                     self.songlist.append(song)
         print('Collected %i songs, starting playback...' % len(self.songlist))
+
+    def query_db(self, query):
+        c = self.db.cursor()
+        c.execute(query)
+        return c
+
+    # def populate_db(self):
+    #     q = 'CREATE TABLE songs (id int, name text, path text, value int)'
+    #     try:
+    #         self.query_db(q)
+    #     except:
+    #         pass
+    #     i = 0
+    #     for song in self.songlist:
+    #         i += 1
+    #         q = "INSERT INTO songs VALUES ('%d', '%s', '%s', '100')".format(i, song.name, song.path)
+    #         self.query_db(q)
 
     def play(self):
         while True:
@@ -85,7 +111,7 @@ def main():
         path = os.getcwd()
     mp = Player()
     mp.generate_song_list(path)
-    mp.play()
+    mp.populate_db()
 
 if __name__ == '__main__':
     main()
