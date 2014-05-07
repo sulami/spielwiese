@@ -25,11 +25,6 @@ class Game():
             self.length -= 1
             time.sleep(self.interval)
 
-    def test(self):
-        self.print_screen()
-        self.gen_next_generation()
-        self.print_screen()
-
     def generate_world(self):
         screen = {}
         weight = [
