@@ -23,6 +23,33 @@ from getch import getch
 PLAYER = 'mplayer' # options: mplayer, cvlc, ...
 FILETYPES = ('flac', 'ogg', 'mp3', 'wav')
 
+class Player:
+    def generate_song_list(self, path):
+        print('Generating songlist from %s...' % path)
+        self.songlist = []
+        for dirname, dirnames, filenames in os.walk(path):
+            for filename in filenames:
+                filetype = filename.split('.')[-1]
+                if filetype in FILETYPES:
+                    song = Song(os.path.join(dirname, filename))
+                    self.songlist.append(song)
+        print('Collected %i songs, starting playback...' % len(self.songlist))
+
+    def play(self):
+        while True:
+            for song in self.songlist:
+                song.play()
+                while song.is_running():
+                    inkey = getch()
+                    if inkey == 's':
+                        song.skip()
+                        break;
+                    elif inkey == 'q':
+                        song.skip()
+                        sys.exit(0)
+                    elif inkey == 'h':
+                        print('(h)elp, (s)kip, (q)uit')
+
 class Song:
     def __init__(self, path):
         self.name = os.path.split(path)[1]
@@ -37,20 +64,17 @@ class Song:
             stdin=subprocess.DEVNULL
         )
 
-    def skip(self):
-        self.process.kill()
+    def is_running(self):
+        if self.process.pid is not None:
+            return True
+        else:
+            return False
 
-def generateSongList(path):
-    print('Generating songlist from %s...' % path)
-    songlist = []
-    for dirname, dirnames, filenames in os.walk(path):
-        for filename in filenames:
-            filetype = filename.split('.')[-1]
-            if filetype in FILETYPES:
-                song = Song(os.path.join(dirname, filename))
-                songlist.append(song)
-    print('Collected %i songs, starting playback...' % len(songlist))
-    return songlist
+    def skip(self):
+        try:
+            self.process.kill()
+        except:
+            pass
 
 def main():
     if len(sys.argv) > 1:
@@ -59,20 +83,9 @@ def main():
             path = os.getcwd()
     else:
         path = os.getcwd()
-    songlist = generateSongList(path)
-    for song in songlist:
-        song.play()
-        while True:
-            inkey = getch()
-            if song.process.poll() or inkey == 's':
-                song.skip()
-                break;
-            elif inkey == 'q':
-                song.skip()
-                sys.exit(0)
-            elif inkey == 'h':
-                print('(h)elp, (s)kip, (q)uit')
-    print('Everything played, exiting...')
+    mp = Player()
+    mp.generate_song_list(path)
+    mp.play()
 
 if __name__ == '__main__':
     main()
