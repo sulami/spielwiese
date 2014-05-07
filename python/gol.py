@@ -11,9 +11,9 @@ def clear():
         os.system('clear')
 
 class Game():
-    def __init__(self, width=80, height=32, length=10, interval=.3):
-        self.width = width
-        self.height = height
+    def __init__(self, width=80, height=32, length=50, interval=.1):
+        self.width = width + 20
+        self.height = height + 20
         self.length = length
         self.interval = interval
         self.screen = self.generate_world()
@@ -44,8 +44,8 @@ class Game():
 
     def print_screen(self):
         clear()
-        for y in range(self.height):
-            for x in range(self.width):
+        for y in range(10, self.height - 10):
+            for x in range(10, self.width - 10):
                 if self.screen[y][x]:
                     print('█', end='')
                 else:

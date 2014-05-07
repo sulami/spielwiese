@@ -8,15 +8,15 @@ class golTestCase(unittest.TestCase):
         self.game = Game()
 
     def test_uses_default_arguments(self):
-        self.assertEqual(self.game.width, 80)
-        self.assertEqual(self.game.height, 32)
-        self.assertEqual(self.game.length, 10)
-        self.assertEqual(self.game.interval, .3)
+        self.assertEqual(self.game.width, 100)
+        self.assertEqual(self.game.height, 52)
+        self.assertEqual(self.game.length, 50)
+        self.assertEqual(self.game.interval, .1)
 
     def test_takes_arguments(self):
         tmp = Game(16, 9, 5, .5)
-        self.assertEqual(tmp.width, 16)
-        self.assertEqual(tmp.height, 9)
+        self.assertEqual(tmp.width, 36)
+        self.assertEqual(tmp.height, 29)
         self.assertEqual(tmp.length, 5)
         self.assertEqual(tmp.interval, .5)
 
@@ -35,7 +35,7 @@ class golTestCase(unittest.TestCase):
         self.assertNotEqual(old, self.game.screen)
 
     def test_lives(self):
-        # game = Game(width=119, height=60, length=50, interval=.1)
+        # game = Game(width=119, height=60)
         game = Game(width=239, height=65, length=1000, interval=0)
         # game = Game(width=23, height=35, length=50, interval=.1)
         game.live()
