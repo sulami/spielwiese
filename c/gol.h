@@ -1,17 +1,17 @@
 #include <stdlib.h>
+#include <time.h>
 
-struct line {
-    int *col;
-};
-
-struct screen {
-    struct line *lines;
-};
-
-struct screen *cgol_gen_start() {
-    struct screen *screen = malloc(sizeof(struct screen));
+int ***cgol_gen_start(int width, int height) {
+    int ***screen = malloc(sizeof(int) * width * height);
     if (screen != NULL) {
-        screen->lines = malloc(sizeof(struct line));
+        srand(time(NULL));
+        int i;
+        for (i=0; i<height; i++) {
+            int j;
+            for (j=0; i<width; j++) {
+                *screen[i][j] = rand();
+            }
+        }
         return(screen);
     } else {
         return(NULL);

@@ -11,7 +11,7 @@ void test_exits_gracefully() {
 }
 
 void test_creates_random_start() {
-    assert(cgol_gen_start() != NULL);
+    assert(cgol_gen_start(80, 32) != NULL);
 }
 
 int main() {
