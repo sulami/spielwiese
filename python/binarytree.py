@@ -70,11 +70,13 @@ class Node:
             left_key = left._get(key)
             if left_key is not None:
                 results.append(left_key)
+                left_key._multi_get(key, results)
         right = me.right
         if right is not None:
             right_key = right._get(key)
             if right_key is not None:
                 results.append(right_key)
+                right_key._multi_get(key, results)
         return results
 
     def _ordered_get(self, results):
