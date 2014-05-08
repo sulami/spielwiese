@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import datetime
 import os
 import random
 import time
@@ -14,7 +13,7 @@ def clear():
 class Game():
     def __init__(self, width=80, height=32, length=50, interval=.1):
         self.width = width + 20
-        self.height = height + 20
+        self.height = height + 19
         self.length = length
         self.interval = interval
         self.screen = self.generate_world()
@@ -40,7 +39,6 @@ class Game():
 
     def print_screen(self):
         clear()
-        time = datetime.datetime.now()
         alive = 0
         for y in range(10, self.height - 10):
             for x in range(10, self.width - 10):
@@ -50,8 +48,12 @@ class Game():
                 else:
                     print(' ', end='')
             print('')
-        delta = round((datetime.datetime.now() - time).total_seconds(), 5)
-        print('Stats: {} frames left, {} of {} dots alive ({}%), {} seconds per frame ({} fps)'.format(self.length, alive, self.width * self.height, round(self.width * self.height / alive, 2), delta, round(1 / delta, 2) ))
+        print('Stats: {} frames left, {} of {} dots alive ({}%)'.format(
+            self.length,
+            alive,
+            self.width * self.height,
+            round(alive / self.width * self.height / 100, 1)
+            ))
 
     def gen_next_generation(self):
         nextgen = {}
