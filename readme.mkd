@@ -1,0 +1,9 @@
+# sulami/sulami-spielwiese // readme
+
+This Repo is just my personal playground, containing a bunch of different
+smaller projects, mostly coded in Python and C.
+
+Most interesting might be the binary search tree implementations in both C and
+Python, as well as Conway's Game of Life in Python. I also wrote a still
+incomplete, Python-based music playlist manager named Codevibe.
+
