@@ -11,7 +11,7 @@ def clear():
         os.system('clear')
 
 class Game():
-    def __init__(self, width=80, height=32, length=50, interval=.1):
+    def __init__(self, width=80, height=32, length=100, interval=.1):
         self.width = width + 20
         self.height = height + 19
         self.length = length

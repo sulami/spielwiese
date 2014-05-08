@@ -10,7 +10,7 @@ class golTestCase(unittest.TestCase):
     def test_uses_default_arguments(self):
         self.assertEqual(self.game.width, 100)
         self.assertEqual(self.game.height, 52)
-        self.assertEqual(self.game.length, 50)
+        self.assertEqual(self.game.length, 100)
         self.assertEqual(self.game.interval, .1)
 
     def test_takes_arguments(self):
