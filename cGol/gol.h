@@ -1,10 +1,10 @@
 #include <stdlib.h>
 #include <time.h>
 
-int *cgol_gen_start(unsigned int width, unsigned int height);
+void *cgol_gen_start(unsigned int width, unsigned int height);
 int cgol_live(void);
 
-int *cgol_gen_start(unsigned int width, unsigned int height) {
+void *cgol_gen_start(unsigned int width, unsigned int height) {
     int (*screen)[height][width] = malloc(sizeof(int) * width * height);
     if (screen != NULL) {
         srand((unsigned int)time(NULL));
