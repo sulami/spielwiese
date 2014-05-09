@@ -19,15 +19,15 @@ void test_creates_random_start() {
 }
 
 void test_values_are_zero_ore_none() {
-    /* WHY does this work only for (x < 5 && y < 5) ? */
-    unsigned int x = 4;
-    unsigned int y = 4;
-    int ***screen = cgol_gen_start(y, x);
+    unsigned int x = 50;
+    unsigned int y = 50;
+    int *screen = cgol_gen_start(y, x);
     unsigned int i;
     for (i=0; i<y; i++) {
         unsigned int j;
         for (j=0; j<x; j++) {
-            assert(screen[0][i][j] == 1 || screen[0][i][j] == 0);
+            int test = *(screen + (i * j) + j);
+            assert(test == 0 || test == 1);
         }
     }
 }
