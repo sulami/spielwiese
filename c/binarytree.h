@@ -17,6 +17,8 @@ static struct node *_new_node(int key, int data) {
         node->left = NULL;
         node->right = NULL;
         return(node);
+    } else {
+        return(NULL);
     }
 }
 
