@@ -6,12 +6,15 @@
     printf("%s\n", #fn_name); \
     fn_name();
 
+void test_exits_gracefully(void);
+void test_creates_random_start(void);
+
 void test_exits_gracefully() {
     assert(cgol_live() == 0);
 }
 
 void test_creates_random_start() {
-    assert(cgol_gen_start(80, 32) != NULL);
+    assert(cgol_gen_start(10, 10) != NULL);
 }
 
 int main() {

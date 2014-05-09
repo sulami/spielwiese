@@ -1,18 +1,23 @@
 #include <stdlib.h>
 #include <time.h>
 
-int ***cgol_gen_start(int width, int height) {
-    int ***screen = malloc(sizeof(int) * width * height);
+int ***cgol_gen_start(unsigned int width, unsigned int height);
+int cgol_live(void);
+
+int ***cgol_gen_start(unsigned int width, unsigned int height) {
+    int **screen = malloc(sizeof(int));
     if (screen != NULL) {
-        srand(time(NULL));
-        int i;
+        srand((unsigned int)time(NULL));
+        unsigned int i;
         for (i=0; i<height; i++) {
-            int j;
-            for (j=0; i<width; j++) {
-                *screen[i][j] = rand();
+            screen[i] = malloc(sizeof(int) * height);
+            unsigned int j;
+            for (j=0; j<width; j++) {
+                screen[i][j] = (int)rand();
             }
         }
-        return(screen);
+        int ***ptr = &screen;
+        return(ptr);
     } else {
         return(NULL);
     }
