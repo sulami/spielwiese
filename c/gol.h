@@ -5,7 +5,7 @@ int ***cgol_gen_start(unsigned int width, unsigned int height);
 int cgol_live(void);
 
 int ***cgol_gen_start(unsigned int width, unsigned int height) {
-    int **screen = malloc(sizeof(int));
+    int **screen = malloc(sizeof(int) * width);
     if (screen != NULL) {
         srand((unsigned int)time(NULL));
         unsigned int i;
@@ -13,7 +13,8 @@ int ***cgol_gen_start(unsigned int width, unsigned int height) {
             screen[i] = malloc(sizeof(int) * height);
             unsigned int j;
             for (j=0; j<width; j++) {
-                screen[i][j] = (int)rand();
+                int randint = rand() % 2;
+                screen[i][j] = randint;
             }
         }
         int ***ptr = &screen;
@@ -26,4 +27,8 @@ int ***cgol_gen_start(unsigned int width, unsigned int height) {
 int cgol_live() {
     return(0);
 }
+
+/*
+vim: ft=c:
+*/
 
