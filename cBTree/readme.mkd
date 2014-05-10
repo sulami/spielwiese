@@ -1,0 +1,20 @@
+# cBTree
+
+This is a simple Binarytree implementation in C. It provides some functions to
+make binary search trees, look up values, delete keys and calculate overall
+size and depth of a given tree. Duplicate keys are allowed and stored on the
+left side.
+
+As always, have a look at the tests for use examples.
+
+Compiles with
+
+    gcc
+
+and whatever flags you like. Does also compile with
+
+    clang
+
+but for some reason does not get initialized with NULL on both leaves, so fails
+the tests.
+

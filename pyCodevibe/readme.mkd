@@ -1,0 +1,16 @@
+# pyCodevibe
+
+This started as my idea of writing a programmer-friendly music player. Right
+now it is pretty limited in what it can do, but it supports recursively
+scanning a given directory for music and playing it. I primarily used it to
+experiment with threading and multiprocessing to get inputs and control the
+player at the same time. There are plans to integrate SQLite3 to built a real
+library and then being able to somehow tie music to code, do not ask me how, I
+do not know yet.
+
+It runs on Python 3 and requires the getch module (included) as well as a music
+player, like mplayer or VLC. Configuration is done in the code until I write
+something to parse configs.
+
+Control includes skipping the current song and quitting. Amazing.
+

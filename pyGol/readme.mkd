@@ -1,0 +1,10 @@
+# pyGol
+
+This is Conway's Game of Life, implemented in Python. This one is actually
+complete.  It provides a class with various functions and methods to start the
+game on random start screens.  Currently only running using Python 3, but the
+only reason for this should be the print functions which I do not import from
+\_\_future\_\_.
+
+Have a look at the tests for use examples.
+

@@ -1,0 +1,8 @@
+# pyBTree
+
+This is a Python implementation of binary search trees. Unlike the C version,
+deleting nodes and statistics are not written yet. Should work with any Python
+version, probably something like 2.6+ and 3.2+.
+
+The tests can be used as example implementation.
+
