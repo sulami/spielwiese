@@ -1,10 +1,9 @@
 *
 !/*
 !.gitignore
+!*.mkd
 !*.[c|h]
 !*.py
-!*.pl
 !*.sh
 !*.cpp
-!*.rb
 
