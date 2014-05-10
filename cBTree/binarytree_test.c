@@ -8,6 +8,15 @@
     printf("%s\n", #fn_name); \
     fn_name();
 
+void test_first_node(void);
+void test_full_tree(void);
+void test_delete_leaf(void);
+void test_delete_mid(void);
+void test_delete_root(void);
+void test_tree_size(void);
+void test_tree_depth(void);
+void test_massive_load(void);
+
 void test_first_node() {
     struct node *node = btree_insert(NULL, 5, 50);
     assert(node != NULL);
@@ -177,7 +186,7 @@ void test_massive_load() {
     printf("Massive tree depth: %i levels\n", btree_depth(tree));
 }
 
-int main(int argc, const char *argv[])
+int main()
 {
     printf("\nRunning tests:\n");
     run_test(test_first_node);

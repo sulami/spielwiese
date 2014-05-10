@@ -9,6 +9,17 @@ struct node {
     struct node *right;
 };
 
+static struct node *_new_node(int key, int data);
+static struct node *_parent(struct node *node, int key);
+static int _left_path(struct node *node);
+static int _right_path(struct node *node);
+static struct node *_remove_node(struct node *node);
+struct node *btree_insert(struct node *node, int key, int data);
+int btree_lookup(struct node *node, int target);
+struct node *btree_remove(struct node *node, int key);
+int btree_size(struct node *node);
+int btree_depth(struct node *node);
+
 static struct node *_new_node(int key, int data) {
     struct node* node = malloc(sizeof(node));
     if (node != NULL) {
