@@ -1,0 +1,27 @@
+# cToast
+
+This showcases a problem of clang's optimization. The code in *toast.c* is an
+example on how to reproduce this problem. It defines a struct toast, which has
+two sides (pointers).  The function *newtoast* initializes a new of those
+toasts and sets both sides to NULL. We then assert that both those sides are
+NULL, as those might get tested later on. Now we compile this using clang's
+optimization options and gcc as comparison.
+
+    clang -Weverything -O3 -o toast_clang_o3 toast.c
+    clang -Weverything -O2 -o toast_clang_o2 toast.c
+    clang -Weverything -O1 -o toast_clang_o1 toast.c
+    clang -Weverything -O0 -o toast_clang_o0 toast.c
+    gcc -Wall -pedantic -Werror -o toast_gcc toast.c
+
+The versions *toast_clang_o2* and *toast_clang_o3* fail on
+
+    assert(toast->nobutter == NULL);
+
+which is because it is the second pointer declared in the struct. If you swap
+lines 5 and 6, the assertion of the other side fails.
+
+But if you run a less optimized version and then an optimized version, it
+suddenly passes. So I think, eveyone should be careful when using those
+options. And always, always use external tests to verify the integrity of you
+code.
+
