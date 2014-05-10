@@ -9,12 +9,5 @@ As always, have a look at the tests for use examples.
 
 Compiles with
 
-    gcc
-
-and whatever flags you like. Does also compile with
-
-    clang
-
-but for some reason does not get initialized with NULL on both leaves, so fails
-the tests.
+    clang --std=c99 -Weverything -O0
 
