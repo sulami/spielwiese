@@ -51,8 +51,11 @@ int *cgol_next_gen(int *screen, unsigned int width, unsigned int height) {
             }
             if (neighbours_alive < 2) {
                 *(tmp + i * width + j) = 0;
-            } else if (1 < neighbours_alive < 4 && *(screen + i * width + j)) {
+            } else if ((neighbours_alive == 2 ||
+                        neighbours_alive == 3 ) && *(screen + i * width + j)) {
                 *(tmp + i * width + j) = 1;
+            } else if (neighbours_alive > 3) {
+                *(tmp + i * width + j) = 0;
             }
         }
     }
