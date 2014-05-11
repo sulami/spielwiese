@@ -12,6 +12,7 @@ void test_values_are_zero_ore_none(void);
 void test_conways_rule_one(void);
 void test_conways_rule_two(void);
 void test_conways_rule_three(void);
+void test_conways_rule_four(void);
 
 void test_exits_gracefully() {
     assert(cgol_live() == 0);
@@ -91,6 +92,26 @@ void test_conways_rule_three() {
     }
 }
 
+void test_conways_rule_four() {
+    /* Any dead cell with exactly three live neighbours becomes a live
+     * cell */
+    int *screen = malloc(sizeof(int) * 9);
+    if (screen != NULL) {
+        *screen = 1;
+        *(screen + 1) = 1;
+        *(screen + 2) = 0;
+        *(screen + 3) = 1;
+        *(screen + 4) = 0;
+        *(screen + 5) = 0;
+        *(screen + 6) = 0;
+        *(screen + 7) = 0;
+        *(screen + 8) = 0;
+        screen = cgol_next_gen(screen, 3, 3);
+        assert(*(screen + 4) == 1);
+        free(screen);
+    }
+}
+
 int main() {
     printf("\nRunning tests:\n");
     run_test(test_exits_gracefully);
@@ -99,6 +120,7 @@ int main() {
     run_test(test_conways_rule_one);
     run_test(test_conways_rule_two);
     run_test(test_conways_rule_three);
+    run_test(test_conways_rule_four);
     printf("\n => All tests successful!\n");
     return(0);
 }
