@@ -1,11 +1,8 @@
 # cGol
 
-This is Conway's Game of Life, poorly implemented in C.
+This is Conway's Game of Life, implemented in C.
 
 Compiling of master successful with:
 
-    clang -O3 --std=c99 -Weverything
-
-(Which does not mean without warnings, as I currently use vlas which are part
-of C99 but still throw warnings)
+    clang --std=c99 -Weverything -Wno-vla
 
