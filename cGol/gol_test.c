@@ -6,17 +6,13 @@
     printf("%s\n", #fn_name); \
     fn_name();
 
-void test_exits_gracefully(void);
 void test_creates_random_start(void);
 void test_values_are_zero_ore_none(void);
 void test_conways_rule_one(void);
 void test_conways_rule_two(void);
 void test_conways_rule_three(void);
 void test_conways_rule_four(void);
-
-void test_exits_gracefully() {
-    assert(cgol_live() == 0);
-}
+void test_print_output(void);
 
 void test_creates_random_start() {
     assert(cgol_gen_start(10, 10) != NULL);
@@ -112,15 +108,21 @@ void test_conways_rule_four() {
     }
 }
 
+void test_print_output() {
+    unsigned int w = 239;
+    unsigned int h = 65;
+    cgol_live(w, h, 500);
+}
+
 int main() {
     printf("\nRunning tests:\n");
-    run_test(test_exits_gracefully);
     run_test(test_creates_random_start);
     run_test(test_values_are_zero_ore_none);
     run_test(test_conways_rule_one);
     run_test(test_conways_rule_two);
     run_test(test_conways_rule_three);
     run_test(test_conways_rule_four);
+    run_test(test_print_output);
     printf("\n => All tests successful!\n");
     return(0);
 }

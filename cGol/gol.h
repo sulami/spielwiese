@@ -3,7 +3,8 @@
 
 void *cgol_gen_start(unsigned int width, unsigned int height);
 int *cgol_next_gen(int *screen, unsigned int width, unsigned int height);
-int cgol_live(void);
+void cgol_print_screen(int *screen, unsigned int width, unsigned int height);
+void cgol_live(unsigned int width, unsigned int height, int duration);
 
 void *cgol_gen_start(unsigned int width, unsigned int height) {
     int (*screen)[height][width] = malloc(sizeof(int) * width * height);
@@ -62,8 +63,27 @@ int *cgol_next_gen(int *screen, unsigned int width, unsigned int height) {
     return(tmp);
 }
 
-int cgol_live() {
-    return(0);
+void cgol_print_screen(int *screen, unsigned int width, unsigned int height) {
+    system("clear");
+    for (unsigned int i=0; i<height; i++) {
+        for (unsigned int j=0; j<width; j++) {
+            if (*(screen + i * width + j)){
+                printf("X");
+            } else {
+                printf(" ");
+            }
+        }
+        printf("\n");
+    }
+}
+
+void cgol_live(unsigned int width, unsigned int height, int duration) {
+    int *screen = cgol_gen_start(width, height);
+    while (duration) {
+        cgol_print_screen(screen, width, height);
+        screen = cgol_next_gen(screen, width, height);
+        duration--;
+    }
 }
 
 /*
