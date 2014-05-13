@@ -68,7 +68,7 @@ void cgol_print_screen(int *screen, unsigned int width, unsigned int height) {
     for (unsigned int i=0; i<height; i++) {
         for (unsigned int j=0; j<width; j++) {
             if (*(screen + i * width + j)){
-                printf("X");
+                printf("█");
             } else {
                 printf(" ");
             }
