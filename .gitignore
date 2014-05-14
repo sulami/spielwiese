@@ -1,5 +1,6 @@
 *
 !/*
+!*/tests
 !.gitignore
 !*.mkd
 !*.[c|h]
