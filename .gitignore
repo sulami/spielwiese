@@ -2,6 +2,7 @@
 !/*
 !*/tests
 !.gitignore
+!Makefile
 !*.mkd
 !*.[c|h]
 !*.py
