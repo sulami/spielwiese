@@ -1,19 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
 
 #define VERSION         "0.1"
 #define HELP            "Options:\n--version\n-s <server>\n-p <port>\n-u <user>"
-#define DEFAULTSERVER   "irc.freenode.net"
+#define DEFAULTSERVER   "82.96.64.4" /* Freenode */
 #define DEFAULTPORT     6667
 #define DEFAULTUSER     "sulami"
 
 static char *server;
-static int port;
+static unsigned short port;
 static char *user;
 
 int main(int argc, char *argv[])
 {
+    static int sock;
+    static struct sockaddr_in conn;
+
     if (argc > 1) {
         for (int i = 1; i < argc; i++) {
             if (!strcmp(argv[i], "-s")) {
@@ -21,7 +26,7 @@ int main(int argc, char *argv[])
                 server = argv[i];
             } else if (!strcmp(argv[i], "-p")) {
                 i++;
-                port = atoi(argv[i]);
+                port = (unsigned short)strtoul(argv[i], NULL, 0);
             } else if (!strcmp(argv[i], "-u")) {
                 i++;
                 user = argv[i];
@@ -34,13 +39,29 @@ int main(int argc, char *argv[])
             }
         }
     }
+
     if (!server)
         server = DEFAULTSERVER;
     if (!port)
         port = DEFAULTPORT;
     if (!user)
         user = DEFAULTUSER;
-    printf("server: %s, port: %d, user: %s\n", server, port, user);
+    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+        printf("Error creating socket.\n");
+        return -1;
+    }
+
+    conn.sin_addr.s_addr = inet_addr(server);
+    conn.sin_family = AF_INET;
+    conn.sin_port = htons(port);
+
+    if (connect(sock, (struct sockaddr *)&conn, sizeof(conn)) < 0) {
+        printf("Error connecting to server.\n");
+        return -2;
+    }
+
+    shutdown(sock, 2);
+
     return 0;
 }
 
