@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
 {
     static int sock;
     static struct sockaddr_in conn;
+    static char server_msg[2000];
 
     if (argc > 1) {
         for (int i = 1; i < argc; i++) {
@@ -58,6 +59,11 @@ int main(int argc, char *argv[])
     if (connect(sock, (struct sockaddr *)&conn, sizeof(conn)) < 0) {
         printf("Error connecting to server.\n");
         return -2;
+    }
+
+    while (1) {
+        recv(sock, server_msg, 2000, 0);
+        printf("%s\n", server_msg);
     }
 
     shutdown(sock, 2);
