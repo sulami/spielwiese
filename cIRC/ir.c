@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define VERSION         "0.1"
@@ -7,10 +8,12 @@
 #define DEFAULTPORT     6667
 #define DEFAULTUSER     "sulami"
 
+static char *server;
+static int port;
+static char *user;
+
 int main(int argc, char *argv[])
 {
-    static char *server, *user;
-    static unsigned int port;
     if (argc > 1) {
         for (int i = 1; i < argc; i++) {
             if (!strcmp(argv[i], "-s")) {
@@ -18,7 +21,7 @@ int main(int argc, char *argv[])
                 server = argv[i];
             } else if (!strcmp(argv[i], "-p")) {
                 i++;
-                port = (unsigned int)argv[i];
+                port = atoi(argv[i]);
             } else if (!strcmp(argv[i], "-u")) {
                 i++;
                 user = argv[i];
@@ -31,6 +34,13 @@ int main(int argc, char *argv[])
             }
         }
     }
+    if (!server)
+        server = DEFAULTSERVER;
+    if (!port)
+        port = DEFAULTPORT;
+    if (!user)
+        user = DEFAULTUSER;
+    printf("server: %s, port: %d, user: %s\n", server, port, user);
     return 0;
 }
 
