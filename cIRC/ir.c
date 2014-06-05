@@ -30,9 +30,17 @@ static struct irc_connection ircc = {
 };
 
 /*
- * irc_conn(): Establish a connection to a given server.
+ * irc_send(): Sends a message over a socket
  *
- *      Operates on the global struct ircc.
+ * TAKES: char *message   = message to send
+ */
+static void irc_send(char *message)
+{
+    send(ircc.sock, message, strlen(message), 0);
+}
+
+/*
+ * irc_conn(): Establish a connection to a given server.
  */
 static void irc_conn()
 {
@@ -49,35 +57,42 @@ static void irc_conn()
         printf("Error connecting to server.\n");
         exit(-2);
     }
+
+    /* Greet server */
+    irc_send("NICK sulami\n");
+    irc_send("USER sulami 0 * :Robin Schroer\n");
 }
 
 /*
  * irc_recv(): Receiving loop on a given socket
  */
-void *irc_recv()
+static void *irc_recv()
 {
     static char server_msg[2000];
 
     while(1) {
-        recv(ircc.sock, server_msg, 2000, 0);
-        printf("%s\n", server_msg);
+        recv(ircc.sock, &server_msg, 2000, 0);
+        printf("%s", server_msg);
     }
 }
 
 /*
- * irc_send(): Sends a message over a socket
- *
- * TAKES: char *message   = message to send
+ * irc_input(): Sending loop to read messages and send them off
  */
-static void irc_send(char *message)
+static void *irc_input()
 {
-    send(ircc.sock, message, strlen(message), 0);
+    static char buf[2000];
+
+    while(1) {
+        scanf("%s", buf);
+        irc_send(buf);
+    }
 }
 
 int main(int argc, char *argv[])
 {
-    int rc;
-    pthread_t *thread = NULL;
+    int rc, rd;
+    pthread_t thread[2];
 
     if (argc > 1) {
         for (int i = 1; i < argc; i++) {
@@ -100,15 +115,14 @@ int main(int argc, char *argv[])
         }
     }
 
-    irc_send("NICK sulami");
-    irc_send("USER sulami 0 * :Robin Schroer");
+    irc_conn();
 
+    /* Start the in-/output loops */
     rc = pthread_create(thread, 0, irc_recv, 0);
+    rd = pthread_create(thread + 1, 0, irc_input, 0);
 
     pthread_exit(NULL);
-
     shutdown(ircc.sock, 2);
-
     return 0;
 }
 
