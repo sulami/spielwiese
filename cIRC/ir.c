@@ -11,49 +11,55 @@
 #define DEFAULTNICK     "sulami"
 #define DEFAULTUSER     "sulami 0 * :Robin Schroer"
 
+struct irc_connection {
+    int sock;
+    char *ip;
+    unsigned short port;
+    struct sockaddr_in conn;
+    char *nick;
+    char *user;
+};
+
+static struct irc_connection ircc = {
+    .sock = 0,
+    .ip = DEFAULTSERVER,
+    .port = DEFAULTPORT,
+    .conn = 0,
+    .nick = DEFAULTNICK,
+    .user = DEFAULTUSER,
+};
+
 /*
  * irc_conn(): Establish a connection to a given server.
  *
- * TAKES:   char *server            = server ip
- *          unsigned short port     = server port
- *
- * RETURNS: socket pointer on success
- *          -1 on socket creation error
- *          -2 on connection error
+ *      Operates on the global struct ircc.
  */
-static int irc_conn(char *server, unsigned short port)
+static void irc_conn()
 {
-    static int sock;
-    static struct sockaddr_in conn;
-
-    if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+    if ((ircc.sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         printf("Error creating socket.\n");
-        return -1;
+        exit(-1);
     }
 
-    conn.sin_addr.s_addr = inet_addr(server);
-    conn.sin_family = AF_INET;
-    conn.sin_port = htons(port);
+    ircc.conn.sin_addr.s_addr = inet_addr(ircc.ip);
+    ircc.conn.sin_family = AF_INET;
+    ircc.conn.sin_port = htons(ircc.port);
 
-    if (connect(sock, (struct sockaddr *)&conn, sizeof(conn)) < 0) {
+    if (connect(ircc.sock, (struct sockaddr *)&ircc.conn, sizeof(ircc.conn)) < 0) {
         printf("Error connecting to server.\n");
-        return -2;
+        exit(-2);
     }
-
-    return sock;
 }
 
 /*
  * irc_recv(): Receiving loop on a given socket
- *
- * TAKES:   int sock    = socket
  */
-void *irc_recv(int sock)
+void *irc_recv()
 {
     static char server_msg[2000];
 
     while(1) {
-        recv(sock, server_msg, 2000, 0);
+        recv(ircc.sock, server_msg, 2000, 0);
         printf("%s\n", server_msg);
     }
 }
@@ -61,35 +67,32 @@ void *irc_recv(int sock)
 /*
  * irc_send(): Sends a message over a socket
  *
- * TAKES:   int sock        = socket
- *          char *message   = message to send
+ * TAKES: char *message   = message to send
  */
-static void irc_send(int sock, char *message)
+static void irc_send(char *message)
 {
-    send(sock, message, strlen(message), 0);
+    send(ircc.sock, message, strlen(message), 0);
 }
 
 int main(int argc, char *argv[])
 {
-    int sock, rc;
-    static char *server, *nick, *user;
-    static unsigned short port;
-    pthread_t threads[2];
+    int rc;
+    pthread_t *thread = NULL;
 
     if (argc > 1) {
         for (int i = 1; i < argc; i++) {
             if (!strcmp(argv[i], "-s")) {
                 i++;
-                server = argv[i];
+                ircc.ip = argv[i];
             } else if (!strcmp(argv[i], "-p")) {
                 i++;
-                port = (unsigned short)strtoul(argv[i], NULL, 0);
+                ircc.port = (unsigned short)strtoul(argv[i], NULL, 0);
             } else if (!strcmp(argv[i], "-n")) {
                 i++;
-                nick = argv[i];
+                ircc.nick = argv[i];
             } else if (!strcmp(argv[i], "-u")) {
                 i++;
-                user = argv[i];
+                ircc.user = argv[i];
             } else if (!strcmp(argv[i], "--version")) {
                 printf("IR.c version %s\n", VERSION);
                 return 0;
@@ -97,27 +100,14 @@ int main(int argc, char *argv[])
         }
     }
 
-    if (!server)
-        server = DEFAULTSERVER;
-    if (!port)
-        port = DEFAULTPORT;
-    if (!nick)
-        nick = DEFAULTNICK;
-    if (!user)
-        user = DEFAULTUSER;
+    irc_send("NICK sulami");
+    irc_send("USER sulami 0 * :Robin Schroer");
 
-    sock = irc_conn(server, port);
-    if (sock < 0)
-        exit(sock);
-
-    irc_send(sock, "NICK sulami");
-    irc_send(sock, "USER sulami 0 * :Robin Schroer");
-
-    rc = pthread_create(threads, 0, irc_recv, (void *)sock);
+    rc = pthread_create(thread, 0, irc_recv, 0);
 
     pthread_exit(NULL);
 
-    shutdown(sock, 2);
+    shutdown(ircc.sock, 2);
 
     return 0;
 }
