@@ -4,8 +4,6 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
-#define VERSION         "0.1"
-
 struct irc_connection {
     int sock;
     char *ip;
@@ -89,9 +87,9 @@ int main(int argc, char *argv[])
             } else if (!strcmp(argv[i], "-u")) {
                 i++;
                 ircc.user = argv[i];
-            } else if (!strcmp(argv[i], "--version")) {
-                printf("IR.c version %s\n", VERSION);
-                return 0;
+            } else {
+                printf("Unknown option \"%s\"\n", argv[i]);
+                return -1;
             }
         }
     }
