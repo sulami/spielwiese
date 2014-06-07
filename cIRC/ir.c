@@ -3,7 +3,6 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <pthread.h>
 
 #define VERSION         "0.1"
 
@@ -11,7 +10,7 @@ struct irc_connection {
     int sock;
     char *ip;
     unsigned short port;
-    struct sockaddr_in conn;
+    struct sockaddr_in *conn;
     char *nick;
     char *user;
 };
@@ -20,7 +19,7 @@ static struct irc_connection ircc = {
     .sock = 0,
     .ip = "82.96.64.4", /* Freenode */
     .port = 6667,
-    .conn = 0,
+    .conn = NULL,
     .nick = "sulami",
     .user = "sulami",
 };
@@ -39,9 +38,9 @@ static void irc_conn()
         exit(-1);
     }
 
-    ircc.conn.sin_addr.s_addr = inet_addr(ircc.ip);
-    ircc.conn.sin_family = AF_INET;
-    ircc.conn.sin_port = htons(ircc.port);
+    ircc.conn->sin_addr.s_addr = inet_addr(ircc.ip);
+    ircc.conn->sin_family = AF_INET;
+    ircc.conn->sin_port = htons(ircc.port);
 
     if (connect(ircc.sock, (struct sockaddr *)&ircc.conn, sizeof(ircc.conn)) < 0) {
         printf("Error connecting to server.\n");
@@ -76,9 +75,6 @@ static void *irc_input()
 
 int main(int argc, char *argv[])
 {
-    int rc, rd;
-    pthread_t thread[2];
-
     if (argc > 1) {
         for (int i = 1; i < argc; i++) {
             if (!strcmp(argv[i], "-s")) {
@@ -102,11 +98,6 @@ int main(int argc, char *argv[])
 
     irc_conn();
 
-    /* Start the in-/output loops */
-    rc = pthread_create(thread, 0, irc_recv, 0);
-    rd = pthread_create(thread + 1, 0, irc_input, 0);
-
-    pthread_exit(NULL);
     shutdown(ircc.sock, 2);
     return 0;
 }
