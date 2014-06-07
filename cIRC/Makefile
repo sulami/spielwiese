@@ -1,5 +1,5 @@
 CC = clang
-CFLAGS = -lpthread
+CFLAGS = -lpthread -Weverything
 
 default:
 	$(CC) $(CFLAGS) -o irc ir.c

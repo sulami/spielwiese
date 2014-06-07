@@ -6,10 +6,6 @@
 #include <pthread.h>
 
 #define VERSION         "0.1"
-#define DEFAULTSERVER   "82.96.64.4" /* Freenode */
-#define DEFAULTPORT     6667
-#define DEFAULTNICK     "sulami"
-#define DEFAULTUSER     "sulami 0 * :Robin Schroer"
 
 struct irc_connection {
     int sock;
@@ -22,26 +18,20 @@ struct irc_connection {
 
 static struct irc_connection ircc = {
     .sock = 0,
-    .ip = DEFAULTSERVER,
-    .port = DEFAULTPORT,
+    .ip = "82.96.64.4", /* Freenode */
+    .port = 6667,
     .conn = 0,
-    .nick = DEFAULTNICK,
-    .user = DEFAULTUSER,
+    .nick = "sulami",
+    .user = "sulami",
 };
 
-/*
- * irc_send(): Sends a message over a socket
- *
- * TAKES: char *message   = message to send
- */
+/* irc_send(): Sends a message over a socket */
 static void irc_send(char *message)
 {
     send(ircc.sock, message, strlen(message), 0);
 }
 
-/*
- * irc_conn(): Establish a connection to a given server.
- */
+/* irc_conn(): Establish a connection to a given server. */
 static void irc_conn()
 {
     if ((ircc.sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
@@ -58,14 +48,11 @@ static void irc_conn()
         exit(-2);
     }
 
-    /* Greet server */
     irc_send("NICK sulami\n");
     irc_send("USER sulami 0 * :Robin Schroer\n");
 }
 
-/*
- * irc_recv(): Receiving loop on a given socket
- */
+/* irc_recv(): Receiving loop on a given socket */
 static void *irc_recv()
 {
     static char server_msg[2000];
@@ -76,9 +63,7 @@ static void *irc_recv()
     }
 }
 
-/*
- * irc_input(): Sending loop to read messages and send them off
- */
+/* irc_input(): Sending loop to read messages and send them off */
 static void *irc_input()
 {
     static char buf[2000];
