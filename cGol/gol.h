@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 
 void *cgol_gen_start(unsigned int width, unsigned int height);
 int *cgol_next_gen(int *screen, unsigned int width, unsigned int height);
@@ -135,6 +136,7 @@ void cgol_live(unsigned int width, unsigned int height, int duration) {
         cgol_print_screen(screen, width, height);
         screen = cgol_next_gen(screen, width, height);
         duration--;
+        usleep(100000);
     }
 }
 
