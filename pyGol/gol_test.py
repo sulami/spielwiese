@@ -8,15 +8,15 @@ class golTestCase(unittest.TestCase):
         self.game = Game()
 
     def test_uses_default_arguments(self):
-        self.assertEqual(self.game.width, 100)
-        self.assertEqual(self.game.height, 51)
+        self.assertEqual(self.game.width, 80)
+        self.assertEqual(self.game.height, 32)
         self.assertEqual(self.game.length, 100)
         self.assertEqual(self.game.interval, .1)
 
     def test_takes_arguments(self):
         tmp = Game(16, 9, 5, .5)
-        self.assertEqual(tmp.width, 36)
-        self.assertEqual(tmp.height, 28)
+        self.assertEqual(tmp.width, 16)
+        self.assertEqual(tmp.height, 9)
         self.assertEqual(tmp.length, 5)
         self.assertEqual(tmp.interval, .5)
 
