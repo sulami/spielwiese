@@ -61,38 +61,86 @@ class Game():
             nextgen[y] = {}
             for x in range(self.width):
                 n_alive = 0
-                try:
-                    n_alive += 1 if self.screen[y-1][x-1] else 0
-                except:
-                    pass
-                try:
-                    n_alive += 1 if self.screen[y-1][x] else 0
-                except:
-                    pass
-                try:
-                    n_alive += 1 if self.screen[y-1][x+1] else 0
-                except:
-                    pass
-                try:
-                    n_alive += 1 if self.screen[y][x-1] else 0
-                except:
-                    pass
-                try:
-                    n_alive += 1 if self.screen[y][x+1] else 0
-                except:
-                    pass
-                try:
-                    n_alive += 1 if self.screen[y+1][x-1] else 0
-                except:
-                    pass
-                try:
-                    n_alive += 1 if self.screen[y+1][x] else 0
-                except:
-                    pass
-                try:
-                    n_alive += 1 if self.screen[y+1][x+1] else 0
-                except:
-                    pass
+
+                if y > 0 and x > 0:
+                    if self.screen[y-1][x-1]:
+                        n_alive += 1
+                elif y > 0:
+                    if self.screen[y-1][self.width-1]:
+                        n_alive += 1
+                elif x > 0:
+                    if self.screen[self.height-1][x-1]:
+                        n_alive += 1
+                else:
+                    if self.screen[self.height-1][self.width-1]:
+                        n_alive += 1
+
+                if y > 0:
+                    if self.screen[y-1][x]:
+                        n_alive += 1
+                else:
+                    if self.screen[self.height-1][x]:
+                        n_alive += 1
+
+                if y > 0 and x < (self.width - 1):
+                    if self.screen[y-1][x+1]:
+                        n_alive += 1
+                elif y > 0:
+                    if self.screen[y-1][0]:
+                        n_alive += 1
+                elif x < (self.width -1):
+                    if self.screen[self.height-1][x+1]:
+                        n_alive += 1
+                else:
+                    if self.screen[self.height-1][0]:
+                        n_alive += 1
+
+                if x > 0:
+                    if self.screen[y][x-1]:
+                        n_alive += 1
+                else:
+                    if self.screen[y][self.width-1]:
+                        n_alive += 1
+
+                if x < (self.width - 1):
+                    if self.screen[y][x+1]:
+                        n_alive += 1
+                else:
+                    if self.screen[y][0]:
+                        n_alive += 1
+
+                if y < (self.height - 1) and x > 0:
+                    if self.screen[y+1][x-1]:
+                        n_alive += 1
+                elif y < (self.height - 1):
+                    if self.screen[y+1][self.width-1]:
+                        n_alive += 1
+                elif x > 0:
+                    if self.screen[0][x-1]:
+                        n_alive += 1
+                else:
+                    if self.screen[0][self.width-1]:
+                        n_alive += 1
+
+                if y < (self.height - 1):
+                    if self.screen[y+1][x]:
+                        n_alive += 1
+                else:
+                    if self.screen[0][x]:
+                        n_alive += 1
+
+                if y < (self.height - 1) and x < (self.width - 1):
+                    if self.screen[y+1][x+1]:
+                        n_alive += 1
+                elif y < (self.height - 1):
+                    if self.screen[y+1][0]:
+                        n_alive += 1
+                elif x < (self.width - 1):
+                    if self.screen[0][x+1]:
+                        n_alive += 1
+                else:
+                    if self.screen[0][0]:
+                        n_alive += 1
 
                 if not n_alive:
                     nextgen[y][x] = 0
