@@ -62,43 +62,35 @@ class Game():
             for x in range(self.width):
                 n_alive = 0
                 try:
-                    if self.screen[y-1][x-1]:
-                        n_alive += 1
+                    n_alive += 1 if self.screen[y-1][x-1] else 0
                 except:
                     pass
                 try:
-                    if self.screen[y-1][x]:
-                        n_alive += 1
+                    n_alive += 1 if self.screen[y-1][x] else 0
                 except:
                     pass
                 try:
-                    if self.screen[y-1][x+1]:
-                        n_alive += 1
+                    n_alive += 1 if self.screen[y-1][x+1] else 0
                 except:
                     pass
                 try:
-                    if self.screen[y][x-1]:
-                        n_alive += 1
+                    n_alive += 1 if self.screen[y][x-1] else 0
                 except:
                     pass
                 try:
-                    if self.screen[y][x+1]:
-                        n_alive += 1
+                    n_alive += 1 if self.screen[y][x+1] else 0
                 except:
                     pass
                 try:
-                    if self.screen[y+1][x-1]:
-                        n_alive += 1
+                    n_alive += 1 if self.screen[y+1][x-1] else 0
                 except:
                     pass
                 try:
-                    if self.screen[y+1][x]:
-                        n_alive += 1
+                    n_alive += 1 if self.screen[y+1][x] else 0
                 except:
                     pass
                 try:
-                    if self.screen[y+1][x+1]:
-                        n_alive += 1
+                    n_alive += 1 if self.screen[y+1][x+1] else 0
                 except:
                     pass
 
