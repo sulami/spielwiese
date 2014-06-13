@@ -2,7 +2,7 @@
 
 getip=$(curl http://myip.dnsomatic.com --silent)
 path="/tmp/dtdns"
-user="a123qwertz567"
+domain="a123qwertz567.dtdns.net"
 pass="bla"
 
 if [[ -f $path ]]; then
@@ -14,7 +14,7 @@ fi
 if [ "$getip" == "$old" ]; then
     echo "IP unchanged: $old <> $getip"
 else
-    echo -e "GET /api/autodns.cfm?id=$user&pw=$pass HTTP/1.1\n\
+    echo -e "GET /api/autodns.cfm?id=$domain&pw=$pass HTTP/1.1\n\
 Host: www.dtdns.com\n\
 User-Agent: bash\n\n" |
     nc www.dtdns.com 80 > /dev/null
