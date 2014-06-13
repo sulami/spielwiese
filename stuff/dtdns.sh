@@ -14,7 +14,7 @@ fi
 if [ "$getip" == "$old" ]; then
     echo "IP unchanged: $old <> $getip"
 else
-    echo -e "GET /api/autodns.cfm?id=$domain&pw=$pass HTTP/1.1\n\
+    echo -e "GET /api/autodns.cfm?id=$domain&pw=$pass&ip=$getip HTTP/1.1\n\
 Host: www.dtdns.com\n\
 User-Agent: bash\n\n" |
     nc www.dtdns.com 80 > /dev/null
