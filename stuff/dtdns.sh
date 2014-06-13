@@ -1,6 +1,6 @@
 #!/bin/sh
 
-getip=$(curl http://myip.dtdns.net --silent)
+getip=$(curl http://myip.dtdns.com --silent)
 path="/tmp/dtdns"
 domain="a123qwertz567.dtdns.net"
 pass="bla"
