@@ -32,10 +32,13 @@ static void irc_send(char *message)
 static void irc_conn()
 {
     struct sockaddr_in connection;
+    int retval;
 
-    if ((ircc.sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+    ircc.sock = socket(AF_INET, SOCK_STREAM, 0);
+
+    if (ircc.sock < 0) {
         printf("Error creating socket.\n");
-        exit(-1);
+        exit(ircc.sock);
     }
 
     ircc.conn = &connection;
@@ -43,9 +46,10 @@ static void irc_conn()
     ircc.conn->sin_family = AF_INET;
     ircc.conn->sin_port = htons(ircc.port);
 
-    if (connect(ircc.sock, ircc.conn, sizeof(*ircc.conn)) < 0) {
+    retval = connect(ircc.sock, ircc.conn, sizeof(*ircc.conn));
+    if (retval < 0) {
         printf("Error connecting to server.\n");
-        exit(-2);
+        exit(retval);
     }
 
     irc_send("NICK sulami\n");
