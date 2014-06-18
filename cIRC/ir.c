@@ -43,7 +43,7 @@ static void irc_conn()
     ircc.conn->sin_family = AF_INET;
     ircc.conn->sin_port = htons(ircc.port);
 
-    if (connect(ircc.sock, (struct sockaddr *)&ircc.conn, sizeof(ircc.conn)) < 0) {
+    if (connect(ircc.sock, ircc.conn, sizeof(*ircc.conn)) < 0) {
         printf("Error connecting to server.\n");
         exit(-2);
     }
