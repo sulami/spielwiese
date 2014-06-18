@@ -41,9 +41,8 @@ int main(int argc, char *argv[]) {
         }
 
         clear();
-        for (i = player - plw; i <= player + plw; i++) {
+        for (i = player - plw; i <= player + plw; i++)
             mvprintw(max_y - 1, i, "-");
-        }
         mvprintw(y, x, "O");
         refresh();
 
