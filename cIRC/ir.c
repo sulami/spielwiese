@@ -103,6 +103,8 @@ int main(int argc, char *argv[])
 
     irc_conn();
 
+    irc_recv();
+
     shutdown(ircc.sock, 2);
     return 0;
 }
