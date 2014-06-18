@@ -80,6 +80,12 @@ static void *irc_input()
 
 int main(int argc, char *argv[])
 {
+    int fd_stdin, fd_stdout;
+    fd_set ins, outs;
+
+    fd_stdin = 0;
+    fd_stdout = 1;
+
     if (argc > 1) {
         for (int i = 1; i < argc; i++) {
             if (!strcmp(argv[i], "-s")) {
