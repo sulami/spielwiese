@@ -52,7 +52,7 @@ static void irc_conn()
 /* irc_recv(): Receiving loop on a given socket */
 static void *irc_recv()
 {
-    static char server_msg[2000];
+    char server_msg[2000];
 
     while(1) {
         recv(ircc.sock, &server_msg, 2000, 0);
@@ -63,7 +63,7 @@ static void *irc_recv()
 /* irc_input(): Sending loop to read messages and send them off */
 static void *irc_input()
 {
-    static char buf[2000];
+    char buf[2000];
 
     while(1) {
         scanf("%s", buf);
