@@ -31,11 +31,14 @@ static void irc_send(char *message)
 /* irc_conn(): Establish a connection to a given server. */
 static void irc_conn()
 {
+    struct sockaddr_in connection;
+
     if ((ircc.sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
         printf("Error creating socket.\n");
         exit(-1);
     }
 
+    ircc.conn = &connection;
     ircc.conn->sin_addr.s_addr = inet_addr(ircc.ip);
     ircc.conn->sin_family = AF_INET;
     ircc.conn->sin_port = htons(ircc.port);
