@@ -15,7 +15,7 @@ int main(int argc, char *argv[]) {
     int max_y = 0;
     int direction_x = 1;
     int direction_y = 1;
-    int playerwidth = 2;
+    int plw = 2;
 
     getmaxyx(stdscr, max_y, max_x);
 
@@ -29,10 +29,10 @@ int main(int argc, char *argv[]) {
         if (ch) {
             switch(ch) {
             case 'h':
-                player = player - 1;
+                player = player > plw ? player - 1 : player;
                 break;
             case 'l':
-                player = player + 1;
+                player = player < (max_x - plw - 1) ? player + 1 : player;
                 break;
             case 'q':
                 endwin();
@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) {
         }
 
         clear();
-        for (i = player - playerwidth; i <= player + playerwidth; i++) {
+        for (i = player - plw; i <= player + plw; i++) {
             mvprintw(max_y - 1, i, "-");
         }
         mvprintw(y, x, "O");
