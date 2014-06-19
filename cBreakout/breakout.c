@@ -30,6 +30,13 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    /* add blocks, x: 10-90%, y: 10-30% */
+    for (l = max_x / 10; max_x * 9 / 10 > l; l++) {
+        for (m = max_y / 10; max_y * 3 / 10 > m; m++) {
+            scrn[l][m] = true;
+        }
+    }
+
     while(1) {
         int ch, i, j;
 
