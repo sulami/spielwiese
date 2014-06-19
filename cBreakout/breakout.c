@@ -40,8 +40,8 @@ int main(int argc, char *argv[]) {
     while(1) {
         int ch, i, j;
 
+        /* get input */
         ch = getch();
-
         if (ch) {
             switch(ch) {
             case 'h':
@@ -71,6 +71,7 @@ int main(int argc, char *argv[]) {
         mvprintw(y, x, "O");
         refresh();
 
+        /* we hit bottom */
         if (y >= max_y - 2) {
             if ((x - player) <= plw && (x - player) >= -plw) {
                 direction_y *= -1;
@@ -80,9 +81,11 @@ int main(int argc, char *argv[]) {
             }
         }
 
+        /* we hit the sides */
         if (x >= max_x || x < 0)
             direction_x *= -1;
 
+        /* we hit the top */
         if (y < 0)
             direction_y *= -1;
 
