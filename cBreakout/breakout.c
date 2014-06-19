@@ -48,14 +48,22 @@ int main(int argc, char *argv[]) {
 
         x = x + direction_x;
         y = y + direction_y;
-
         getmaxyx(stdscr, max_y, max_x);
-        if (x >= max_x || x < 0) {
+
+        if (y >= max_y - 2) {
+            if ((x - player) <= plw && (x - player) >= -plw) {
+                direction_y *= -1;
+            } else {
+                endwin();
+                exit(0);
+            }
+        }
+
+        if (x >= max_x || x < 0)
             direction_x *= -1;
-        }
-        if (y >= max_y || y < 0) {
+
+        if (y < 0)
             direction_y *= -1;
-        }
 
         usleep(30000);
     }
