@@ -9,6 +9,7 @@ int main(int argc, char *argv[]) {
     nodelay(stdscr, true);
     curs_set(FALSE);
 
+    int l, m;
     int x = 0;
     int y = 0;
     int max_x = 0;
@@ -20,9 +21,17 @@ int main(int argc, char *argv[]) {
     getmaxyx(stdscr, max_y, max_x);
 
     int player = max_x / 2;
+    bool scrn[max_x][max_y];
+
+    /* init empty field */
+    for (l = 0; l < max_x; l++) {
+        for (m = 0; m < max_y; m++) {
+            scrn[l][m] = false;
+        }
+    }
 
     while(1) {
-        int ch, i;
+        int ch, i, j;
 
         ch = getch();
 
@@ -41,12 +50,19 @@ int main(int argc, char *argv[]) {
         }
 
         clear();
+        /* player */
         for (i = player - plw; i <= player + plw; i++)
             mvprintw(max_y - 1, i, "-");
+        /* blocks */
+        for (i = 0; i < max_x; i++) {
+            for (j = 0; j < max_y; j++) {
+                if (scrn[i][j])
+                    mvprintw(j, i, "X");
+            }
+        }
+        /* ball */
         mvprintw(y, x, "O");
         refresh();
-
-        getmaxyx(stdscr, max_y, max_x);
 
         if (y >= max_y - 2) {
             if ((x - player) <= plw && (x - player) >= -plw) {
