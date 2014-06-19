@@ -56,6 +56,47 @@ int main(int argc, char *argv[]) {
             }
         }
 
+        /* we hit bottom */
+        if (y >= max_y - 2) {
+            if ((x - player) <= plw && (x - player) >= -plw) {
+                direction_y *= -1;
+            } else {
+                direction_y *= -1;
+                /* endwin(); */
+                /* exit(0); */
+            }
+        }
+
+        /* we hit the sides */
+        if (x >= max_x || x < 0)
+            direction_x *= -1;
+
+        /* we hit the top */
+        if (y < 0)
+            direction_y *= -1;
+
+        if (scrn[x][y + direction_y]) {
+            /* vertical block hit */
+            scrn[x][y + direction_y] = false;
+            direction_y *= -1;
+        }
+        if (scrn[x + direction_x][y]) {
+            /* horizontal block hit */
+            scrn[x + direction_x][y] = false;
+            direction_x *= -1;
+        }
+        if (scrn[x + direction_x][y + direction_y] &&
+            !scrn[x][y + direction_y] &&
+            !scrn[x + direction_x][y]) {
+            /* diagonal block hit */
+            scrn[x + direction_x][y + direction_y] = false;
+            direction_x *= -1;
+            direction_x *= -1;
+        }
+
+        y = y + direction_y;
+        x = x + direction_x;
+
         clear();
         /* player */
         for (i = player - plw; i <= player + plw; i++)
@@ -71,28 +112,7 @@ int main(int argc, char *argv[]) {
         mvprintw(y, x, "O");
         refresh();
 
-        /* we hit bottom */
-        if (y >= max_y - 2) {
-            if ((x - player) <= plw && (x - player) >= -plw) {
-                direction_y *= -1;
-            } else {
-                endwin();
-                exit(0);
-            }
-        }
-
-        /* we hit the sides */
-        if (x >= max_x || x < 0)
-            direction_x *= -1;
-
-        /* we hit the top */
-        if (y < 0)
-            direction_y *= -1;
-
-        x = x + direction_x;
-        y = y + direction_y;
-
-        usleep(30000);
+        usleep(10000);
     }
 }
 
