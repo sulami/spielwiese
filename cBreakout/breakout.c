@@ -46,8 +46,6 @@ int main(int argc, char *argv[]) {
         mvprintw(y, x, "O");
         refresh();
 
-        x = x + direction_x;
-        y = y + direction_y;
         getmaxyx(stdscr, max_y, max_x);
 
         if (y >= max_y - 2) {
@@ -64,6 +62,9 @@ int main(int argc, char *argv[]) {
 
         if (y < 0)
             direction_y *= -1;
+
+        x = x + direction_x;
+        y = y + direction_y;
 
         usleep(30000);
     }
