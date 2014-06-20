@@ -1,14 +1,15 @@
 #include <ncurses.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
 #include <string.h>
 
-int main(int argc, char *argv[]) {
+int main() {
     unsigned int max_y, max_x;
     time_t t;
     struct tm *tt;
     char h[3], m[3], s[3];
-    long hh, mm, ss;
+    short hh, mm, ss;
 
     initscr();
     noecho();
@@ -33,9 +34,9 @@ int main(int argc, char *argv[]) {
         strftime(m, 3, "%M", tt);
         strftime(s, 3, "%S", tt);
 
-        hh = strtol(h, NULL, 16) * 1000 / 255;
-        mm = strtol(m, NULL, 16) * 1000 / 255;
-        ss = strtol(s, NULL, 16) * 1000 / 255;
+        hh = (short)strtol(h, NULL, 16) * 1000 / 255;
+        mm = (short)strtol(m, NULL, 16) * 1000 / 255;
+        ss = (short)strtol(s, NULL, 16) * 1000 / 255;
 
         init_color(COLOR_BLACK, hh, mm, ss);
         init_pair(1, COLOR_WHITE, COLOR_BLACK);
