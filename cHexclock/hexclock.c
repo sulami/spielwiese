@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
         mvprintw(max_y / 2, max_x / 2 + 2, s);
         refresh();
 
-        usleep(300000);
+        usleep(1000000);
     }
 }
 
