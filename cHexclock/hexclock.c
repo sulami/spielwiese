@@ -9,6 +9,7 @@ int main(int argc, char *argv[]) {
     time_t t;
     struct tm *tt;
     char h[3], m[3], s[3];
+    long hh, mm, ss;
 
     initscr();
     noecho();
@@ -33,7 +34,11 @@ int main(int argc, char *argv[]) {
         strftime(m, 3, "%M", tt);
         strftime(s, 3, "%S", tt);
 
-        init_color(COLOR_BLACK, atoi(h) * 10, atoi(m) * 10, atoi(s) * 10);
+        hh = strtol(h, NULL, 16) * 1000 / 255;
+        mm = strtol(m, NULL, 16) * 1000 / 255;
+        ss = strtol(s, NULL, 16) * 1000 / 255;
+
+        init_color(COLOR_BLACK, hh, mm, ss);
         init_pair(1, COLOR_WHITE, COLOR_BLACK);
         attron(COLOR_PAIR(1));
 
