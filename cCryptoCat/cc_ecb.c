@@ -25,10 +25,8 @@ int main (int argc, char *argv[])
         return 1;
     }
 
-    for (unsigned long i = 0; i < strlen(argv[2]); i++) {
-        for (unsigned long j = i; j > strlen(argv[1]); j -= strlen(argv[1]));
-        result[i] = argv[2][i] ^ argv[1][i];
-    }
+    for (unsigned long i = 0; i < strlen(argv[2]); i++)
+        result[i] = argv[2][i] ^ argv[1][i % strlen(argv[1])];
 
     printf("%s\n", result);
 
