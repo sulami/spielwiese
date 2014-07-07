@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
         cpu_time = cpu_time_old ? cpu_time_now - cpu_time_old : 0;
         cpu_time_old = cpu_time_now;
 
-        cpu_hist[cpu_count] = cpu_time / 8;
+        cpu_hist[cpu_count] = cpu_time / cpus;
 
         getmaxyx(stdscr, max_y, max_x);
         clear();
