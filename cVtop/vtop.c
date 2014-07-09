@@ -5,7 +5,7 @@
 #include <math.h>
 #include <string.h>
 #include <assert.h>
-#include <stdio.h>
+#include <errno.h>
 
 #define BUFFERSIZE 1024
 #define STATLEN 128
@@ -13,9 +13,9 @@
 /* string splitting function from some stackoverflow post */
 char **str_split(char* a_str, const char a_delim)
 {
-    char **result    = 0;
-    size_t count     = 0;
-    char *tmp        = a_str;
+    char **result = 0;
+    size_t count = 0;
+    char *tmp = a_str;
     char *last_comma = 0;
     char delim[2];
     delim[0] = a_delim;
@@ -54,16 +54,22 @@ char **str_split(char* a_str, const char a_delim)
     return result;
 }
 
-static unsigned long idle(void)
+/* gets a cpu stat from /proc/stat */
+static unsigned long getstat(int number)
 {
-    char *cpustats = calloc(sizeof(char), STATLEN);
+    FILE *stat;
+    char *cpustats;
     unsigned long retval;
-    FILE *stat = fopen("/proc/stat", "r");
 
+    cpustats = calloc(sizeof(char), STATLEN);
+    if (!cpustats)
+        return -ENOMEM;
+
+    stat = fopen("/proc/stat", "r");
     fgets(cpustats, STATLEN, stat);
     fclose(stat);
 
-    retval = strtoul(*(str_split(cpustats, ' ') + 4), 0, 10);
+    retval = strtoul(*(str_split(cpustats, ' ') + number), 0, 10);
 
     return retval;
 }
@@ -77,7 +83,7 @@ int main(int argc, char *argv[])
 
     cpu_hist = calloc(sizeof(long), BUFFERSIZE);
     if (!cpu_hist)
-        exit(1);
+        return -ENOMEM;
 
     initscr();
     noecho();
@@ -96,7 +102,8 @@ int main(int argc, char *argv[])
             }
         }
 
-        cpu = idle();
+        if ((cpu = getstat(4)) < 0)
+            exit(cpu);
         cpu_hist[cpu_count] = 100 - (cpu - cpu_old) * 10 / cpus;
         cpu_old = cpu;
 
