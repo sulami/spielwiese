@@ -115,6 +115,7 @@ int main(int argc, char *argv[])
                     mvprintw(y, max_x - i, "|");
             }
         }
+        mvprintw(0, 0, "%3d%%", cpu_hist[cpu_count]);
         refresh();
 
         cpu_count = (cpu_count < BUFFERSIZE) ? cpu_count + 1 : 0;
