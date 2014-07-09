@@ -10,6 +10,7 @@
 #define BUFFERSIZE 256
 #define STATLEN 128
 
+/* string splitting function from some stackoverflow post */
 char **str_split(char* a_str, const char a_delim)
 {
     char **result    = 0;
@@ -47,7 +48,6 @@ char **str_split(char* a_str, const char a_delim)
             *(result + idx++) = strdup(token);
             token = strtok(0, delim);
         }
-        /* assert(idx == count - 1); */
         *(result + idx) = 0;
     }
 
@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
         }
 
         cpu = idle();
-        cpu_hist[cpu_count] = (cpu - cpu_old) / cpus;
+        cpu_hist[cpu_count] = 100 - (cpu - cpu_old) * 10 / cpus;
         cpu_old = cpu;
 
         getmaxyx(stdscr, max_y, max_x);
@@ -111,8 +111,8 @@ int main(int argc, char *argv[])
                                            : cpu_count - i + BUFFERSIZE;
             if (cpu_hist[c]) {
                 int h = max_y - max_y * cpu_hist[c] / 100;
-                for (int y = max_y; y - h; y--)
-                    mvprintw(y, max_x - i, ":");
+                for (int y = h; y <= max_y; y++)
+                    mvprintw(y, max_x - i, "|");
             }
         }
         refresh();
