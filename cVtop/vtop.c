@@ -56,17 +56,14 @@ char **str_split(char* a_str, const char a_delim)
 
 static unsigned long idle(void)
 {
-    char *cpustats = calloc(sizeof(char), STATLEN),
-         **tmp = malloc(sizeof(char) * STATLEN);
+    char *cpustats = calloc(sizeof(char), STATLEN);
     unsigned long retval;
     FILE *stat = fopen("/proc/stat", "r");
-    int b = 0, e;
 
     fgets(cpustats, STATLEN, stat);
     fclose(stat);
 
-    tmp = str_split(cpustats, ' ');
-    retval = strtoul(*(tmp + 4), 0, 10);
+    retval = strtoul(*(str_split(cpustats, ' ') + 4), 0, 10);
 
     return retval;
 }
