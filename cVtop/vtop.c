@@ -7,7 +7,7 @@
 #include <assert.h>
 #include <stdio.h>
 
-#define BUFFERSIZE 256
+#define BUFFERSIZE 1024
 #define STATLEN 128
 
 /* string splitting function from some stackoverflow post */
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
             if (cpu_hist[c]) {
                 int h = max_y - max_y * cpu_hist[c] / 100;
                 for (int y = h; y <= max_y; y++)
-                    mvprintw(y, max_x - i, "|");
+                    mvprintw(y, max_x - i, ":");
             }
         }
         mvprintw(0, 0, "%3d%%", cpu_hist[cpu_count]);
