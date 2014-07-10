@@ -1,5 +1,5 @@
 CFLAGS=-std=gnu99
-LDFLAGS=-lncurses -lm
+LDFLAGS=-lncurses
 
 all:vtop
 
