@@ -21,30 +21,15 @@ char **str_split(char* a_str, const char a_delim)
     delim[0] = a_delim;
     delim[1] = 0;
 
-    /* Count how many elements will be extracted. */
-    while (*tmp) {
-        if (a_delim == *tmp) {
-            count++;
-            last_comma = tmp;
-        }
-        tmp++;
-    }
-
-    /* Add space for trailing token. */
-    count += last_comma < (a_str + strlen(a_str) - 1);
-
-    /* Add space for terminating null string so caller
-       knows where the list of returned strings ends. */
-    count++;
-
-    result = malloc(sizeof(char *) * count);
+    result = malloc(sizeof(char *) * 12);
+    if (!result)
+        exit(ENOMEM);
 
     if (result) {
         size_t idx  = 0;
         char *token = strtok(a_str, delim);
 
         while (token) {
-            assert(idx < count);
             *(result + idx++) = strdup(token);
             token = strtok(0, delim);
         }
@@ -58,7 +43,7 @@ char **str_split(char* a_str, const char a_delim)
 static unsigned long getstat(int number)
 {
     FILE *stat;
-    char *cpustats;
+    char *cpustats, **split;
     unsigned long retval;
 
     cpustats = calloc(sizeof(char), STATLEN);
@@ -69,8 +54,11 @@ static unsigned long getstat(int number)
     fgets(cpustats, STATLEN, stat);
     fclose(stat);
 
-    retval = strtoul(*(str_split(cpustats, ' ') + number), 0, 10);
+    split = str_split(cpustats, ' ');
+    retval = strtoul(*(split + number), 0, 10);
 
+    free(split);
+    free(cpustats);
     return retval;
 }
 
@@ -83,7 +71,7 @@ int main(int argc, char *argv[])
 
     cpu_hist = calloc(sizeof(long), BUFFERSIZE);
     if (!cpu_hist)
-        return -ENOMEM;
+        return ENOMEM;
 
     initscr();
     noecho();
@@ -103,7 +91,7 @@ int main(int argc, char *argv[])
         }
 
         if ((cpu = getstat(4)) < 0)
-            exit(cpu);
+            exit(-cpu);
         cpu_hist[cpu_count] = 100 - (cpu - cpu_old) * 10 / cpus;
         cpu_old = cpu;
 
