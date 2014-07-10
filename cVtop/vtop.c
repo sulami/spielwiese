@@ -2,9 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <time.h>
-#include <math.h>
 #include <string.h>
-#include <assert.h>
 #include <errno.h>
 
 #define BUFFERSIZE 1024
