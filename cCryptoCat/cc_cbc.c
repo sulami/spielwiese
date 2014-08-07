@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "xor.h"
 
 int main (int argc, char *argv[])
 {
@@ -26,7 +27,7 @@ int main (int argc, char *argv[])
     }
 
     for (unsigned long i = 0; i < strlen(argv[2]); i++)
-        result[i] = argv[2][i] ^ (i ? result[i - 1] : argv[1][0]);
+        result[i] = xor_char(argv[2][i], (i ? result[i - 1] : argv[1][0]));
 
     printf("%s\n", result);
 
