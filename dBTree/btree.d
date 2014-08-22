@@ -13,6 +13,21 @@ class Node
         this.data = data;
     }
 
+    void insert(uint key, typeof(Node.data) data)
+    {
+        if (key <= this.key) {
+            if (this.l is null)
+                this.l = new Node(key, data);
+            else
+                this.l.insert(key, data);
+        } else {
+            if (this.r is null)
+                this.r = new Node(key, data);
+            else
+                this.r.insert(key, data);
+        }
+    }
+
     uint size()
     {
         uint retval = 1;
@@ -35,17 +50,6 @@ class Node
     }
 }
 
-Node new_node(Node root, uint key, typeof(Node.data) data)
-{
-    if (root is null)
-        return new Node(key, data);
-    if (key <= root.key)
-        root.l = new_node(root.l, key, data);
-    else
-        root.r = new_node(root.r, key, data);
-    return root;
-}
-
 void test(Node root, uint key)
 {
     Node node = root.lookup(key);
@@ -57,16 +61,17 @@ void test(Node root, uint key)
 
 int main()
 {
-    Node root = new_node(null, 0, 0);
-    new_node(root, 5, 25);
-    new_node(root, 3, 9);
-    new_node(root, 2, 4);
-    new_node(root, 7, 49);
-    new_node(root, 9, 81);
-    new_node(root, 1, 1);
+    Node root = new Node(6, 36);
+    root.insert(5, 25);
+    root.insert(3, 9);
+    root.insert(2, 4);
+    root.insert(7, 49);
+    root.insert(9, 81);
+    root.insert(1, 1);
     test(root, 3);
     test(root, 5);
     test(root, 7);
+    test(root, 6);
     test(root, 15);
     writefln("Tree size: %d", root.size());
     return 0;
