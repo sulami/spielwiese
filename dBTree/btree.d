@@ -27,9 +27,11 @@ class Node
     {
         if (key == this.key)
             return this;
-        if (key < this.key)
+        if (key < this.key && this.l !is null)
             return this.l.lookup(key);
-        return this.r.lookup(key);
+        if (this.r !is null)
+            return this.r.lookup(key);
+        return null;
     }
 }
 
