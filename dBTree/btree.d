@@ -50,30 +50,25 @@ class Node
     }
 }
 
-void test(Node root, uint key)
-{
-    Node node = root.lookup(key);
-    if (node !is null)
-        writefln("Results for %d: %3d", key, node.data);
-    else
-        writefln("No result found for key %d", key);
+unittest {
+    Node root = new Node(6, 36);
+    assert(root !is null);
+    root.insert(5, 25);
+    root.insert(2, 4);
+    root.insert(7, 49);
+    root.insert(3, 9);
+    root.insert(9, 81);
+    root.insert(1, 1);
+    assert(root.lookup(9) !is null);
+    assert(root.lookup(9).data == 81);
+    assert(root.lookup(0) !is null);
+    assert(root.lookup(0).data == 0);
+    assert(root.lookup(15) is null);
+    assert(root.size() == 7);
 }
 
 int main()
 {
-    Node root = new Node(6, 36);
-    root.insert(5, 25);
-    root.insert(3, 9);
-    root.insert(2, 4);
-    root.insert(7, 49);
-    root.insert(9, 81);
-    root.insert(1, 1);
-    test(root, 3);
-    test(root, 5);
-    test(root, 7);
-    test(root, 6);
-    test(root, 15);
-    writefln("Tree size: %d", root.size());
     return 0;
 }
 
