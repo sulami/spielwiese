@@ -46,11 +46,13 @@ Node new_node(Node root, uint key, typeof(Node.data) data)
     return root;
 }
 
-
-
 void test(Node root, uint key)
 {
-    writefln("Results for %d: %3d", key, root.lookup(key).data);
+    Node node = root.lookup(key);
+    if (node !is null)
+        writefln("Results for %d: %3d", key, node.data);
+    else
+        writefln("No result found for key %d", key);
 }
 
 int main()
@@ -65,8 +67,8 @@ int main()
     test(root, 3);
     test(root, 5);
     test(root, 7);
+    test(root, 15);
     writefln("Tree size: %d", root.size());
-    writeln("Success!");
     return 0;
 }
 
