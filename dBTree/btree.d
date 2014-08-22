@@ -36,6 +36,13 @@ Node lookup(Node root, uint key)
     return lookup(root.r, key);
 }
 
+uint size(Node root)
+{
+    if (root is null)
+        return 0;
+    return (size(root.l) + 1 + size(root.r));
+}
+
 void test(Node root, uint key)
 {
     writefln("Results for %d: %3d", key, lookup(root, key).data);
@@ -53,6 +60,7 @@ int main()
     test(root, 3);
     test(root, 5);
     test(root, 7);
+    writefln("Tree size: %d", size(root));
     writeln("Success!");
     return 0;
 }
