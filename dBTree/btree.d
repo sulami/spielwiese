@@ -55,10 +55,10 @@ class Node
         if (node.l !is null && node.r !is null) {
             /* relocate both */
             isleft ? parent.l : parent.r = leftshort ? node.l : node.r;
-            Node tmp = parent;
-            while ((isleft ? tmp.r : tmp.l) !is null)
-                tmp = isleft ? tmp.l : tmp.r;
-            isleft ? tmp.r : tmp.l = leftshort ? node.r : node.l;
+            Node tmp = leftshort ? node.l : node.r;
+            while ((leftshort ? tmp.r : tmp.l) !is null)
+                tmp = leftshort ? tmp.r : tmp.l;
+            leftshort ? tmp.l : tmp.r = leftshort ? node.r : node.l;
         } else if (node.l !is null) {
             /* relocate just left */
             isleft ? parent.l : parent.r = node.l;
