@@ -61,8 +61,8 @@ unittest {
     root.insert(1, 1);
     assert(root.lookup(9) !is null);
     assert(root.lookup(9).data == 81);
-    assert(root.lookup(0) !is null);
-    assert(root.lookup(0).data == 0);
+    assert(root.lookup(6) !is null);
+    assert(root.lookup(6).data == 36);
     assert(root.lookup(15) is null);
     assert(root.size() == 7);
 }
