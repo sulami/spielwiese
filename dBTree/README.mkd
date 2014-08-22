@@ -1,0 +1,28 @@
+# dBTree
+
+A D module for binary search trees
+
+## Use
+
+Just import it into your code like this:
+
+    import btree;
+
+Then make a new root node object:
+
+    Node root = new Node(42, 42);
+
+And use it to edit/inspect your tree:
+
+    root.insert(55, 8);
+    unit d = root.lookup(55).data; /* d = 8 */
+    uint s = root.size(); /* s = 2 */
+
+Be aware that lookup() currently returns only the first found match and can
+return `null` if no match has been found.
+
+## Test
+
+    ldc2 -w -wi -unittest -main btree.d
+    ./btree
+
