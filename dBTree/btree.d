@@ -1,5 +1,3 @@
-import std.stdio;
-
 class Node
 {
     uint key;
