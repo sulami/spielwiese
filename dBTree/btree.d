@@ -1,3 +1,5 @@
+module btree;
+
 class Node
 {
     uint key;
@@ -63,10 +65,5 @@ unittest {
     assert(root.lookup(6).data == 36);
     assert(root.lookup(15) is null);
     assert(root.size() == 7);
-}
-
-int main()
-{
-    return 0;
 }
 
