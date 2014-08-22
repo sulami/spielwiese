@@ -22,6 +22,15 @@ class Node
             retval += this.r.size();
         return retval;
     }
+
+    Node lookup(uint key)
+    {
+        if (key == this.key)
+            return this;
+        if (key < this.key)
+            return this.l.lookup(key);
+        return this.r.lookup(key);
+    }
 }
 
 Node new_node(Node root, uint key, typeof(Node.data) data)
@@ -35,21 +44,11 @@ Node new_node(Node root, uint key, typeof(Node.data) data)
     return root;
 }
 
-Node lookup(Node root, uint key)
-{
-    if (root is null)
-        return null;
-    if (key == root.key)
-        return root;
-    if (key < root.key)
-        return lookup(root.l, key);
-    return lookup(root.r, key);
-}
 
 
 void test(Node root, uint key)
 {
-    writefln("Results for %d: %3d", key, lookup(root, key).data);
+    writefln("Results for %d: %3d", key, root.lookup(key).data);
 }
 
 int main()
