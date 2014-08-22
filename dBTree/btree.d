@@ -65,9 +65,6 @@ class Node
         } else if (node.r !is null) {
             /* relocate just right */
             isleft ? parent.l : parent.r = node.r;
-        } else {
-            /* nothing to relocate */
-            isleft ? parent.l : parent.r = null;
         }
         destroy(node);
     }
