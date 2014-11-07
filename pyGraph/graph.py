@@ -31,7 +31,7 @@ def graph(args, height=1, sign='#'):
 
     if height == 1:
         for v in normalized:
-            print(BLOCKS[int(round(v*(len(BLOCKS)-1)/100))], end='')
+            print(BLOCKS[int(round(v*(len(BLOCKS)-1)/100, 0))], end='')
         print()
     elif height > 1:
         for l in range(height):
