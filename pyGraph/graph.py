@@ -45,7 +45,7 @@ def graph(args, height=1, sign='#'):
 def main():
     if len(argv) <= 2:
         exit(1)
-    graph(argv[1:], 1)
+    graph(argv[1:])
 
 if __name__ == '__main__':
     main()
