@@ -12,13 +12,13 @@ def to_float(i):
         print('Error: Argument "{}" is not a number'.format(i))
         exit(2)
 
-def graph(args):
-    min = to_float(argv[1])
-    max = to_float(argv[1])
+def graph(args, height=1, sign='#'):
+    min = to_float(args[0])
+    max = to_float(args[0])
     values = []
     normalized = []
 
-    for a in argv[1:]:
+    for a in args:
         a = to_float(a)
         values.append(a)
         if a < min:
@@ -36,7 +36,7 @@ def graph(args):
 def main():
     if len(argv) <= 2:
         exit(1)
-    graph(argv)
+    graph(argv[1:], 1)
 
 if __name__ == '__main__':
     main()
