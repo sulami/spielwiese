@@ -29,9 +29,18 @@ def graph(args, height=1, sign='#'):
     for v in values:
         normalized.append(v/max*100)
 
-    for i, v in enumerate(values):
-        print(BLOCKS[int(round(normalized[i]*8/100, 0))-1], end='')
-    print()
+    if height == 1:
+        for v in normalized:
+            print(BLOCKS[int(round(v*8/100, 0))-1], end='')
+        print()
+    elif height > 1:
+        for l in range(height):
+            for v in normalized:
+                print(sign if int(round(v*height/100, 0)) >= height-l
+                           else ' ', end='')
+            print()
+    else:
+        exit(1)
 
 def main():
     if len(argv) <= 2:
