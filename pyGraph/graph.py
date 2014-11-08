@@ -15,19 +15,15 @@ def to_float(i):
 def graph(args, height=1, sign='#'):
     min = to_float(args[0])
     max = to_float(args[0])
-    values = []
     normalized = []
 
     for a in args:
         a = to_float(a)
-        values.append(a)
         if a < min:
             min = a
         if a > max:
             max = a
-
-    for v in values:
-        normalized.append(v/max*100)
+        normalized.append(a/max*100)
 
     b = lambda v, h: int(round(v*h/100, 0))
 
