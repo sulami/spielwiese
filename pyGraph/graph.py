@@ -23,6 +23,8 @@ def graph(args, height=1, sign='#'):
             min = a
         if a > max:
             max = a
+
+    for a in args:
         normalized.append(a/max*100)
 
     b = lambda v, h: int(round(v*h/100, 0))
