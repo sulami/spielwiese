@@ -22,6 +22,7 @@ def graph(args, height=1, sign='#'):
             max = a
 
     for a in args:
+        a = to_float(a)
         normalized.append(a/max*100)
 
     b = lambda v, h: int(round(v*h/100, 0))
