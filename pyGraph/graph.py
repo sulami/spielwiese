@@ -13,14 +13,11 @@ def to_float(i):
         exit(2)
 
 def graph(args, height=1, sign='#'):
-    min = to_float(args[0])
     max = to_float(args[0])
     normalized = []
 
     for a in args:
         a = to_float(a)
-        if a < min:
-            min = a
         if a > max:
             max = a
 
