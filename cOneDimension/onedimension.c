@@ -3,10 +3,10 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#define DIFF 5
+#define DIFF 2
 #define SIZE 8
-#define DAMAGE 10
-#define SPEED 33
+#define DAMAGE 6
+#define SPEED 40
 #define ENEMY_HP 100
 
 #define RANDOM rand() % 100
