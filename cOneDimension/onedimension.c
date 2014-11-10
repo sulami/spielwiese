@@ -6,7 +6,7 @@
 #define DIFF 5
 #define SIZE 8
 #define DAMAGE 10
-#define SPEED 20
+#define SPEED 33
 #define ENEMY_HP 100
 
 #define RANDOM rand() % 100
