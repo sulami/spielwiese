@@ -1,5 +1,6 @@
 #include <ncurses.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <unistd.h>
 
 #define SIZE 8
@@ -18,7 +19,8 @@ struct enemy {
     struct enemy *next;
 };
 
-static int max_x, max_y, ch, x, size;
+static bool running = true;
+static unsigned int max_x, max_y, ch, x, size, killcount;
 static struct enemy *enemies;
 
 struct enemy *spawn_enemy(struct enemy *prev, bool right)
@@ -36,6 +38,22 @@ struct enemy *spawn_enemy(struct enemy *prev, bool right)
     return e;
 }
 
+void kill_enemy(struct enemy *e)
+{
+    if (e->prev) {
+        e->prev->next = e->next;
+        if (e->prev->next)
+            e->prev->next->prev = e->prev;
+    } else {
+        enemies = e->next;
+        if (enemies)
+            enemies->prev = NULL;
+    }
+    free(e);
+
+    killcount++;
+}
+
 void event_loop()
 {
     struct enemy *e;
@@ -50,8 +68,7 @@ void event_loop()
             x += 1;
             break;
         case 'q':
-            endwin();
-            exit(0);
+            running = false;
         }
     }
 
@@ -65,18 +82,8 @@ void event_loop()
     for (e = enemies; e; e = e->next) {
         if (abs(x - e->x) <= SIZE)
             e->hp -= DAMAGE;
-        if (!e->hp) {
-            if (e->prev) {
-                e->prev->next = e->next;
-                if (e->prev->next)
-                    e->prev->next->prev = e->prev;
-            } else {
-                enemies = e->next;
-                if (enemies)
-                    enemies->prev = NULL;
-            }
-            free(e);
-        }
+        if (!e->hp)
+            kill_enemy(e);
     }
 
     for (e = enemies; e; e = e->next) {
@@ -109,12 +116,14 @@ int main(int argc, char *argv[])
     size = SIZE;
     x = max_x / 2;
 
-    while(1) {
-        event_loop();
+    while(running) {
         usleep(30000);
+        event_loop();
     }
 
     endwin();
+    printf("Score: %d\n", killcount);
+
     return 0;
 }
 
