@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
     }
 
     endwin();
-    printf("Score: %d\n", killcount);
+    printf("Score: %d, Difficulty: %d\n", killcount, spawn);
 
     return 0;
 }
