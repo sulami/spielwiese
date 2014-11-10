@@ -4,7 +4,7 @@
 #include <unistd.h>
 
 #define SIZE 8
-#define DAMAGE 25
+#define DAMAGE 10
 #define SPAWN_CHANCE 5
 #define SPEED 20
 #define ENEMY_HP 100
@@ -82,11 +82,13 @@ void event_loop()
     for (e = enemies; e; e = e->next) {
         if (abs(x - e->x) <= SIZE)
             e->hp -= DAMAGE;
-        if (!e->hp)
+        if (e->hp <= 0)
             kill_enemy(e);
     }
 
     for (e = enemies; e; e = e->next) {
+        if (e->x == x)
+            running = false;
         if (RANDOM <= SPEED)
             e->x = e->right ? e->x - 1 : e->x + 1;
         mvprintw(max_y / 2, e->x, "X");
