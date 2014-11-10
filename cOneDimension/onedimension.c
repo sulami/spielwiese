@@ -14,13 +14,14 @@ struct enemy {
     unsigned int x;
     bool right;
     int hp;
+    struct enemy *prev;
     struct enemy *next;
 };
 
 static int max_x, max_y, ch, x, size;
 static struct enemy *enemies;
 
-struct enemy *spawn_enemy(bool right)
+struct enemy *spawn_enemy(struct enemy *prev, bool right)
 {
     struct enemy *e = malloc(sizeof(struct enemy));
     if (!e)
@@ -29,6 +30,7 @@ struct enemy *spawn_enemy(bool right)
     e->x = right ? max_x : 1;
     e->right = right;
     e->hp = ENEMY_HP;
+    e->prev = prev;
     e->next = NULL;
 
     return e;
@@ -61,6 +63,23 @@ void event_loop()
     mvprintw(max_y / 2, x + size, "|");
 
     for (e = enemies; e; e = e->next) {
+        if (abs(x - e->x) <= SIZE)
+            e->hp -= DAMAGE;
+        if (!e->hp) {
+            if (e->prev) {
+                e->prev->next = e->next;
+                if (e->prev->next)
+                    e->prev->next->prev = e->prev;
+            } else {
+                enemies = e->next;
+                if (enemies)
+                    enemies->prev = NULL;
+            }
+            free(e);
+        }
+    }
+
+    for (e = enemies; e; e = e->next) {
         if (RANDOM <= SPEED)
             e->x = e->right ? e->x - 1 : e->x + 1;
         mvprintw(max_y / 2, e->x, "X");
@@ -69,9 +88,9 @@ void event_loop()
     if (RANDOM * 10 <= SPAWN_CHANCE) {
         if (enemies) {
             for (e = enemies; e->next; e = e->next);
-            e->next = spawn_enemy(RANDOM > 50 ? false : true);
+            e->next = spawn_enemy(e, RANDOM > 50 ? false : true);
         } else {
-            enemies = spawn_enemy(RANDOM > 50 ? false : true);
+            enemies = spawn_enemy(NULL, RANDOM > 50 ? false : true);
         }
     }
 
