@@ -15,6 +15,7 @@ smaller projects, mostly coded in Python and C.
 * Gol - Conway's Game of Life, works pretty well, no fancy features
 * Hexclock - a ncurses-based clock that colors the terminal based on the time
 * IRC - some IRC tests
+* OneDimension - a proof of concept of a videogame using just one dimension
 * SchemeTester - outputs all colors to test terminal colorschemes
 * Toast - an optimization bug showcase
 * Util - small stuff for use in other programs, currently Python-like

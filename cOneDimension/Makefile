@@ -1,0 +1,4 @@
+LDFLAGS=-lncurses
+
+all:onedimension
+

@@ -1,0 +1,4 @@
+# cOneDimension
+
+A proof of concept for a videogame using just one dimension.
+
