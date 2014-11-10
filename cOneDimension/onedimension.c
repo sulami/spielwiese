@@ -3,9 +3,9 @@
 #include <stdio.h>
 #include <unistd.h>
 
+#define DIFF 5
 #define SIZE 8
 #define DAMAGE 10
-#define SPAWN_CHANCE 5
 #define SPEED 20
 #define ENEMY_HP 100
 
@@ -20,7 +20,7 @@ struct enemy {
 };
 
 static bool running = true;
-static unsigned int max_x, max_y, ch, x, size, killcount;
+static unsigned int max_x, max_y, ch, x, size, spawn, killcount;
 static struct enemy *enemies;
 
 struct enemy *spawn_enemy(struct enemy *prev, bool right)
@@ -96,7 +96,7 @@ void event_loop()
 
     refresh();
 
-    if (RANDOM * 10 <= SPAWN_CHANCE) {
+    if (RANDOM * 10 <= spawn) {
         if (enemies) {
             for (e = enemies; e->next; e = e->next);
             e->next = spawn_enemy(e, RANDOM > 50 ? false : true);
@@ -105,6 +105,8 @@ void event_loop()
         }
     }
 
+    if (RANDOM <= DIFF && spawn < 1000)
+        spawn++;
 }
 
 int main(int argc, char *argv[])
