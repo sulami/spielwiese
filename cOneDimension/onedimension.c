@@ -72,6 +72,13 @@ void event_loop()
         }
     }
 
+    for (e = enemies; e; e = e->next) {
+        if (abs(x - e->x) <= SIZE)
+            e->hp -= DAMAGE;
+        if (e->hp <= 0)
+            kill_enemy(e);
+    }
+
     getmaxyx(stdscr, max_y, max_x);
     clear();
 
@@ -80,19 +87,14 @@ void event_loop()
     mvprintw(max_y / 2, x + size, "|");
 
     for (e = enemies; e; e = e->next) {
-        if (abs(x - e->x) <= SIZE)
-            e->hp -= DAMAGE;
-        if (e->hp <= 0)
-            kill_enemy(e);
-    }
-
-    for (e = enemies; e; e = e->next) {
         if (e->x == x)
             running = false;
         if (RANDOM <= SPEED)
             e->x = e->right ? e->x - 1 : e->x + 1;
         mvprintw(max_y / 2, e->x, "X");
     }
+
+    refresh();
 
     if (RANDOM * 10 <= SPAWN_CHANCE) {
         if (enemies) {
@@ -103,7 +105,6 @@ void event_loop()
         }
     }
 
-    refresh();
 }
 
 int main(int argc, char *argv[])
