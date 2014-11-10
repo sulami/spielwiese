@@ -2,3 +2,13 @@
 
 A proof of concept for a videogame using just one dimension.
 
+### Setup
+
+Run `make`. Needs a C compiler and ncurses headers.
+
+### Instructions
+
+You are the `O` in the middle. Kill the spawning `X`s by touching them with
+the Danger Zone™ around you without touching them with yourself. If you do, you
+lose. Enemies will spawn faster over time.
+
