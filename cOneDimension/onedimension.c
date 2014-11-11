@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 #define DIFF 2
+#define HP 8
 #define SIZE 8
 #define DAMAGE 6
 #define SPEED 40
@@ -20,7 +21,7 @@ struct enemy {
 };
 
 static bool running = true;
-static unsigned int max_x, max_y, ch, x, size, spawn, killcount;
+static unsigned int max_x, max_y, ch, x, hp, size, spawn, killcount;
 static struct enemy *enemies;
 
 struct enemy *spawn_enemy(struct enemy *prev, bool right)
@@ -73,26 +74,32 @@ void event_loop()
     }
 
     for (e = enemies; e; e = e->next) {
-        if (abs(x - e->x) <= SIZE)
-            e->hp -= DAMAGE;
-        if (e->hp <= 0)
+        if (e->x == x) {
+            hp--;
             kill_enemy(e);
+        }
+        if (abs(x - e->x) <= SIZE) {
+            e->hp -= DAMAGE;
+            if (e->hp <= 0)
+                kill_enemy(e);
+        }
     }
 
     getmaxyx(stdscr, max_y, max_x);
     clear();
 
-    mvprintw(max_y / 2, x, "O");
+    mvprintw(max_y / 2, x, "%d", hp);
     mvprintw(max_y / 2, x - size, "|");
     mvprintw(max_y / 2, x + size, "|");
 
     for (e = enemies; e; e = e->next) {
-        if (e->x == x)
-            running = false;
         if (RANDOM <= SPEED)
             e->x = e->right ? e->x - 1 : e->x + 1;
         mvprintw(max_y / 2, e->x, "X");
     }
+
+    if (!hp)
+        running = false;
 
     refresh();
 
@@ -118,6 +125,7 @@ int main(int argc, char *argv[])
     curs_set(FALSE);
     getmaxyx(stdscr, max_y, max_x);
 
+    hp = HP;
     size = SIZE;
     x = max_x / 2;
 
