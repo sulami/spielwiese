@@ -57,6 +57,12 @@ struct list_head *list_remove(struct list_head *root, struct list_head *rm)
     return root;
 }
 
+void list_delete(struct list_head *root)
+{
+    while (root)
+        root = list_remove(root, root);
+}
+
 unsigned int list_length(struct list_head *root)
 {
     struct list_head *l;
