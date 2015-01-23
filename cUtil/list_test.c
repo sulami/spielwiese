@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
+
 #include "list.h"
 
 #define run_test(fn_name) \
