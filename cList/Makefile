@@ -15,7 +15,7 @@ debug: $(PROJECT)
 %.o: %.c %.h
 	$(CC) $(CFLAGS) -c $<
 
-$(PROJECT): $(OBJ)
+$(PROJECT): $(OBJ) $(PROJECT).c
 	$(CC) $(SRC) $(OBJ) $(LDFLAGS) -o $(PROJECT)
 
 clean:
