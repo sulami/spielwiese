@@ -25,6 +25,9 @@ struct list_head *list_remove(struct list_head *root, struct list_head *rm)
     if (!root || !rm)
         return NULL;
 
+    if (rm->payload)
+        free(rm->payload);
+
     if (root == rm) {
         struct list_head *nr = root->next;
 
