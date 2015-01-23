@@ -91,6 +91,25 @@ void test_list_remove_last()
     assert(lh == NULL);
 }
 
+void test_list_find_element()
+{
+    struct list_head *lh = list_add(NULL, NULL);
+    int *toast = malloc(sizeof(int) * 2);
+    assert(toast);
+
+    lh = list_add(lh, NULL);
+    lh = list_add(lh, NULL);
+    lh = list_add(lh, toast);
+
+    assert(list_find(lh, toast) != NULL);
+    assert(list_find(lh, toast+1) == NULL);
+
+    lh = list_add(lh, NULL);
+
+    assert(list_find(lh, toast) != NULL);
+    assert(list_find(lh, toast+1) == NULL);
+}
+
 int main()
 {
     run_test(test_list_add_once);
@@ -100,6 +119,7 @@ int main()
     run_test(test_list_remove);
     run_test(test_list_remove_root);
     run_test(test_list_remove_last);
+    run_test(test_list_find_element);
     return 0;
 }
 

@@ -70,3 +70,12 @@ unsigned int list_length(struct list_head *root)
     return count;
 }
 
+struct list_head *list_find(struct list_head *root, void *target)
+{
+    struct list_head *l;
+
+    for(l = root; l->next && l->payload != target; l = l->next);
+
+    return l->payload == target ? l : NULL;
+}
+

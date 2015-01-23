@@ -37,5 +37,12 @@ void list_delete(struct list_head *);
  */
 unsigned int list_length(struct list_head *);
 
+/*
+ * list_find - tries to find a payload in a list
+ *
+ * Returns the list_head * if the payload is present, NULL otherwise.
+ */
+struct list_head *list_find(struct list_head *, void *);
+
 #endif /* LIST_H */
 
