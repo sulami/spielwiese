@@ -23,7 +23,7 @@ struct list_head *list_add(struct list_head *root, void *payload)
 struct list_head *list_remove(struct list_head *root, struct list_head *rm)
 {
     if (!root || !rm)
-        return NULL;
+        return root;
 
     if (rm->payload)
         free(rm->payload);
