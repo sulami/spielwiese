@@ -1,0 +1,75 @@
+#!/bin/sh
+
+# Startup file for my game server
+
+start_dwarffortress()
+{
+    echo "Starting Dwarf Fortress..."
+    dwarffortress
+    start_menu
+}
+
+start_moria()
+{
+    echo "Starting Moria..."
+    moria
+    start_menu
+}
+
+start_nethack()
+{
+    echo "Starting Nethack..."
+    echo -n "Please enter your desired username: "
+    read username
+    nethack -u ${username}
+    start_menu
+}
+
+start_slashem()
+{
+    echo "Starting SlashEM..."
+    echo -n "Please enter your desired username: "
+    read username
+    slashem -u ${username}
+    start_menu
+}
+
+start_menu()
+{
+    echo "Please choose a game:"
+    # echo "  d - Dwarf Fortress"
+    echo "  m - Moria"
+    echo "  n - Nethack"
+    echo "  s - SlashEM"
+    echo "  --------"
+    echo "  q - Quit"
+    echo -n "Choice: "
+    read choice
+
+    case $choice in
+        # d)
+            # start_dwarffortress
+            # ;;
+        m)
+            start_moria
+            ;;
+        n)
+            start_nethack
+            ;;
+        s)
+            start_slashem
+            ;;
+        q)
+            echo "Goodbye!"
+            exit
+            ;;
+        *)
+            echo -n "Unknown command. "
+            start_menu
+            ;;
+    esac
+}
+
+echo "Welcome to the potato game server!"
+start_menu
+
