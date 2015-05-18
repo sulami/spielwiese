@@ -17,3 +17,11 @@ bbyts x s | s == 'k'  = byts $ x*1024
           | s == 'G'  = bbyts (x*1024) 'M'
           | otherwise = 0
 
+-- Figure out how many Bytes actually are on a disk, using GB
+g2r :: Float -> Float
+g2r x = x * 1000^3 / 1024^3
+
+-- Calculate how much space we do not have on a disk (hint: ~6.9%)
+hddloss :: Float -> Float
+hddloss x = x - g2r x
+
