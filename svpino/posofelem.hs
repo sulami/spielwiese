@@ -6,10 +6,31 @@
 obvPos :: Int -> [Int] -> Maybe Int
 obvPos n l = find n l 0
   where
+    find :: Int -> [Int] -> Int -> Maybe Int
     find n [] c = Nothing
     find n l  c | n == head l = Just c
                 |   otherwise = find n (tail l) (c+1)
 
 -- Other idea: Try splitting the list in halfs to reduce the number of
 -- comparisons down to O(log n).
+splitPos :: (Ord a) => a -> [a] -> Maybe Int
+splitPos n l = find n (l, 0)
+  where
+    find :: (Ord a) => a -> ([a], Int) -> Maybe Int
+    find n ([], _) = Nothing
+    find n (l, c)  | n == head l = Just c
+                   |   otherwise = if length l > 1
+                                   then find n (get n l c)
+                                   else Nothing
+      where
+        get :: (Ord a) => a -> [a] -> Int -> ([a], Int)
+        get n l c = if l !! ((mid l) - 1) == n
+                    then ([l !! ((mid l) - 1)], c + mid l - 1)
+                    else
+                      if l !! ((mid l) - 1) > n
+                      then (take (mid l) l, c)
+                      else (drop (mid l) l, c + mid l)
+          where
+            mid :: [a] -> Int
+            mid l = (length l) `div` 2
 
