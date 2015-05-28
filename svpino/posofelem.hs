@@ -25,11 +25,12 @@ splitPos n l = find n (l, 0)
                     |    otherwise = c
       where
         get :: (Ord a) => a -> [a] -> Int -> ([a], Int)
-        get n l c | l !! (mid' l) == n = ([l !! (mid' l)], c + mid l - 1)
+        get n l c | l !! (mid' l) == n = ([l !! (mid' l)], c + mid' l)
                   | l !! (mid' l) >  n = (take (mid l) l, c)
                   |          otherwise = (drop (mid l) l, c + mid l)
           where
             mid' :: [a] -> Int
-            mid' l = (mid l) - 1
+            mid' l = mid l - 1
             mid :: [a] -> Int
             mid l = (length l) `div` 2
+
