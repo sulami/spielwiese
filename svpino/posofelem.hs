@@ -18,12 +18,12 @@ splitPos :: (Ord a) => a -> [a] -> Int
 splitPos n l = find n (l, 0)
   where
     find :: (Ord a) => a -> ([a], Int) -> Int
-    find n ([x], c)    |    n <= x = c
-                       | otherwise = c + 1
-    find n (l, c)      | n <= head l = c
-                       |   otherwise = if length l > 1
-                                       then find n (get n l c)
-                                       else c
+    find n ([x], c) |    n <= x = c
+                    | otherwise = c + 1
+    find n (l, c)   | n <= head l = c
+                    |   otherwise = if length l > 1
+                                    then find n (get n l c)
+                                    else c
       where
         get :: (Ord a) => a -> [a] -> Int -> ([a], Int)
         get n l c = if l !! ((mid l) - 1) == n
