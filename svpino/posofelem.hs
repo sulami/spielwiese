@@ -3,10 +3,10 @@
 -- https://blog.svpino.com/2015/05/24/programming-challenge-the-position-of-the-element
 
 -- This is the obvious solution that won't scale well with large arrays, O(n).
-obvPos :: Int -> [Int] -> Int
+obvPos :: (Ord a) => a -> [a] -> Int
 obvPos n l = find n l 0
   where
-    find :: Int -> [Int] -> Int -> Int
+    find :: (Ord a) => a -> [a] -> Int -> Int
     find n [x]    c |    n <= x = c
                     | otherwise = c + 1
     find n (x:xs) c |    n <= x = c
