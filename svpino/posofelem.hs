@@ -20,9 +20,8 @@ splitPos n l = find n (l, 0)
     find :: (Ord a) => a -> ([a], Int) -> Int
     find n ([x], c) |    n <= x = c
                     | otherwise = c + 1
-    find n (l, c)   |  n <= head l = c
-                    | length l > 1 = find n $ get n l c
-                    |    otherwise = c
+    find n (l, c)   | n <= head l = c
+                    |   otherwise = find n $ get n l c
       where
         get :: (Ord a) => a -> [a] -> Int -> ([a], Int)
         get n l c | l !! (mid' l) == n = ([l !! (mid' l)], c + mid' l)
