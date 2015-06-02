@@ -17,45 +17,45 @@ distances =
   [
     ("Aachen", [
       ("Bonn",        91),
-      ("Duesseldorf",  80),
+      ("Duesseldorf", 80),
       ("Frankfurt",  259),
-      ("Koeln",        70),
+      ("Koeln",       70),
       ("Wuppertal",  121)
     ]),
     ("Bonn", [
       ("Aachen",      91),
-      ("Duesseldorf",  77),
+      ("Duesseldorf", 77),
       ("Frankfurt",  175),
-      ("Koeln",        27),
+      ("Koeln",       27),
       ("Wuppertal",   84)
     ]),
     ("Duesseldorf", [
       ("Aachen",      80),
       ("Bonn",        77),
       ("Frankfurt",  232),
-      ("Koeln",        47),
+      ("Koeln",       47),
       ("Wuppertal",   29)
     ]),
     ("Frankfurt", [
       ("Aachen",     259),
       ("Bonn",       175),
-      ("Duesseldorf", 232),
-      ("Koeln",       189),
+      ("Duesseldorf",232),
+      ("Koeln",      189),
       ("Wuppertal",  236)
     ]),
     ("Koeln", [
       ("Aachen",      70),
       ("Bonn",        27),
-      ("Duesseldorf",  47),
+      ("Duesseldorf", 47),
       ("Frankfurt",  189),
       ("Wuppertal",   55)
     ]),
     ("Wuppertal", [
       ("Aachen",     121),
       ("Bonn",        84),
-      ("Duesseldorf",  29),
+      ("Duesseldorf", 29),
       ("Frankfurt",  236),
-      ("Koeln",        55)
+      ("Koeln",       55)
     ])
   ]
 
@@ -68,4 +68,6 @@ dist a b = foldr (\(k, v) no -> if a == k then dist' b v else no) Nothing
   where
     dist' :: (Eq k, Num v) => k -> [(k, v)] -> Maybe v
     dist' b = foldr (\(k,v) no -> if b == k then Just v else no) Nothing
+
+
 
