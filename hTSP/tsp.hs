@@ -69,5 +69,8 @@ dist a b = foldr (\(k, v) no -> if a == k then dist' b v else no) Nothing
     dist' :: (Eq k, Num v) => k -> [(k, v)] -> Maybe v
     dist' b = foldr (\(k,v) no -> if b == k then Just v else no) Nothing
 
+-- We also write a lookup funktion to get the inner map of one of the cities.
+get :: (Eq k, Num v) => k -> [(k, [(k, v)])] -> Maybe [(k, v)]
+get c = foldr (\(k, v) no -> if c == k then Just v else no) Nothing
 
 
