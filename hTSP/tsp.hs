@@ -63,15 +63,9 @@ distances =
 -- get the distance between two cities without having to mess with
 -- Data.Map.lookup directly. This is a textbook recursive O(n+(n-1)) search
 -- loop, but that does not matter since our dataset is really small.
-dist :: (Eq k, Num v) => k -> k -> [( k, [(k, v)] )] -> Maybe v
-dist a b []         = Nothing
-dist a b ((k,v):xs) = if a == k
-                      then dist' b v
-                      else dist a b xs
+dist :: (Eq k, Num v) => k -> k -> [(k, [(k, v)])] -> Maybe v
+dist a b = foldr (\(k, v) no -> if a == k then dist' b v else no) Nothing
   where
     dist' :: (Eq k, Num v) => k -> [(k, v)] -> Maybe v
-    dist' b []         = Nothing
-    dist' b ((k,v):xs) = if b == k
-                         then Just v
-                         else dist' b xs
+    dist' b = foldr (\(k,v) no -> if b == k then Just v else no) Nothing
 
