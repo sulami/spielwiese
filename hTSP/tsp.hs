@@ -3,6 +3,8 @@
 -- Everything below is published under the ISC License, as usually. © 2015
 -- Robin 'sulami' Schroer <sulami@peerwire.org>.
 
+import qualified Data.List as L
+
 -- The input data is taken from a friend's assignment and features six German
 -- cities. The problem is the typical TSP, visit every city excactly once while
 -- optimizing the total distance travelled. The start- and endvertex can be
@@ -73,4 +75,15 @@ dist a b = foldr (\(k, v) no -> if a == k then dist' b v else no) Nothing
 get :: (Eq k, Num v) => k -> [(k, [(k, v)])] -> Maybe [(k, v)]
 get c = foldr (\(k, v) no -> if c == k then Just v else no) Nothing
 
+-- Now on to some traveling. The first algorithm we will be using is nearest
+-- neighbour. We will start in one city and always go to the closest city that
+-- we have not visited yet. We will return a list of cities we have visited in
+-- order and the total distance traveled.
+
+-- For this, we will be using this function that returns the closest city to
+-- another city given, chosen from a list of city/distance sets.
+closest :: (Eq k, Ord v, Num v) => [(k, v)] -> (k, v)
+closest c = L.sortBy (\(a1, b1) (a2, b2) -> if      b1 < b2 then LT
+                                            else if b1 > b2 then GT
+                                            else                 EQ) c !! 0
 
