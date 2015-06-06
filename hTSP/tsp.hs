@@ -59,7 +59,7 @@ distances =
       ("Frankfurt",  236),
       ("Koeln",       55)
     ])
-  ]
+  ] :: [(String, [(String, Integer)])]
 
 -- To make things easier, we write a custom lookup function, so we can easily
 -- get the distance between two cities without having to mess with
