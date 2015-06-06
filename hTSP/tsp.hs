@@ -87,3 +87,18 @@ closest c = L.sortBy (\(a1, b1) (a2, b2) -> if      b1 < b2 then LT
                                             else if b1 > b2 then GT
                                             else                 EQ) c !! 0
 
+-- This will be the actual algorithm. It will start and end at the first city
+-- in the map, because I am lazy like this.
+tsp_nn :: (Eq k, Ord v, Num v) => [(k, [(k, v)])] -> ([k], v)
+tsp_nn l = nn ([], 0) l
+  where
+    nn :: (Eq k, Ord v, Num v) => ([k], v) -> [(k, [(k, v)])] -> ([k], v)
+    nn p []     = p
+    -- FIXME This is currently going through all the cities in order and
+    -- appending the closest city to this and adding the corrosponding
+    -- distance. Instead we need to use the next city we chose. We also need to
+    -- eliminate already visited cities, and loop back to the first one when
+    -- the list of unvisited cities is empty.
+    nn (prev, num) (x:xs) = nn ((prev ++ [fst (closest (snd x))]),
+                                num + (snd (closest (snd x)))) xs
+
