@@ -89,16 +89,27 @@ closest c = L.sortBy (\(a1, b1) (a2, b2) -> if      b1 < b2 then LT
 
 -- This will be the actual algorithm. It will start and end at the first city
 -- in the map, because I am lazy like this.
+-- FIXME This now properly returns the list but leaves out the last trip, from
+-- the last city back to the first, and the corrosponding distance.
 tsp_nn :: (Eq k, Ord v, Num v) => [(k, [(k, v)])] -> ([k], v)
-tsp_nn l = nn ([], 0) l
+tsp_nn l = nn ([fst (l !! 0)], 0) l
   where
     nn :: (Eq k, Ord v, Num v) => ([k], v) -> [(k, [(k, v)])] -> ([k], v)
-    nn p []     = p
-    -- FIXME This is currently going through all the cities in order and
-    -- appending the closest city to this and adding the corrosponding
-    -- distance. Instead we need to use the next city we chose. We also need to
-    -- eliminate already visited cities, and loop back to the first one when
-    -- the list of unvisited cities is empty.
-    nn (prev, num) (x:xs) = nn ((prev ++ [fst (closest (snd x))]),
-                                num + (snd (closest (snd x)))) xs
+    nn p           [x]    = p
+    nn (prev, num) (x:xs) = nn ((prev ++ [fst (next x xs)]),
+                                num + (snd (next x xs)))
+                               (moveup (fst (next x xs)) xs)
+      where
+        next :: (Eq k, Ord v, Num v) => (k, [(k, v)]) -> [(k, [(k, v)])] -> (k, v)
+        next c l = closest (filter' (snd c) l [])
+          where
+           filter' :: (Eq k) => [(k, v)] -> [(k, [(k, v)])] -> [(k, v)] -> [(k, v)]
+           filter' []     _ r = r
+           filter' (x:xs) l r = filter' xs l (if fst x `elem` [fst e | e <- l]
+                                              then filter' xs l (r ++ [x])
+                                              else filter' xs l r)
+        moveup :: (Eq k) => k -> [(k, [(k, v)])] -> [(k, [(k, v)])]
+        moveup f []     = []
+        moveup f (x:xs) | fst x == f = [x] ++ xs
+                        |  otherwise = moveup f (xs ++ [x])
 
