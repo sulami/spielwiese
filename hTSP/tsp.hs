@@ -4,6 +4,7 @@
 -- Robin 'sulami' Schroer <sulami@peerwire.org>.
 
 import qualified Data.List as L
+import qualified Data.Maybe as M
 
 -- The input data is taken from a friend's assignment and features six German
 -- cities. The problem is the typical TSP, visit every city excactly once while
@@ -89,10 +90,8 @@ closest c = L.sortBy (\(a1, b1) (a2, b2) -> if      b1 < b2 then LT
 
 -- This will be the actual algorithm. It will start and end at the first city
 -- in the map, because I am lazy like this.
--- FIXME This now properly returns the list but leaves out the last trip, from
--- the last city back to the first, and the corrosponding distance.
 tsp_nn :: (Eq k, Ord v, Num v) => [(k, [(k, v)])] -> ([k], v)
-tsp_nn l = nn ([fst (l !! 0)], 0) l
+tsp_nn l = addLast (nn ([fst (l !! 0)], 0) l) l
   where
     nn :: (Eq k, Ord v, Num v) => ([k], v) -> [(k, [(k, v)])] -> ([k], v)
     nn p           [x]    = p
@@ -112,4 +111,6 @@ tsp_nn l = nn ([fst (l !! 0)], 0) l
         moveup f []     = []
         moveup f (x:xs) | fst x == f = [x] ++ xs
                         |  otherwise = moveup f (xs ++ [x])
+    addLast :: (Eq k, Ord v, Num v) => ([k], v) -> [(k, [(k, v)])] -> ([k], v)
+    addLast (c, n) l = (c ++ [c !! 0], n + (M.fromJust (dist (last c) (c !! 0) l)))
 
