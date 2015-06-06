@@ -100,7 +100,7 @@ tsp_nn l = addLast (nn ([fst (l !! 0)], 0) l) l
                                (moveup (fst (next x xs)) xs)
       where
         next :: (Eq k, Ord v, Num v) => (k, [(k, v)]) -> [(k, [(k, v)])] -> (k, v)
-        next c l = closest (filter' (snd c) l [])
+        next c l = closest $ filter' (snd c) l []
           where
            filter' :: (Eq k) => [(k, v)] -> [(k, [(k, v)])] -> [(k, v)] -> [(k, v)]
            filter' []     _ r = r
