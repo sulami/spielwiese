@@ -98,19 +98,22 @@ tsp_nn l = addLast (nn ([fst (l !! 0)], 0) l) l
     nn (prev, num) (x:xs) = nn ((prev ++ [fst (next x xs)]),
                                 num + (snd (next x xs)))
                                (moveup (fst (next x xs)) xs)
-      where
-        next :: (Eq k, Ord v, Num v) => (k, [(k, v)]) -> [(k, [(k, v)])] -> (k, v)
-        next c l = closest $ filter' (snd c) l []
-          where
-           filter' :: (Eq k) => [(k, v)] -> [(k, [(k, v)])] -> [(k, v)] -> [(k, v)]
-           filter' []     _ r = r
-           filter' (x:xs) l r = filter' xs l (if fst x `elem` [fst e | e <- l]
-                                              then filter' xs l (r ++ [x])
-                                              else filter' xs l r)
-        moveup :: (Eq k) => k -> [(k, [(k, v)])] -> [(k, [(k, v)])]
-        moveup f []     = []
-        moveup f (x:xs) | fst x == f = [x] ++ xs
-                        |  otherwise = moveup f (xs ++ [x])
+    -- This returns the next city/distance to visit.
+    next :: (Eq k, Ord v, Num v) => (k, [(k, v)]) -> [(k, [(k, v)])] -> (k, v)
+    next c l = closest $ filter' (snd c) l
+    -- This rotates the list until the city we are looking for is in front.
+    moveup :: (Eq k) => k -> [(k, [(k, v)])] -> [(k, [(k, v)])]
+    moveup f (x:xs) | fst x == f = [x] ++ xs
+                    |  otherwise = moveup f (xs ++ [x])
+    -- This is a helper function that filters a list of city/distances tuples
+    -- so that the returned list consists only of cities that are also in the
+    -- second list of cities that have not been visited yet.
+    filter' :: (Eq k) => [(k, v)] -> [(k, [(k, v)])] -> [(k, v)]
+    filter' xs l = foldl (\f x -> if fst x `elem` [fst e | e <- l]
+                                  then f ++ [x] else f) [] xs
+    -- This hack adds the first city again and also adds the distance from the
+    -- last back to the first city.
     addLast :: (Eq k, Ord v, Num v) => ([k], v) -> [(k, [(k, v)])] -> ([k], v)
-    addLast (c, n) l = (c ++ [c !! 0], n + (M.fromJust (dist (last c) (c !! 0) l)))
+    addLast (c, n) l = (c ++ [c !! 0],
+                        n + (M.fromJust (dist (last c) (c !! 0) l)))
 
