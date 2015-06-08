@@ -137,3 +137,28 @@ tsp_nn_rot l = best $ tsp_nn_rot' [] (length l) l
     rotate :: [a] -> [a]
     rotate (x:xs) = xs ++ [x]
 
+-- Now on to something different, the definitve best solution to the problem,
+-- at least in terms of the best result. We iterate through every possible
+-- solution and choose the best one. Runtime is of course abysmal, O(n!). This
+-- is also quite a tricky one because of the double recursion.
+tsp_all :: (Eq k, Ord v, Num v) => [(k, [(k, v)])] -> ([k], v)
+tsp_all l = best $ tsp_all' [([fst (head l)], 0)] [] (length l)
+  where
+    tsp_all' :: (Eq k, Ord v, Num v) => [([k], v)] -> [([k], v)] -> Int -> [([k], v)]
+    -- FIXME This is all fucked somehow. The second argument shouldn't be empty
+    -- but represent the cities we haven't visited yet.
+    tsp_all' r []     _ = r
+    -- tsp_all' r _      0 = r
+    tsp_all' r (x:xs) c = tsp_all'
+                            (tsp_all'
+                              [((fst (last r)), snd (last r))]
+                              xs
+                              (length xs)
+                            )
+                            (rotate (x:xs))
+                            (c-1)
+    rotate :: [a] -> [a]
+    rotate (x:xs) = xs ++ [x]
+    best :: (Eq k, Ord v, Num v) => [([k], v)] -> ([k], v)
+    best l = closest l
+
