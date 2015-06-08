@@ -79,7 +79,7 @@ get c = foldr (\(k, v) no -> if c == k then Just v else no) Nothing
 -- Now on to some traveling. The first algorithm we will be using is nearest
 -- neighbour. We will start in one city and always go to the closest city that
 -- we have not visited yet. We will return a list of cities we have visited in
--- order and the total distance traveled.
+-- order and the total distance traveled. Nearest neighbour is of course O(n).
 
 -- For this, we will be using this function that returns the closest city to
 -- another city given, chosen from a list of city/distance sets.
@@ -116,4 +116,24 @@ tsp_nn l = addLast (nn ([fst (l !! 0)], 0) l) l
     addLast :: (Eq k, Ord v, Num v) => ([k], v) -> [(k, [(k, v)])] -> ([k], v)
     addLast (c, n) l = (c ++ [c !! 0],
                         n + (M.fromJust (dist (last c) (c !! 0) l)))
+
+-- As a next step we will rotate the map before running nearest neighbour so we
+-- start at each city, and then chose the smallest distance traveled. This is a
+-- O(n*n) = O(n^2) algorithm.
+tsp_nn_rot :: (Eq k, Ord v, Num v) => [(k, [(k, v)])] -> ([k], v)
+tsp_nn_rot l = best $ tsp_nn_rot' [] (length l) l
+  where
+    -- We run nn once for every possible starting city...
+    tsp_nn_rot' :: (Eq k, Ord v, Num v) => [([k], v)] -> Int -> [(k, [(k, v)])]
+                   -> [([k], v)]
+    tsp_nn_rot' r 0 l = r
+    tsp_nn_rot' r n l = tsp_nn_rot' (r ++ [tsp_nn l]) (n-1) (rotate l)
+    -- ...and select the best result. For this we abuse the `closest` function
+    -- which just happens to do the right thing already, because we only care
+    -- about the second half of the tuples.
+    best :: (Eq k, Ord v, Num v) => [([k], v)] -> ([k], v)
+    best l = closest l
+    -- Here we just rotate a list.
+    rotate :: [a] -> [a]
+    rotate (x:xs) = xs ++ [x]
 
