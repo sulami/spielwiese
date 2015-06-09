@@ -149,26 +149,29 @@ tsp_nn_rot l = best $ tsp_nn_rot' [] (length l) l
 -- Now on to something different, the definitve best solution to the problem,
 -- at least in terms of the best result. We iterate through every possible
 -- solution and choose the best one. Runtime is of course abysmal, O(n!). This
-tsp_all :: (Eq k, Ord v, Num v) => [(k, [(k, v)])] -> [([k], v)]
-tsp_all l = tsp_all' [([fst (head l)], 0)] (tail l) (length l)
+-- is also quite a tricky one because of the double recursion. Because we
+-- supply the first city to visit, we have to remove the first list element
+-- afterwards. We also have to run this after a rotation so we start at every
+-- possible city.
+tsp_all :: (Eq k, Ord v, Num v) => [(k, [(k, v)])] -> ([k], v)
+tsp_all l = best $ map (`addLast` l) (addDistances (rotate' l [] (length l)) [] l)
   where
-    tsp_all' :: (Eq k, Ord v, Num v) => [([k], v)] -> [(k, [(k, v)])] -> Int -> [([k], v)]
-    tsp_all' r []     _ = r
-    tsp_all' r _      0 = r
-    -- This will be the inner loop, that will take the first unvisited city and
-    -- visit it. What still needs to be done is properly incrementing the
-    -- distance travelled.
-    tsp_all' r (x:xs) c = (tsp_all'
-                              (r ++ [( fst (last r) ++ [(fst x)] , snd (last r) + 1)])
-                              xs
-                              (length xs)
-                            )
-    -- This will be the outer loop that will rotate the list of unvisited
-    -- cities.
-    -- tsp_all' r (x:xs) c = tsp_all' <INNER LOOP> (rotate (x:xs)) (c-1)
-    -- TODO Later on we need to filter the set of results to only use complete
-    -- travels, then add the last travel back like before and then choose the
-    -- best route.
-    -- best :: (Eq k, Ord v, Num v) => [([k], v)] -> ([k], v)
-    -- best l = closest l
+    tsp_all' :: (Eq k, Ord v, Num v) => [[k]] -> [k] -> [(k, [(k, v)])] -> Int
+                -> [[k]]
+    tsp_all' r p []     _ = r ++ [p]
+    tsp_all' r p _      0 = r
+    tsp_all' r p (x:xs) c = tsp_all' (tsp_all' r (p ++ [(fst x)]) xs
+                                (length xs)) p (rotate (x:xs)) (c-1)
+    -- This runs the entire algorithm for every starting city.
+    rotate' :: (Eq k, Ord v, Num v) => [(k, [(k, v)])] -> [[k]] -> Int -> [[k]]
+    rotate' _ r 0 = r
+    rotate' l r c = rotate' (rotate l) (r ++ (tail (tsp_all' [[fst (head l)]]
+                                  [fst (head l)] (tail l) (length l)))) (c-1)
+    -- After generating all possible paths, we calculate the length of each.
+    addDistances :: (Eq k, Ord v, Num v) => [[k]] -> [([k], v)] -> [(k, [(k, v)])] -> [([k], v)]
+    addDistances []     r l = r
+    addDistances (x:xs) r l = addDistances xs (r ++ [(x, pathLength x l)]) l
+    -- Again, we need to get the best result we have calculated.
+    best :: (Eq k, Ord v, Num v) => [([k], v)] -> ([k], v)
+    best l = closest l
 
