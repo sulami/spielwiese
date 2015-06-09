@@ -88,6 +88,24 @@ closest c = L.sortBy (\(a1, b1) (a2, b2) -> if      b1 < b2 then LT
                                             else if b1 > b2 then GT
                                             else                 EQ) c !! 0
 
+-- Here we just rotate a list.
+rotate :: [a] -> [a]
+rotate (x:xs) = xs ++ [x]
+
+-- Given a path in the form of a list of city names, calculate the length of
+-- the path travelled.
+pathLength :: (Eq k, Num v) => [k] -> [(k, [(k, v)])] -> v
+pathLength p l = pathLength' p 0 l
+  where
+    pathLength' :: (Eq k, Num v) => [k] -> v -> [(k, [(k, v)])] -> v
+    pathLength' [x]    d l = d
+    pathLength' (x:xs) d l = pathLength' xs (d + M.fromJust (dist x (head xs) l)) l
+
+-- This hack adds the first city again and also adds the distance from the
+-- last back to the first city.
+addLast :: (Eq k, Ord v, Num v) => ([k], v) -> [(k, [(k, v)])] -> ([k], v)
+addLast (c, n) l = (c ++ [c !! 0], n + (M.fromJust (dist (last c) (c !! 0) l)))
+
 -- This will be the actual algorithm. It will start and end at the first city
 -- in the map, because I am lazy like this.
 tsp_nn :: (Eq k, Ord v, Num v) => [(k, [(k, v)])] -> ([k], v)
@@ -111,12 +129,6 @@ tsp_nn l = addLast (nn ([fst (l !! 0)], 0) l) l
     filter' :: (Eq k) => [(k, v)] -> [(k, [(k, v)])] -> [(k, v)]
     filter' xs l = foldl (\f x -> if fst x `elem` [fst e | e <- l]
                                   then f ++ [x] else f) [] xs
-    -- This hack adds the first city again and also adds the distance from the
-    -- last back to the first city.
-    addLast :: (Eq k, Ord v, Num v) => ([k], v) -> [(k, [(k, v)])] -> ([k], v)
-    addLast (c, n) l = (c ++ [c !! 0],
-                        n + (M.fromJust (dist (last c) (c !! 0) l)))
-
 -- As a next step we will rotate the map before running nearest neighbour so we
 -- start at each city, and then chose the smallest distance traveled. This is a
 -- O(n*n) = O(n^2) algorithm.
@@ -133,14 +145,10 @@ tsp_nn_rot l = best $ tsp_nn_rot' [] (length l) l
     -- about the second half of the tuples.
     best :: (Eq k, Ord v, Num v) => [([k], v)] -> ([k], v)
     best l = closest l
-    -- Here we just rotate a list.
-    rotate :: [a] -> [a]
-    rotate (x:xs) = xs ++ [x]
 
 -- Now on to something different, the definitve best solution to the problem,
 -- at least in terms of the best result. We iterate through every possible
 -- solution and choose the best one. Runtime is of course abysmal, O(n!). This
--- is also quite a tricky one because of the double recursion.
 tsp_all :: (Eq k, Ord v, Num v) => [(k, [(k, v)])] -> [([k], v)]
 tsp_all l = tsp_all' [([fst (head l)], 0)] (tail l) (length l)
   where
@@ -161,8 +169,6 @@ tsp_all l = tsp_all' [([fst (head l)], 0)] (tail l) (length l)
     -- TODO Later on we need to filter the set of results to only use complete
     -- travels, then add the last travel back like before and then choose the
     -- best route.
-    rotate :: [a] -> [a]
-    rotate (x:xs) = xs ++ [x]
     -- best :: (Eq k, Ord v, Num v) => [([k], v)] -> ([k], v)
     -- best l = closest l
 
