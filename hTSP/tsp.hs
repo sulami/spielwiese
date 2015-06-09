@@ -99,7 +99,9 @@ pathLength p l = pathLength' p 0 l
   where
     pathLength' :: (Eq k, Num v) => [k] -> v -> [(k, [(k, v)])] -> v
     pathLength' [x]    d l = d
-    pathLength' (x:xs) d l = pathLength' xs (d + M.fromJust (dist x (head xs) l)) l
+    pathLength' (x:xs) d l = pathLength' xs
+                                         (d + M.fromJust (dist x (head xs) l))
+                                         l
 
 -- This hack adds the first city again and also adds the distance from the
 -- last back to the first city.
@@ -154,7 +156,7 @@ tsp_nn_rot l = best $ tsp_nn_rot' [] (length l) l
 -- afterwards. We also have to run this after a rotation so we start at every
 -- possible city.
 tsp_all :: (Eq k, Ord v, Num v) => [(k, [(k, v)])] -> ([k], v)
-tsp_all l = best $ map (`addLast` l) (addDistances (rotate' l [] (length l)) [] l)
+tsp_all l = best $ map (`addLast` l) (addDistances (rotate' l [] (length l)) l)
   where
     tsp_all' :: (Eq k, Ord v, Num v) => [[k]] -> [k] -> [(k, [(k, v)])] -> Int
                 -> [[k]]
@@ -168,9 +170,9 @@ tsp_all l = best $ map (`addLast` l) (addDistances (rotate' l [] (length l)) [] 
     rotate' l r c = rotate' (rotate l) (r ++ (tail (tsp_all' [[fst (head l)]]
                                   [fst (head l)] (tail l) (length l)))) (c-1)
     -- After generating all possible paths, we calculate the length of each.
-    addDistances :: (Eq k, Ord v, Num v) => [[k]] -> [([k], v)] -> [(k, [(k, v)])] -> [([k], v)]
-    addDistances []     r l = r
-    addDistances (x:xs) r l = addDistances xs (r ++ [(x, pathLength x l)]) l
+    addDistances :: (Eq k, Ord v, Num v) => [[k]] -> [(k, [(k, v)])]
+                    -> [([k], v)]
+    addDistances p l = foldl (\r x -> r ++ [(x, pathLength x l)]) [] p
     -- Again, we need to get the best result we have calculated.
     best :: (Eq k, Ord v, Num v) => [([k], v)] -> ([k], v)
     best l = closest l
