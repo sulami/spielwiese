@@ -83,7 +83,7 @@ get c = foldr (\(k, v) no -> if c == k then Just v else no) Nothing
 
 -- For this, we will be using this function that returns the closest city to
 -- another city given, chosen from a list of city/distance sets.
-closest :: (Eq k, Ord v, Num v) => [(k, v)] -> (k, v)
+closest :: (Eq k, Real v) => [(k, v)] -> (k, v)
 closest c = L.sortBy (\(a1, b1) (a2, b2) -> if      b1 < b2 then LT
                                             else if b1 > b2 then GT
                                             else                 EQ) c !! 0
@@ -105,21 +105,21 @@ pathLength p l = pathLength' p 0 l
 
 -- This hack adds the first city again and also adds the distance from the
 -- last back to the first city.
-addLast :: (Eq k, Ord v, Num v) => ([k], v) -> [(k, [(k, v)])] -> ([k], v)
+addLast :: (Eq k, Real v) => ([k], v) -> [(k, [(k, v)])] -> ([k], v)
 addLast (c, n) l = (c ++ [c !! 0], n + (M.fromJust (dist (last c) (c !! 0) l)))
 
 -- This will be the actual algorithm. It will start and end at the first city
 -- in the map, because I am lazy like this.
-tsp_nn :: (Eq k, Ord v, Num v) => [(k, [(k, v)])] -> ([k], v)
+tsp_nn :: (Eq k, Real v) => [(k, [(k, v)])] -> ([k], v)
 tsp_nn l = addLast (nn ([fst (l !! 0)], 0) l) l
   where
-    nn :: (Eq k, Ord v, Num v) => ([k], v) -> [(k, [(k, v)])] -> ([k], v)
+    nn :: (Eq k, Real v) => ([k], v) -> [(k, [(k, v)])] -> ([k], v)
     nn p           [x]    = p
     nn (prev, num) (x:xs) = nn ((prev ++ [fst (next x xs)]),
                                 num + (snd (next x xs)))
                                (moveup (fst (next x xs)) xs)
     -- This returns the next city/distance to visit.
-    next :: (Eq k, Ord v, Num v) => (k, [(k, v)]) -> [(k, [(k, v)])] -> (k, v)
+    next :: (Eq k, Real v) => (k, [(k, v)]) -> [(k, [(k, v)])] -> (k, v)
     next c l = closest $ filter' (snd c) l
     -- This rotates the list until the city we are looking for is in front.
     moveup :: (Eq k) => k -> [(k, [(k, v)])] -> [(k, [(k, v)])]
@@ -134,18 +134,18 @@ tsp_nn l = addLast (nn ([fst (l !! 0)], 0) l) l
 -- As a next step we will rotate the map before running nearest neighbour so we
 -- start at each city, and then chose the smallest distance traveled. This is a
 -- O(n*n) = O(n^2) algorithm.
-tsp_nn_rot :: (Eq k, Ord v, Num v) => [(k, [(k, v)])] -> ([k], v)
+tsp_nn_rot :: (Eq k, Real v) => [(k, [(k, v)])] -> ([k], v)
 tsp_nn_rot l = best $ tsp_nn_rot' [] (length l) l
   where
     -- We run nn once for every possible starting city...
-    tsp_nn_rot' :: (Eq k, Ord v, Num v) => [([k], v)] -> Int -> [(k, [(k, v)])]
+    tsp_nn_rot' :: (Eq k, Real v) => [([k], v)] -> Int -> [(k, [(k, v)])]
                    -> [([k], v)]
     tsp_nn_rot' r 0 l = r
     tsp_nn_rot' r n l = tsp_nn_rot' (r ++ [tsp_nn l]) (n-1) (rotate l)
     -- ...and select the best result. For this we abuse the `closest` function
     -- which just happens to do the right thing already, because we only care
     -- about the second half of the tuples.
-    best :: (Eq k, Ord v, Num v) => [([k], v)] -> ([k], v)
+    best :: (Eq k, Real v) => [([k], v)] -> ([k], v)
     best l = closest l
 
 -- Now on to something different, the definitve best solution to the problem,
@@ -155,25 +155,24 @@ tsp_nn_rot l = best $ tsp_nn_rot' [] (length l) l
 -- supply the first city to visit, we have to remove the first list element
 -- afterwards. We also have to run this after a rotation so we start at every
 -- possible city.
-tsp_all :: (Eq k, Ord v, Num v) => [(k, [(k, v)])] -> ([k], v)
+tsp_all :: (Eq k, Real v) => [(k, [(k, v)])] -> ([k], v)
 tsp_all l = best $ map (`addLast` l) (addDistances (rotate' l [] (length l)) l)
   where
-    tsp_all' :: (Eq k, Ord v, Num v) => [[k]] -> [k] -> [(k, [(k, v)])] -> Int
+    tsp_all' :: (Eq k, Real v) => [[k]] -> [k] -> [(k, [(k, v)])] -> Int
                 -> [[k]]
     tsp_all' r p []     _ = r ++ [p]
     tsp_all' r p _      0 = r
     tsp_all' r p (x:xs) c = tsp_all' (tsp_all' r (p ++ [(fst x)]) xs
                                 (length xs)) p (rotate (x:xs)) (c-1)
     -- This runs the entire algorithm for every starting city.
-    rotate' :: (Eq k, Ord v, Num v) => [(k, [(k, v)])] -> [[k]] -> Int -> [[k]]
+    rotate' :: (Eq k, Real v) => [(k, [(k, v)])] -> [[k]] -> Int -> [[k]]
     rotate' _ r 0 = r
     rotate' l r c = rotate' (rotate l) (r ++ (tail (tsp_all' [[fst (head l)]]
                                   [fst (head l)] (tail l) (length l)))) (c-1)
     -- After generating all possible paths, we calculate the length of each.
-    addDistances :: (Eq k, Ord v, Num v) => [[k]] -> [(k, [(k, v)])]
-                    -> [([k], v)]
+    addDistances :: (Eq k, Real v) => [[k]] -> [(k, [(k, v)])] -> [([k], v)]
     addDistances p l = foldl (\r x -> r ++ [(x, pathLength x l)]) [] p
     -- Again, we need to get the best result we have calculated.
-    best :: (Eq k, Ord v, Num v) => [([k], v)] -> ([k], v)
+    best :: (Eq k, Real v) => [([k], v)] -> ([k], v)
     best l = closest l
 
