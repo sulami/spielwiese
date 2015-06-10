@@ -84,7 +84,7 @@ get c = foldr (\(k, v) no -> if c == k then Just v else no) Nothing
 
 -- For this, we will be using this function that returns the closest city to
 -- another city given, chosen from a list of city/distance sets.
-closest :: (Eq k, Real v) => [(k, v)] -> (k, v)
+closest :: (Real v) => [(k, v)] -> (k, v)
 closest c = L.sortBy (\(a1, b1) (a2, b2) -> if      b1 < b2 then LT
                                             else if b1 > b2 then GT
                                             else                 EQ) c !! 0
@@ -180,10 +180,22 @@ tsp_all l = best $ map (`addLast` l) (addDistances (rotate' l [] (length l)) l)
 -- The next algorithm we will be looking at is the greedy algorithm. It will
 -- try to accumulate the shortest possible edges to build the graph this way.
 
+-- tsp_greedy :: (Eq k, Real v) => [(k, [(k, v)])] -> ([k], v)
 -- This function builds a list of possible vertices from the input dataset of
 -- edges and distances.
 buildList :: (Eq k, Real v) => [(k, [(k, v)])] -> [((k, k), v)]
 buildList l = foldl (\acc1 (a,v) ->
                       acc1 ++ (foldl (\acc2 (b,d) ->
                       acc2 ++ [((a,b), d)]) [] v)) [] l
+-- And again we can abuse closest to find the shortest possible edge in a list
+-- of edges.
+best :: (Real v) => [(k, v)] -> (k, v)
+best = closest
+-- The last component we will need a filter function that will remove both the
+-- edge we have added and the reverse on from the list of remaining possible
+-- ones.
+filter' :: (Eq k, Real v) => (k, k) -> ((k, k), v) -> Bool
+filter' (a1, b1) ((a2, b2), _) | a1 == a2 && b1 == b2 = False
+                               | a1 == b2 && b1 == a2 = False
+                               |            otherwise = True
 
