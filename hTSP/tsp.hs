@@ -121,7 +121,7 @@ tsp_nn l = addLast (nn ([fst (l !! 0)], 0) l) l
                                (moveup (fst (next x xs)) xs)
     -- This returns the next city/distance to visit.
     next :: (Eq k, Real v) => (k, [(k, v)]) -> [(k, [(k, v)])] -> (k, v)
-    next c l = closest $ filter' (snd c) l
+    next c l = closest $ filter' l (snd c)
     -- This rotates the list until the city we are looking for is in front.
     moveup :: (Eq k) => k -> [(k, [(k, v)])] -> [(k, [(k, v)])]
     moveup f (x:xs) | fst x == f = [x] ++ xs
@@ -129,9 +129,9 @@ tsp_nn l = addLast (nn ([fst (l !! 0)], 0) l) l
     -- This is a helper function that filters a list of city/distances tuples
     -- so that the returned list consists only of cities that are also in the
     -- second list of cities that have not been visited yet.
-    filter' :: (Eq k) => [(k, v)] -> [(k, [(k, v)])] -> [(k, v)]
-    filter' xs l = foldl (\f x -> if fst x `elem` [fst e | e <- l]
-                                  then f ++ [x] else f) [] xs
+    filter' :: (Eq k) => [(k, [(k, v)])] -> [(k, v)] -> [(k, v)]
+    filter' l = foldl (\f x -> if fst x `elem` [fst e | e <- l]
+                               then f ++ [x] else f) []
 -- As a next step we will rotate the map before running nearest neighbour so we
 -- start at each city, and then chose the smallest distance traveled. This is a
 -- O(n*n) = O(n^2) algorithm.
