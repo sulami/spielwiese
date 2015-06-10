@@ -184,9 +184,8 @@ tsp_all l = best $ map (`addLast` l) (addDistances l (rotate' l [] (length l)))
 -- This function builds a list of possible vertices from the input dataset of
 -- edges and distances.
 buildList :: (Eq k, Real v) => [(k, [(k, v)])] -> [((k, k), v)]
-buildList l = foldl (\acc1 (a,v) ->
-                      acc1 ++ (foldl (\acc2 (b,d) ->
-                      acc2 ++ [((a,b), d)]) [] v)) [] l
+buildList = foldl (\acc1 (a,v) -> acc1 ++ (foldl (\acc2 (b,d) ->
+                                  acc2 ++ [((a,b), d)]) [] v)) []
 -- And again we can abuse closest to find the shortest possible edge in a list
 -- of edges.
 best :: (Real v) => [(k, v)] -> (k, v)
