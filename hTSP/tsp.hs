@@ -177,3 +177,13 @@ tsp_all l = best $ map (`addLast` l) (addDistances (rotate' l [] (length l)) l)
     best :: (Eq k, Real v) => [([k], v)] -> ([k], v)
     best = closest
 
+-- The next algorithm we will be looking at is the greedy algorithm. It will
+-- try to accumulate the shortest possible edges to build the graph this way.
+
+-- This function builds a list of possible vertices from the input dataset of
+-- edges and distances.
+buildList :: (Eq k, Real v) => [(k, [(k, v)])] -> [((k, k), v)]
+buildList l = foldl (\acc1 (a,v) ->
+                      acc1 ++ (foldl (\acc2 (b,d) ->
+                      acc2 ++ [((a,b), d)]) [] v)) [] l
+
