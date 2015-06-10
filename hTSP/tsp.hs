@@ -16,6 +16,7 @@ import qualified Data.Maybe as M
 -- To represent the distances between the vertices, we will use a map of maps.
 -- The city names do not use German umlauts for compability reasons (mainly
 -- with my qwerty keyboard).
+distances :: [(String, [(String, Integer)])]
 distances =
   [
     ("Aachen", [
@@ -60,7 +61,7 @@ distances =
       ("Frankfurt",  236),
       ("Koeln",       55)
     ])
-  ] :: [(String, [(String, Integer)])]
+  ]
 
 -- To make things easier, we write a custom lookup function, so we can easily
 -- get the distance between two cities without having to mess with
@@ -146,7 +147,7 @@ tsp_nn_rot l = best $ tsp_nn_rot' [] (length l) l
     -- which just happens to do the right thing already, because we only care
     -- about the second half of the tuples.
     best :: (Eq k, Real v) => [([k], v)] -> ([k], v)
-    best l = closest l
+    best = closest
 
 -- Now on to something different, the definitve best solution to the problem,
 -- at least in terms of the best result. We iterate through every possible
@@ -174,5 +175,5 @@ tsp_all l = best $ map (`addLast` l) (addDistances (rotate' l [] (length l)) l)
     addDistances p l = foldl (\r x -> r ++ [(x, pathLength x l)]) [] p
     -- Again, we need to get the best result we have calculated.
     best :: (Eq k, Real v) => [([k], v)] -> ([k], v)
-    best l = closest l
+    best = closest
 
