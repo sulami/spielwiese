@@ -93,6 +93,10 @@ closest c = L.sortBy (\(a1, b1) (a2, b2) -> if      b1 < b2 then LT
 rotate :: [a] -> [a]
 rotate (x:xs) = xs ++ [x]
 
+-- This is a little helper that allows us to use two filters in one go.
+both :: (a -> Bool) -> (a -> Bool) -> a -> Bool
+both a b x = a x && b x
+
 -- Given a path in the form of a list of city names, calculate the length of
 -- the path travelled.
 pathLength :: (Eq k, Num v) => [k] -> [(k, [(k, v)])] -> v
