@@ -185,21 +185,15 @@ tsp_all l = best $ map (`addLast` l) (addDistances l (rotate' l [] (length l)))
 -- try to accumulate the shortest possible edges to build the graph this way.
 
 tsp_greedy :: (Eq k, Real v) => [(k, [(k, v)])] -> [((k,k), v)]
-tsp_greedy l = init' $ buildList l
+tsp_greedy l = tsp_greedy' (buildList l) []
   where
-    tsp_greedy' :: (Eq k, Real v) => [((k,k), v)] -> [((k,k), v)] -> [((k,k), v)]
+    tsp_greedy' :: (Eq k, Real v) => [((k,k), v)] -> [((k,k), v)]
+                   -> [((k,k), v)]
     tsp_greedy' [] r = r
     tsp_greedy' l  r = tsp_greedy'
-                          (filter (both
-                                    (filter' (best l))
-                                    (filter'' (r ++ [best l]))
-                          ) l)
+                          (filter (filter'' (r ++ [best l]))
+                            (filter (filter' (best l)) l))
                           (r ++ [best l])
-    -- This initializes the search by selecting the first edge and filtering it
-    -- and its reverse out. We do this to prefill the result list which makes
-    -- things easier further down.
-    init' :: (Eq k, Real v) => [((k, k), v)] -> [((k, k), v)]
-    init' l = tsp_greedy' (filter (filter' (best l)) l) [best l]
     -- This function builds a list of possible vertices from the input dataset
     -- of edges and distances.
     buildList :: (Eq k, Real v) => [(k, [(k, v)])] -> [((k, k), v)]
@@ -216,14 +210,13 @@ tsp_greedy l = init' $ buildList l
     filter' ((a1, b1), _) ((a2, b2), _) | a1 == a2 && b1 == b2 = False
                                         | a1 == b2 && b1 == a2 = False
                                         |            otherwise = True
-    -- What works:
-    -- closest $ filter (filter' ("Bonn", "Koeln")) (buildList distances)
     -- We also need a filter out the edges that involve at least one vertex
     -- that is already twice in the list of selected edges.
     filter'' :: (Eq k) => [((k, k), v)] -> ((k, k), v) -> Bool
     filter'' l ((a1, b1), _) | foldl (\n (a,b) -> if a == a1 then n + 1
                                              else if a == b1 then n + 1
-                                             else if b == a1 then n + 1
+                                             else n) 0 (map fst l) >= 2 = False
+                             | foldl (\n (a,b) -> if b == a1 then n + 1
                                              else if b == b1 then n + 1
                                              else n) 0 (map fst l) >= 2 = False
                              |                                otherwise = True
