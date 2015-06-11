@@ -194,11 +194,20 @@ buildList = foldl (\acc1 (a,v) -> acc1 ++ (foldl (\acc2 (b,d) ->
 -- of edges.
 best :: (Real v) => [(k, v)] -> (k, v)
 best = closest
--- The last component we will need a filter function that will remove both the
+-- The next component we will need a filter function that will remove both the
 -- edge we have added and the reverse on from the list of remaining possible
 -- ones.
-filter' :: (Eq k, Real v) => (k, k) -> ((k, k), v) -> Bool
+filter' :: (Eq k) => (k, k) -> ((k, k), v) -> Bool
 filter' (a1, b1) ((a2, b2), _) | a1 == a2 && b1 == b2 = False
                                | a1 == b2 && b1 == a2 = False
                                |            otherwise = True
+-- We also need a filter out the edges that involve at least one vertex that is
+-- already twice in the list of selected edges.
+filter'' :: (Eq k) => [((k, k), v)] -> ((k, k), v) -> Bool
+filter'' l ((a1, b1), _) | foldl (\n (a,b) -> if a == a1 then n + 1
+                                         else if a == b1 then n + 1
+                                         else if b == a1 then n + 1
+                                         else if b == b1 then n + 1
+                                         else n) 0 (map fst l) >= 2 = False
+                         |                                otherwise = True
 
