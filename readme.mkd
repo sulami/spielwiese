@@ -1,49 +1,5 @@
 # sulami/spielwiese
 
 This Repo is just my personal playground, containing a bunch of different
-smaller projects, mostly coded in Python and C.
-
-### C
-
-* BTree - a binary tree implementation using keys and theoratically arbitrary
-  data, in this case just integers. Includes a usage sample/test suite, as well
-  as some fancy features like total size and max depth
-* Ball - a bouncing ball using ncurses, like the screensaver of DVD-players
-* Breakout - a minimal Breakout clone, also using ncurses
-* CryptoCat - some tools to play with encryption techniques
-* FizzBuzz - fizzbuzz
-* Gol - Conway's Game of Life, works pretty well, no fancy features
-* Hexclock - a ncurses-based clock that colors the terminal based on the time
-* IRC - some IRC tests
-* OneDimension - a proof of concept of a videogame using just one dimension
-* SchemeTester - outputs all colors to test terminal colorschemes
-* Toast - an optimization bug showcase
-* Util - small stuff for use in other programs, currently Python-like
-  dictionaries for C
-* Vtop - a clone of vtop's CPU load graph, may be a bit off for some reason
-
-### D
-
-* BTree - another binary tree implementation, ported from C
-* FizzBuzz - fizzbuzz
-
-### Python
-
-Most of this is written with Python 3 in mind.
-
-* BTree - what can I say? I like binary trees. Not quite as fully featured as
-  the C or D one
-* Codevibe - an unfinished music player that is supposed to look for external
-  hints on what to play
-* Gol - another copy of Conway's Game of Life, works better than the C one, but
-  is (obviously) a lot slower if run without delay
-* Graph - a graphing tool/library for quick visualization of sets of numbers
-* HAL - don't even ask me, I had something in mind
-* Util - smaller stuff, including a something that gets terminal input without
-  echoing and a small programs that checks for hash collisions
-
-### Stuff
-
-This is mostly shellscript, and some other languages I just try out. Nothing
-out of the ordinary.
+smaller projects, mostly coded in Python and C, but also Haskell and D.
 
