@@ -100,7 +100,7 @@ both a b x = a x && b x
 -- This is a helper function that counts the number of occurences of an element
 -- in a list of this elements type.
 count' :: (Eq a) => a -> [a] -> Int
-count' e l = foldl (\n m -> if m == e then n+1 else n) 0 l
+count' e = foldl (\n m -> if m == e then n+1 else n) 0
 
 -- Given a path in the form of a list of city names, calculate the length of
 -- the path travelled.
@@ -188,7 +188,6 @@ tsp_all l = best $ map (`addLast` l) (addDistances l (rotate' l [] (length l)))
 
 -- The next algorithm we will be looking at is the greedy algorithm. It will
 -- try to accumulate the shortest possible edges to build the graph this way.
-
 tsp_greedy :: (Eq k, Real v) => [(k, [(k, v)])] -> [((k,k), v)]
 tsp_greedy l = tsp_greedy' (buildList l) []
   where
@@ -230,6 +229,17 @@ tsp_greedy l = tsp_greedy' (buildList l) []
     -- before we have visitited every vertex/city. Therefore, we filter out all
     -- edges that would lead to a list of edges where every vertex is exactly
     -- twice in the list, thus we would have a cycle.
-    filter''' :: (Eq k) => [((k, k), v)] -> ((k, k), v) -> Bool
-    filter''' l ((a1, b1), _) = True
+    filter''' :: (Eq k, Real v) => [((k, k), v)] -> ((k, k), v) -> Bool
+    -- FIXME count all the other vertices as well, we might close a gap but
+    -- leave another one open.
+    filter''' l ((a1, b1), _) = if count'' a1 (l ++ [((a1, b1), 0)]) >= 2
+                                && count'' b1 (l ++ [((a1, b1), 0)]) >= 2
+                                then False else True
+      where
+        -- This is a modified count version that counts the number of
+        -- occurences of a vertex in a list of edges, specialized for our data
+        -- layout.
+        count'' :: (Eq k) => k -> [((k, k), v)] -> Int
+        count'' a l = count' a (foldl (\r (a1, b1) -> r ++ [a1, b1]) []
+                             (map fst l))
 
