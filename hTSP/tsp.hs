@@ -230,11 +230,9 @@ tsp_greedy l = tsp_greedy' (buildList l) []
     -- edges that would lead to a list of edges where every vertex is exactly
     -- twice in the list, thus we would have a cycle.
     filter''' :: (Eq k, Real v) => [((k, k), v)] -> ((k, k), v) -> Bool
-    -- FIXME count all the other vertices as well, we might close a gap but
-    -- leave another one open.
-    filter''' l ((a1, b1), _) = if count'' a1 (l ++ [((a1, b1), 0)]) >= 2
-                                && count'' b1 (l ++ [((a1, b1), 0)]) >= 2
-                                then False else True
+    filter''' l ((a1, b1), _) = if minimum (foldl
+              (\r e -> r ++ [count'' e (l ++ [((a1, b1), 0)])])
+              [] (get' (l ++ [((a1, b1), 0)]))) >= 2 then False else True
       where
         -- This is a modified count version that counts the number of
         -- occurences of a vertex in a list of edges, specialized for our data
@@ -242,4 +240,8 @@ tsp_greedy l = tsp_greedy' (buildList l) []
         count'' :: (Eq k) => k -> [((k, k), v)] -> Int
         count'' a l = count' a (foldl (\r (a1, b1) -> r ++ [a1, b1]) []
                              (map fst l))
+        -- Create a list of unique vertices from our data layout.
+        get' :: (Eq k) => [((k, k), v)] -> [k]
+        get' l = L.nub $ foldl (\r (a1, b1) -> r ++ [a1, b1]) [] (map fst l)
+    -- TODO: Construct the graph and apply addLast.
 
