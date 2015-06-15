@@ -97,6 +97,11 @@ rotate (x:xs) = xs ++ [x]
 both :: (a -> Bool) -> (a -> Bool) -> a -> Bool
 both a b x = a x && b x
 
+-- This is a helper function that counts the number of occurences of an element
+-- in a list of this elements type.
+count' :: (Eq a) => a -> [a] -> Int
+count' e l = foldl (\n m -> if m == e then n+1 else n) 0 l
+
 -- Given a path in the form of a list of city names, calculate the length of
 -- the path travelled.
 pathLength :: (Eq k, Num v) => [k] -> [(k, [(k, v)])] -> v
