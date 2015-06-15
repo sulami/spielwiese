@@ -218,11 +218,11 @@ tsp_greedy l = tsp_greedy' (buildList l) []
     -- We also need a filter out the edges that involve at least one vertex
     -- that is already twice in the list of selected edges.
     filter'' :: (Eq k) => [((k, k), v)] -> ((k, k), v) -> Bool
-    filter'' l ((a1, b1), _) | foldl (\n (a,b) -> if a == a1 then n + 1
-                                             else if a == b1 then n + 1
+    filter'' l ((a1, b1), _) | foldl (\n (a,b) -> if a1 == a then n + 1
+                                             else if a1 == b then n + 1
                                              else n) 0 (map fst l) >= 2 = False
-                             | foldl (\n (a,b) -> if b == a1 then n + 1
-                                             else if b == b1 then n + 1
+                             | foldl (\n (a,b) -> if b1 == a then n + 1
+                                             else if b1 == b then n + 1
                                              else n) 0 (map fst l) >= 2 = False
                              |                                otherwise = True
     -- At last, we need to filter out any edge that would close the cycle
