@@ -191,8 +191,9 @@ tsp_greedy l = tsp_greedy' (buildList l) []
                    -> [((k,k), v)]
     tsp_greedy' [] r = r
     tsp_greedy' l  r = tsp_greedy'
-                          (filter (filter'' (r ++ [best l]))
-                            (filter (filter' (best l)) l))
+                          (filter (filter''' (r ++ [best l]))
+                            (filter (filter'' (r ++ [best l]))
+                              (filter (filter' (best l)) l)))
                           (r ++ [best l])
     -- This function builds a list of possible vertices from the input dataset
     -- of edges and distances.
@@ -220,4 +221,10 @@ tsp_greedy l = tsp_greedy' (buildList l) []
                                              else if b == b1 then n + 1
                                              else n) 0 (map fst l) >= 2 = False
                              |                                otherwise = True
+    -- At last, we need to filter out any edge that would close the cycle
+    -- before we have visitited every vertex/city. Therefore, we filter out all
+    -- edges that would lead to a list of edges where every vertex is exactly
+    -- twice in the list, thus we would have a cycle.
+    filter''' :: (Eq k) => [((k, k), v)] -> ((k, k), v) -> Bool
+    filter''' l ((a1, b1), _) = True
 
