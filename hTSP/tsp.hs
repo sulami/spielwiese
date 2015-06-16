@@ -3,6 +3,9 @@
 -- Everything below is published under the ISC License, as usually. © 2015
 -- Robin 'sulami' Schroer <sulami@peerwire.org>.
 
+-- Disclaimer: This was before I found out Haskell actually has a proper data
+-- type for graphs, so this is a bit ghetto, but works.
+
 import qualified Data.List as L
 import qualified Data.Maybe as M
 
