@@ -191,8 +191,8 @@ tsp_all l = best $ map (`addLast` l) (addDistances l (rotate' l [] (length l)))
 
 -- The next algorithm we will be looking at is the greedy algorithm. It will
 -- try to accumulate the shortest possible edges to build the graph this way.
-tsp_greedy :: (Eq k, Real v) => [(k, [(k, v)])] -> [((k,k), v)]
-tsp_greedy l = tsp_greedy' (buildList l) []
+tsp_greedy :: (Eq k, Real v) => [(k, [(k, v)])] -> [k]
+tsp_greedy l = buildGraph $ tsp_greedy' (buildList l) []
   where
     tsp_greedy' :: (Eq k, Real v) => [((k,k), v)] -> [((k,k), v)]
                    -> [((k,k), v)]
@@ -207,6 +207,27 @@ tsp_greedy l = tsp_greedy' (buildList l) []
     buildList :: (Eq k, Real v) => [(k, [(k, v)])] -> [((k, k), v)]
     buildList = foldl (\acc1 (a,v) -> acc1 ++ (foldl (\acc2 (b,d) ->
                                       acc2 ++ [((a,b), d)]) [] v)) []
+    -- Build the resulting graph from a list of edges. This assumes there is a
+    -- graph spanning all vertices but not cycling. So we look for an edge with
+    -- a vertex that is only used once and start constructing the graph from
+    -- there until we used up all edges. Also, what do you know, closest comes
+    -- in handy here.
+    -- TODO filter next''s l to exclude the edges we already used.
+    buildGraph :: (Eq k, Real v) => [((k, k), v)] -> [k]
+    buildGraph l = foldl (\r e -> r ++ [next' l e]) [] (map fst (map fst l))
+      where
+        -- Find one of the vertices that is present only once.
+        first' :: (Eq k, Real v) => [((k, k), v)] -> k
+        first' l = fst $ closest $ foldl (\r e -> r ++ [(e, count'' e l)]) []
+                                         (get' l)
+        -- Given one vertex, return the other/next one for constructing the
+        -- graph.
+        next' :: (Eq k) => [((k, k), v)] -> k -> k
+        next' l k = head $ foldl (\r e -> if fst (fst e) == k
+                                            then [snd (fst e)]
+                                          else if snd (fst e) == k
+                                            then [fst (fst e)]
+                                          else r) [] l
     -- And again we can abuse closest to find the shortest possible edge in a
     -- list of edges.
     best :: (Real v) => [(k, v)] -> (k, v)
@@ -236,15 +257,13 @@ tsp_greedy l = tsp_greedy' (buildList l) []
     filter''' l ((a1, b1), _) = if minimum (foldl
               (\r e -> r ++ [count'' e (l ++ [((a1, b1), 0)])])
               [] (get' (l ++ [((a1, b1), 0)]))) >= 2 then False else True
-      where
-        -- This is a modified count version that counts the number of
-        -- occurences of a vertex in a list of edges, specialized for our data
-        -- layout.
-        count'' :: (Eq k) => k -> [((k, k), v)] -> Int
-        count'' a l = count' a (foldl (\r (a1, b1) -> r ++ [a1, b1]) []
-                             (map fst l))
-        -- Create a list of unique vertices from our data layout.
-        get' :: (Eq k) => [((k, k), v)] -> [k]
-        get' l = L.nub $ foldl (\r (a1, b1) -> r ++ [a1, b1]) [] (map fst l)
-    -- TODO: Construct the graph and apply addLast.
+    -- Create a list of unique vertices from our data layout.
+    get' :: (Eq k) => [((k, k), v)] -> [k]
+    get' l = L.nub $ foldl (\r (a1, b1) -> r ++ [a1, b1]) [] (map fst l)
+    -- This is a modified count version that counts the number of
+    -- occurences of a vertex in a list of edges, specialized for our data
+    -- layout.
+    count'' :: (Eq k) => k -> [((k, k), v)] -> Int
+    count'' a l = count' a (foldl (\r (a1, b1) -> r ++ [a1, b1]) []
+                         (map fst l))
 
