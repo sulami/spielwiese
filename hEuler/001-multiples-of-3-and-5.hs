@@ -6,6 +6,8 @@
 --
 -- Find the sum of all the multiples of 3 or 5 below 1000.
 
+{-# OPTIONS_GHC -O2 #-}
+
 fb :: Int -> Bool
 fb n | n `mod` 3 == 0 = True
      | n `mod` 5 == 0 = True

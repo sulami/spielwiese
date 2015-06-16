@@ -13,6 +13,8 @@
 -- Find the difference between the sum of the squares of the first one hundred
 -- natural numbers and the square of the sum.
 
+{-# OPTIONS_GHC -O2 #-}
+
 squareSum :: [Integer] -> Integer
 squareSum n = sum $ map (^2) n
 
