@@ -191,8 +191,8 @@ tsp_all l = best $ map (`addLast` l) (addDistances l (rotate' l [] (length l)))
 
 -- The next algorithm we will be looking at is the greedy algorithm. It will
 -- try to accumulate the shortest possible edges to build the graph this way.
-tsp_greedy :: (Eq k, Real v) => [(k, [(k, v)])] -> [k]
-tsp_greedy l = buildGraph $ tsp_greedy' (buildList l) []
+tsp_greedy :: (Eq k, Real v) => [(k, [(k, v)])] -> ([k], v)
+tsp_greedy l = addLast (buildGraph (tsp_greedy' (buildList l) []) l) l
   where
     tsp_greedy' :: (Eq k, Real v) => [((k,k), v)] -> [((k,k), v)]
                    -> [((k,k), v)]
@@ -212,10 +212,14 @@ tsp_greedy l = buildGraph $ tsp_greedy' (buildList l) []
     -- a vertex that is only used once and start constructing the graph from
     -- there until we used up all edges. Also, what do you know, closest comes
     -- in handy here.
-    -- TODO filter next''s l to exclude the edges we already used.
-    buildGraph :: (Eq k, Real v) => [((k, k), v)] -> [k]
-    buildGraph l = foldl (\r e -> r ++ [next' l e]) [] (map fst (map fst l))
+    buildGraph :: (Eq k, Real v) => [((k, k), v)] -> [(k, [(k, v)])]
+                  -> ([k], v)
+    buildGraph e l = dist' (buildGraph' [] (first' e) e) l
       where
+        buildGraph' :: (Eq k, Real v) => [k] -> k -> [((k, k), v)] -> [k]
+        buildGraph' r c [] = r ++ [c]
+        buildGraph' r c l  = buildGraph' (r ++ [c]) (next' l c)
+                                       (filter (filter' ((c, next' l c), 0)) l)
         -- Find one of the vertices that is present only once.
         first' :: (Eq k, Real v) => [((k, k), v)] -> k
         first' l = fst $ closest $ foldl (\r e -> r ++ [(e, count'' e l)]) []
@@ -228,6 +232,11 @@ tsp_greedy l = buildGraph $ tsp_greedy' (buildList l) []
                                           else if snd (fst e) == k
                                             then [fst (fst e)]
                                           else r) [] l
+        -- Calculate the distance traveled from a list of cities.
+        dist' :: (Eq k, Real v) => [k] -> [(k, [(k, v)])] -> ([k], v)
+        dist' k l = foldl (\(k, d) e -> (k ++ [e],
+                                         d + (M.fromJust (dist (last k) e l))))
+                          (take 1 k, 0) (tail k)
     -- And again we can abuse closest to find the shortest possible edge in a
     -- list of edges.
     best :: (Real v) => [(k, v)] -> (k, v)
