@@ -12,5 +12,5 @@
 fib :: [Integer]
 fib = map fst $ iterate (\(a, b) -> (b, a + b)) (1, 2)
 
-main = print $ sum $ filter even $ take 32 fib
+main = print $ sum $ filter even $ takeWhile (< 4000000) fib
 
