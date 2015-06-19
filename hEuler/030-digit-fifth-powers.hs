@@ -22,7 +22,7 @@ digits 0 = []
 digits n = digits (n `div` 10) ++ [n `mod` 10]
 
 check :: Integral a => a -> Bool
-check n = n == foldl (\r e -> r + (e^5)) 0 (digits n)
+check n = n == sum (map (^5) (digits n))
 
 -- sulami's note: 6*(9^5) ~= 350,000, so the biggest result will have six
 -- digits at most.
