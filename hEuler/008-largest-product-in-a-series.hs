@@ -7,9 +7,6 @@
 -- Find the thirteen adjacent digits in the 1000-digit number that have the
 -- greatest product. What is the value of this product?
 
--- test :: [Integer] -> String -> [Integer]
--- test r s = test (r ++ [sum (map (read :: Integer) (take 4 s))]) (tail s)
-
 import Data.List
 
 digits :: Integral a => a -> [a]
