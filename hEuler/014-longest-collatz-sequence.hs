@@ -21,15 +21,13 @@
 
 {-# OPTIONS_GHC -O2 #-}
 
-import qualified Data.List as L
-
 collatzLength :: Integer -> Integer -> Integer
 collatzLength c n | n == 1 = c + 1
                   | even n = collatzLength (c + 1) (n `div` 2)
                   |  odd n = collatzLength (c + 1) (3 * n + 1)
 
 maxLength :: Integer -> Integer
-maxLength n = snd $ last $ L.sort $ zip (map (collatzLength 0) [1..n]) [1..n]
+maxLength n = snd $ maximum $ zip (map (collatzLength 0) [1..n]) [1..n]
 
 main = print $ maxLength 1000000
 
