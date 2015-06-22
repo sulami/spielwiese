@@ -16,5 +16,5 @@ divisors n = 1 : [ x | x <- [2..(n `div` 2)], n `mod` x == 0] ++ [n]
 check :: Integer -> Bool
 check n = length (divisors n) == 8
 
-main = print $ length $ filter check [1..10^6]
+main = print $ length $ filter check [1..10^12]
 
