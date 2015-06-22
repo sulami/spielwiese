@@ -16,7 +16,7 @@ digits 0 = []
 digits n = digits (n `div` 10) ++ [n `mod` 10]
 
 factorial :: Integral a => a -> a
-factorial n = foldl (\r e -> r * e) 1 [2..n]
+factorial n = product [1..n]
 
 main = print $ sum $ digits $ factorial 100
 
