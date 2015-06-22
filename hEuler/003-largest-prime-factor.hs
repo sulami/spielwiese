@@ -8,18 +8,16 @@
 {-# OPTIONS_GHC -O2 #-}
 
 divisors :: Integer -> [Integer]
-divisors n = [x | x <- [2..(n `div` 2)], n `mod` x == 0]
+divisors n = [x | x <- [2..(n `div` 2)], n `mod` x == 0] ++ [n]
 
 pfd :: Integer -> [Integer]
 pfd n = pfd' n []
   where
     pfd' :: Integer -> [Integer] -> [Integer]
-    pfd' n r |        product r == n = r
-             | length (divs n r) > 0 = pfd' n (head (divs n r) : r)
-             |             otherwise = pfd' n (n `div` (product r) : r)
-      where
-        divs :: Integer -> [Integer] -> [Integer]
-        divs n r = divisors (n `div` (product r))
+    pfd' n r | product r == n = r
+             |      otherwise = pfd' n (head (divs n r) : r)
+    divs :: Integer -> [Integer] -> [Integer]
+    divs n r = divisors (n `div` (product r))
 
 main = print $ maximum $ pfd 600851475143
 
