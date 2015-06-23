@@ -28,16 +28,16 @@ match i s = match' i (snd s) []
   where
     match' :: [Char] -> [Char] -> [Int] -> (Bool, [Int])
     match' []     _ r = (True, r)
-    match' (x:xs) s r | fst check = match' xs (drop (snd check) s)
-                                           $ r ++ [snd check]
+    match' (x:xs) s r | fst check = match' xs (drop used s) $ r ++ [used]
                       | otherwise = (False, r)
       where
+        used = snd check
         check = partOf x s 0
 
 fuzzyFinder :: [Char] -> [[Char]] -> [[Char]]
-fuzzyFinder i l = map fst . map snd $ c
+fuzzyFinder input list = map fst . map snd $ sort combo
   where
-    c = sort $ zip (zip ((map sum . map tail) s) (map head s)) p
-    s = map snd $ map (match i) p
-    p = filter (fst . match i) $ prepInput l
+    combo = zip (zip ((map sum . map tail) scores) (map head scores)) matches
+    scores = map snd $ map (match input) matches
+    matches = filter (fst . match input) $ prepInput list
 
