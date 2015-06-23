@@ -10,7 +10,7 @@
 -- The code is licensed under ISC and
 -- © Robin 'sulami' Schroer <sulami@peerwire.org>
 
-module Sulami.FuzzyFinder (fuzzyFinder) where
+module FuzzyFinder (fuzzyFinder) where
 
 import Data.Char
 import Data.List
