@@ -10,16 +10,16 @@ module Sulami.FuzzyFinder (fuzzyFinder) where
 
 import Data.Char
 
-prepInput :: [[Char]] -> [[Char]]
-prepInput = map (map toLower)
+prepInput :: [[Char]] -> [([Char], [Char])]
+prepInput i = zip i $ map (map toLower) i
 
 partOf :: Char -> [Char] -> (Bool, [Char])
 partOf _ []     = (False, [])
 partOf c (x:xs) |    c == x = (True, xs)
                 | otherwise = partOf c xs
 
-match :: [Char] -> [Char] -> Bool
-match i s = match' i s
+match :: [Char] -> ([Char], [Char]) -> Bool
+match i s = match' i (snd s)
   where
     match' :: [Char] -> [Char] -> Bool
     match' []     _ = True
@@ -29,5 +29,5 @@ match i s = match' i s
         check = partOf x s
 
 fuzzyFinder :: [Char] -> [[Char]] -> [[Char]]
-fuzzyFinder i l = filter (match i) $ prepInput l
+fuzzyFinder i l = map fst $ filter (match i) $ prepInput l
 
