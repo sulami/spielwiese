@@ -13,7 +13,7 @@ paths :: Int -> Int
 paths s = paths' s 0 0 0
   where
     paths' :: Int -> Int -> Int -> Int -> Int
-    paths' s r x y | x < s && y < s = (paths' s r (x+1) y) + (paths' s r x (y+1))
+    paths' s r x y | x < s && y < s = paths' s r (x+1) y + paths' s r x (y+1)
                    |          x < s = paths' s r (x+1) y
                    |          y < s = paths' s r x (y+1)
                    |      otherwise = r+1
