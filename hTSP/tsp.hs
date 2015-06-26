@@ -103,7 +103,7 @@ both a b x = a x && b x
 -- This is a helper function that counts the number of occurences of an element
 -- in a list of this elements type.
 count' :: (Eq a) => a -> [a] -> Int
-count' e = foldl (\n m -> if m == e then n+1 else n) 0
+count' e = foldr (\m n -> if m == e then n+1 else n) 0
 
 -- Given a path in the form of a list of city names, calculate the length of
 -- the path travelled.
@@ -142,7 +142,7 @@ tsp_nn l = addLast (nn ([fst (l !! 0)], 0) l) l
     -- so that the returned list consists only of cities that are also in the
     -- second list of cities that have not been visited yet.
     filter' :: (Eq k) => [(k, [(k, v)])] -> [(k, v)] -> [(k, v)]
-    filter' l = foldl (\f x -> if fst x `elem` [fst e | e <- l]
+    filter' l = foldr (\x f -> if fst x `elem` [fst e | e <- l]
                                then f ++ [x] else f) []
 -- As a next step we will rotate the map before running nearest neighbour so we
 -- start at each city, and then chose the smallest distance traveled. This is a
@@ -184,7 +184,7 @@ tsp_all l = best $ map (`addLast` l) (addDistances l (rotate' l [] (length l)))
                                   [fst (head l)] (tail l) (length l)))) (c-1)
     -- After generating all possible paths, we calculate the length of each.
     addDistances :: (Eq k, Real v) => [(k, [(k, v)])] -> [[k]] -> [([k], v)]
-    addDistances l = foldl (\r x -> r ++ [(x, pathLength x l)]) []
+    addDistances l = foldr (\x r -> r ++ [(x, pathLength x l)]) []
     -- Again, we need to get the best result we have calculated.
     best :: (Eq k, Real v) => [([k], v)] -> ([k], v)
     best = closest
@@ -205,7 +205,7 @@ tsp_greedy l = addLast (buildGraph (tsp_greedy' (buildList l) []) l) l
     -- This function builds a list of possible vertices from the input dataset
     -- of edges and distances.
     buildList :: (Eq k, Real v) => [(k, [(k, v)])] -> [((k, k), v)]
-    buildList = foldl (\acc1 (a,v) -> acc1 ++ (foldl (\acc2 (b,d) ->
+    buildList = foldr (\(a,v) acc1 -> acc1 ++ (foldr (\(b,d) acc2 ->
                                       acc2 ++ [((a,b), d)]) [] v)) []
     -- Build the resulting graph from a list of edges. This assumes there is a
     -- graph spanning all vertices but not cycling. So we look for an edge with
@@ -222,19 +222,19 @@ tsp_greedy l = addLast (buildGraph (tsp_greedy' (buildList l) []) l) l
                                        (filter (filter' ((c, next' l c), 0)) l)
         -- Find one of the vertices that is present only once.
         first' :: (Eq k, Real v) => [((k, k), v)] -> k
-        first' l = fst $ closest $ foldl (\r e -> r ++ [(e, count'' e l)]) []
+        first' l = fst $ closest $ foldr (\e r -> r ++ [(e, count'' e l)]) []
                                          (get' l)
         -- Given one vertex, return the other/next one for constructing the
         -- graph.
         next' :: (Eq k) => [((k, k), v)] -> k -> k
-        next' l k = head $ foldl (\r e -> if fst (fst e) == k
+        next' l k = head $ foldr (\e r -> if fst (fst e) == k
                                             then [snd (fst e)]
                                           else if snd (fst e) == k
                                             then [fst (fst e)]
                                           else r) [] l
         -- Calculate the distance traveled from a list of cities.
         dist' :: (Eq k, Real v) => [k] -> [(k, [(k, v)])] -> ([k], v)
-        dist' k l = foldl (\(k, d) e -> (k ++ [e],
+        dist' k l = foldr (\e (k, d) -> (k ++ [e],
                                          d + (M.fromJust (dist (last k) e l))))
                           (take 1 k, 0) (tail k)
     -- And again we can abuse closest to find the shortest possible edge in a
@@ -251,10 +251,10 @@ tsp_greedy l = addLast (buildGraph (tsp_greedy' (buildList l) []) l) l
     -- We also need a filter out the edges that involve at least one vertex
     -- that is already twice in the list of selected edges.
     filter'' :: (Eq k) => [((k, k), v)] -> ((k, k), v) -> Bool
-    filter'' l ((a1, b1), _) | foldl (\n (a,b) -> if a1 == a then n + 1
+    filter'' l ((a1, b1), _) | foldr (\(a,b) n -> if a1 == a then n + 1
                                              else if a1 == b then n + 1
                                              else n) 0 (map fst l) >= 2 = False
-                             | foldl (\n (a,b) -> if b1 == a then n + 1
+                             | foldr (\(a,b) n -> if b1 == a then n + 1
                                              else if b1 == b then n + 1
                                              else n) 0 (map fst l) >= 2 = False
                              |                                otherwise = True
@@ -263,16 +263,16 @@ tsp_greedy l = addLast (buildGraph (tsp_greedy' (buildList l) []) l) l
     -- edges that would lead to a list of edges where every vertex is exactly
     -- twice in the list, thus we would have a cycle.
     filter''' :: (Eq k, Real v) => [((k, k), v)] -> ((k, k), v) -> Bool
-    filter''' l ((a1, b1), _) = if minimum (foldl
-              (\r e -> r ++ [count'' e (l ++ [((a1, b1), 0)])])
+    filter''' l ((a1, b1), _) = if minimum (foldr
+              (\e r -> r ++ [count'' e (l ++ [((a1, b1), 0)])])
               [] (get' (l ++ [((a1, b1), 0)]))) >= 2 then False else True
     -- Create a list of unique vertices from our data layout.
     get' :: (Eq k) => [((k, k), v)] -> [k]
-    get' l = L.nub $ foldl (\r (a1, b1) -> r ++ [a1, b1]) [] (map fst l)
+    get' l = L.nub $ foldr (\(a1, b1) r -> r ++ [a1, b1]) [] (map fst l)
     -- This is a modified count version that counts the number of
     -- occurences of a vertex in a list of edges, specialized for our data
     -- layout.
     count'' :: (Eq k) => k -> [((k, k), v)] -> Int
-    count'' a l = count' a (foldl (\r (a1, b1) -> r ++ [a1, b1]) []
+    count'' a l = count' a (foldr (\(a1, b1) r -> r ++ [a1, b1]) []
                          (map fst l))
 
