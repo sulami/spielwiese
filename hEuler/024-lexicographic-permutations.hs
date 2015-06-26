@@ -19,7 +19,7 @@ unique :: [Int] -> Bool
 unique l = [0..2] == sort l
 
 pretty :: [Int] -> String
-pretty = foldl (\r e -> r ++ [head (show e)]) []
+pretty = foldr (\e r -> r ++ [head (show e)]) []
 
 main = putStrLn . pretty . last $
         take (10^6) [ [a,b,c,d,e,f,g,h,i,j] | a <- [0..9],

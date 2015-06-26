@@ -21,7 +21,7 @@ readWords :: String -> [String]
 readWords s = read $ "[" ++ s ++ "]"
 
 wordValue :: String -> Int
-wordValue = foldl (\r e -> r + length ['A'..e]) 0
+wordValue = foldr (\e r -> r + length ['A'..e]) 0
 
 triangle :: [Int]
 triangle = map round $ map fst $ iterate (\(a,c) -> (c/2 * (c+1), c+1)) (1,2)

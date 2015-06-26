@@ -24,7 +24,7 @@ positionScores :: [a] -> [(a, Int)]
 positionScores l = zip l [1..(length l)]
 
 letterScores :: String -> Int
-letterScores = foldl (\r e -> r + length ['A'..e]) 0
+letterScores = foldr (\e r -> r + length ['A'..e]) 0
 
 combineScores :: (Num a) => [(a, a)] -> [a]
 combineScores = map (\(a,b) -> a * b)
