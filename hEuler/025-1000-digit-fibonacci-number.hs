@@ -33,5 +33,5 @@ fib = map fst $ iterate (\(a, b) -> (b, a + b)) (1, 2)
 isShort :: Integer -> Bool
 isShort n = 1000 > length (show n)
 
-main = print $ 1 + length (takeWhile isShort fib)
+main = print $ 2 + length (takeWhile isShort fib)
 
