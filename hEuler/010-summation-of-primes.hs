@@ -10,5 +10,5 @@
 isPrime :: Integer -> Bool
 isPrime n = [] == [x | x <- [2..(n `div` 2)], n `mod` x == 0]
 
-main = print $ sum $ [x | x <- [1..2000000], isPrime x]
+main = print $ sum $ [x | x <- [2..2000000], isPrime x]
 
