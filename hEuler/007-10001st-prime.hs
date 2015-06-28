@@ -17,5 +17,5 @@ isPrime n = 2 == length (divisors n)
 primes :: [Integer]
 primes = 2 : 3 : [n | n <- [5,7..], isPrime n]
 
-main = print $ primes !! 10001
+main = print $ primes !! 10000
 
