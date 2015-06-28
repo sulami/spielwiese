@@ -24,5 +24,5 @@ digits n = digits (n `div` 10) ++ [n `mod` 10]
 pandigital :: Int -> Bool
 pandigital n = sort (digits n) == [1..(length (show n))]
 
-main = print $ [x | x <- [1..654321], pandigital x, isPrime x]
+main = print $ last $ [x | x <- [1..654321], pandigital x, isPrime x]
 
