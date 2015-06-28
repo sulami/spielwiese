@@ -27,11 +27,8 @@
 triangle :: [Integer]
 triangle = map fst $ iterate (\(a, b) -> (a + b, b + 1)) (1, 2)
 
-divisors :: Integer -> [Integer]
-divisors n = 1 : [ x | x <- [2..(n `div` 2)], n `mod` x == 0] ++ [n]
+divLen :: Integer -> Integer
+divLen n = foldr (\e r -> if n `mod` e == 0 then r+1 else r) 2 [2..(n `div` 2)]
 
-find :: Int
-find = length $ takeWhile (< 500) $ map length $ map divisors $ triangle
-
-main = print $ triangle !! (find + 1)
+main = print $ head [x | x <- triangle, divLen x > 500]
 
