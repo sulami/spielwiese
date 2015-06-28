@@ -12,20 +12,17 @@
 import Data.List (sort)
 
 isPrime :: Int -> Bool
-isPrime n = 2 == length (divisors n)
+isPrime n = divisors n == []
   where
     divisors :: Int -> [Int]
-    divisors n = 1 : [ x | x <- [2..(n `div` 2)], n `mod` x == 0] ++ [n]
-
-primes :: [Int]
-primes = 2 : 3 : [n | n <- [5,7..], isPrime n]
+    divisors n = [ x | x <- [2..(n `div` 2)], n `mod` x == 0]
 
 digits :: Integral a => a -> [a]
 digits 0 = []
 digits n = digits (n `div` 10) ++ [n `mod` 10]
 
 pandigital :: Int -> Bool
-pandigital n = sort (digits n) == [1..(length (digits n))]
+pandigital n = sort (digits n) == [1..(length (show n))]
 
-main = print $ last $ takeWhile (<= 987654321) [x | x <- primes, pandigital x]
+main = print $ [x | x <- [1..654321], pandigital x, isPrime x]
 
