@@ -8,13 +8,7 @@
 {-# OPTIONS_GHC -O2 #-}
 
 isPrime :: Integer -> Bool
-isPrime n = 2 == length (divisors n)
-  where
-    divisors :: Integer -> [Integer]
-    divisors n = 1 : [ x | x <- [2..(n `div` 2)], n `mod` x == 0] ++ [n]
+isPrime n = [] == [x | x <- [2..(n `div` 2)], n `mod` x == 0]
 
-primes :: [Integer]
-primes = 2 : 3 : [n | n <- [5,7..], isPrime n]
-
-main = print $ sum $ takeWhile (< 2000000) primes
+main = print $ sum $ [x | x <- [1..2000000], isPrime x]
 
