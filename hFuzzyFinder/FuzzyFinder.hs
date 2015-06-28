@@ -12,8 +12,8 @@
 
 module FuzzyFinder (fuzzyFinder) where
 
-import Data.Char
-import Data.List
+import Data.Char (toLower)
+import Data.List (sort)
 
 prepInput :: [[Char]] -> [([Char], [Char])]
 prepInput i = zip i $ map (map toLower) i
