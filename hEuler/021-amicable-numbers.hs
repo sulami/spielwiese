@@ -18,7 +18,8 @@ divisors :: Integral a => a -> [a]
 divisors n = 1 : [ x | x <- [2..(n `div` 2)], n `mod` x == 0]
 
 amicable :: Integral a => a -> Bool
-amicable n | n == sum (divisors (sum (divisors n))) = True
+amicable n |                  n == sum (divisors n) = False
+           | n == sum (divisors (sum (divisors n))) = True
            |                              otherwise = False
 
 main = print $ sum $ filter amicable [1..9999]
