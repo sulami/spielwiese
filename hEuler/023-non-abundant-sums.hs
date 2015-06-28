@@ -30,8 +30,8 @@ abundant n | n < sum (divisors n) = True
            |            otherwise = False
 
 abundantSum :: Integral a => a -> Bool
-abundantSum n = foldr (\e r -> if abundant (n - e) then True else r)
-                      False [x | x <- [12..(n `div` 2)], abundant x]
+abundantSum n = foldr (\e r -> if abundant (n - e) then False else r)
+                      True [x | x <- [12..(n `div` 2)], abundant x]
 
 main = print $ sum $ filter abundantSum [1..28123]
 
