@@ -11,10 +11,12 @@
 {-# OPTIONS_GHC -O2 #-}
 
 divisors :: Integer -> [Integer]
-divisors n = 1 : [ x | x <- [2..(n `div` 2)], n `mod` x == 0] ++ [n]
+divisors n = [x | x <- [2..(n `div` 2)], n `mod` x == 0] ++ [n]
 
 check :: Integer -> Bool
-check n = length (divisors n) == 8
+check n = length divs == 7 && last divs == n
+  where
+    divs = take 7 $ divisors n
 
-main = print $ length $ filter check [1..10^12]
+main = print $ length [x | x <- [1..10^4], check x]
 
