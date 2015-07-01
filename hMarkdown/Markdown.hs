@@ -28,7 +28,7 @@ multiLineParse []                        = ""
 multiLineParse t@(('*':' ':_):_)         = unorderedList t
 multiLineParse t@(('-':' ':_):_)         = unorderedList t
 multiLineParse t@((' ':' ':' ':' ':_):_) = code t
-mutliLineParse t@[]                     = paragraph . unlines $ t
+mutliLineParse t                         = paragraph . unlines $ t
 
 heading :: Integer -> String -> String
 heading n ('#':t) = heading (n+1) t
