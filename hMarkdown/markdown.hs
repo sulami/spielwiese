@@ -81,6 +81,6 @@ splitParagraphs "" = []
 splitParagraphs t  = foldl' (\r e -> if e == ""
                                        then r ++ [""]
                                      else if r /= []
-                                       then (init r) ++ [last r ++ e]
+                                       then (init r) ++ [last r ++ "\n" ++ e]
                                        else [e]) [] $ lines t
 
