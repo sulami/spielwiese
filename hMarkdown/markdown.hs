@@ -61,7 +61,12 @@ ruler = "<hr />"
 
 code :: [String] -> String
 code [] = ""
-code t  = encapsulate "pre" $ encapsulate "code" $ unlines t
+code t  | all indented t = encapsulate "pre" $ encapsulate "code" $ unlines
+                           $ map (drop 4) t
+        |      otherwise = paragraph . unlines $ t
+  where
+    indented :: String -> Bool
+    indented t = "    " == take 4 t
 
 paragraph :: String -> String
 paragraph "" = ""
