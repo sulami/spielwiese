@@ -45,16 +45,14 @@ orderedList [] = ""
 orderedList t  = encapsulate "ol" $ list t
 
 list :: [String] -> String
-list t  = unlines $ foldl' buildList [] t
+list t  = (concat (foldl' buildList [] t)) ++ "</li>"
   where
     -- TODO
-    -- properly join list parts
-    -- remove list indicators
     -- handle ordred list indicators
     buildList :: [String] -> String -> [String]
-    buildList r e | head e == '-' || head e == '*' = if r /= []
-                    then init r ++ [last r ++ "</li>"] ++ ["<li>"]
-                    else r ++ ["<li>"]
+    buildList r e | take 2 e == "- " || take 2 e == "* " = if r /= []
+                    then init r ++ [last r ++ "</li>"] ++ ["<li>" ++ drop 2 e]
+                    else r ++ ["<li>" ++ drop 2 e]
                   |   r /= [] = init r ++ [last r ++ e]
                   | otherwise = [e]
 
