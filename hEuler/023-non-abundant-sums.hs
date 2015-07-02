@@ -22,16 +22,19 @@
 
 {-# OPTIONS_GHC -O2 #-}
 
-divisors :: Integral a => a -> [a]
+divisors :: Integer -> [Integer]
 divisors n = 1 : [ x | x <- [2..(n `div` 2)], n `mod` x == 0]
 
-abundant :: Integral a => a -> Bool
-abundant n | n < sum (divisors n) = True
-           |            otherwise = False
+abundant :: Integer -> Bool
+abundant n = n < sum (divisors n)
 
-abundantSum :: Integral a => a -> Bool
-abundantSum n = foldr (\e r -> if abundant (n - e) then False else r)
-                      True [x | x <- [12..(n `div` 2)], abundant x]
+abundants :: [Integer]
+abundants = [x | x <- [12..(28122 - 12)], abundant x]
 
-main = print $ sum $ filter abundantSum [1..28123]
+notAbanduntSum :: Integer -> Bool
+notAbanduntSum n = [] == [x | x <- abundants,
+                              x <= n - 12,
+                              elem (n - x) abundants]
+
+main = print $ sum [x | x <- [1..28122], notAbanduntSum x]
 
