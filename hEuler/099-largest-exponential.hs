@@ -16,15 +16,10 @@
 
 {-# OPTIONS_GHC -O2 #-}
 
-split :: [String] -> String -> [String]
-split r (x:xs) |  x == ',' = r ++ [xs]
-               | otherwise = split (app r [x]) xs
-  where
-    app [] e = [e]
-    app l  e = (init l) ++ [last l ++ e]
+import Data.List.Split (splitOn)
 
 prep :: String -> [(Integer, (Integer, Integer))]
-prep = (zip [1..]) . (map conv) . (map (split [])) . lines
+prep = (zip [1..]) . (map conv) . (map (splitOn ",")) . lines
   where
     conv :: [String] -> (Integer, Integer)
     conv (a:b:_) = (read a, read b)
