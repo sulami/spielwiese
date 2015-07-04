@@ -15,22 +15,26 @@
 
 import Data.List (sort)
 
-unique :: [Int] -> Bool
-unique l = [0..2] == sort l
-
-pretty :: [Int] -> String
-pretty = foldr (\e r -> r ++ [head (show e)]) []
-
-main = putStrLn . pretty . last $
-        take (10^6) [ [a,b,c,d,e,f,g,h,i,j] | a <- [0..9],
-                                              b <- [0..9],
-                                              c <- [0..9],
-                                              d <- [0..9],
-                                              e <- [0..9],
-                                              f <- [0..9],
-                                              g <- [0..9],
-                                              h <- [0..9],
-                                              i <- [0..9],
-                                              j <- [0..9],
-                                              unique [a,b,c,d,e,f,g,h,i,j] ]
+main = putStrLn $ (sort $ map concat
+  $ [ map show [a,b,c,d,e,f,g,h,i,j] |
+  a <- [0..9],
+  b <- [0..9],
+  b /= a,
+  c <- [0..9],
+  c /= a, c /= b,
+  d <- [0..9],
+  d /= a, d /= b, d /= c,
+  e <- [0..9],
+  e /= a, e /= b, e /= c, e /= d,
+  f <- [0..9],
+  f /= a, f /= b, f /= c, f /= d, f /= e,
+  g <- [0..9],
+  g /= a, g /= b, g /= c, g /= d, g /= e, g /= f,
+  h <- [0..9],
+  h /= a, h /= b, h /= c, h /= d, h /= e, h /= f, h /= g,
+  i <- [0..9],
+  i /= a, i /= b, i /= c, i /= d, i /= e, i /= f, i /= g, i /= h,
+  j <- [0..9],
+  j /= a, j /= b, j /= c, j /= d, j /= e, j /= f, j /= g, j /= h, j /= i
+  ]) !! 999999
 
