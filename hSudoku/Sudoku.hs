@@ -1,7 +1,6 @@
-module Sudoku (build, prettyPrint, solve) where
+module Sudoku (build, prettify, prettyPrint, solve) where
 
-import Data.List    (intersperse, lookup, nub)
-import Data.Maybe   (fromJust)
+import Data.List (intersperse)
 
 type Value = Int
 type Coord = Int
@@ -21,11 +20,11 @@ boxWise n = let c = n `mod` 9 `div` 3
              in [s..(s+2)] ++ [(s+9)..(s+11)] ++ [(s+18)..(s+20)]
 
 get :: Grid -> Coord -> Value
-get g n = fromJust $ lookup n g
+get g n = snd $ g !! n
 
 options :: Grid -> Cell -> [Value]
 options g (n, _) = let r = (rowWise n) ++ (colWise n) ++ (boxWise n) in
-                    filter (`notElem` (nub (map (get g) r))) [1..9]
+                    filter (`notElem` (map (get g) r)) [1..9]
 
 change :: Grid -> Cell -> Grid
 change g (n, v) = map (\(gn, gv) -> if gn == n then (n, v) else (gn, gv)) g
