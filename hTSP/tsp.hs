@@ -163,31 +163,11 @@ tsp_nn_rot l = best $ tsp_nn_rot' [] (length l) l
 
 -- Now on to something different, the definitve best solution to the problem,
 -- at least in terms of the best result. We iterate through every possible
--- solution and choose the best one. Runtime is of course abysmal, O(n!). This
--- is also quite a tricky one because of the double recursion. Because we
--- supply the first city to visit, we have to remove the first list element
--- afterwards. We also have to run this after a rotation so we start at every
--- possible city.
-tsp_all :: (Eq k, Real v) => [(k, [(k, v)])] -> ([k], v)
-tsp_all l = best $ map (`addLast` l) (addDistances l (rotate' l [] (length l)))
-  where
-    tsp_all' :: (Eq k, Real v) => [[k]] -> [k] -> [(k, [(k, v)])] -> Int
-                -> [[k]]
-    tsp_all' r p []     _ = r ++ [p]
-    tsp_all' r p _      0 = r
-    tsp_all' r p (x:xs) c = tsp_all' (tsp_all' r (p ++ [(fst x)]) xs
-                                (length xs)) p (rotate (x:xs)) (c-1)
-    -- This runs the entire algorithm for every starting city.
-    rotate' :: (Eq k, Real v) => [(k, [(k, v)])] -> [[k]] -> Int -> [[k]]
-    rotate' _ r 0 = r
-    rotate' l r c = rotate' (rotate l) (r ++ (tail (tsp_all' [[fst (head l)]]
-                                  [fst (head l)] (tail l) (length l)))) (c-1)
-    -- After generating all possible paths, we calculate the length of each.
-    addDistances :: (Eq k, Real v) => [(k, [(k, v)])] -> [[k]] -> [([k], v)]
-    addDistances l = foldr (\x r -> r ++ [(x, pathLength x l)]) []
-    -- Again, we need to get the best result we have calculated.
-    best :: (Eq k, Real v) => [([k], v)] -> ([k], v)
-    best = closest
+-- solution and choose the best one.
+tsp_all :: (Eq k, Ord k, Real v) => [(k, [(k, v)])] -> (v, [k])
+tsp_all l = let paths = map (\l -> l ++ [head l]) $ L.permutations $ map fst l
+                dists = map (`pathLength` l) paths
+            in minimum $ zip dists paths
 
 -- The next algorithm we will be looking at is the greedy algorithm. It will
 -- try to accumulate the shortest possible edges to build the graph this way.
