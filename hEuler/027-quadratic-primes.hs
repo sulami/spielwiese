@@ -28,13 +28,13 @@
 {-# OPTIONS_GHC -O2 #-}
 
 isPrime :: Integer -> Bool
-isPrime n = 0 == length (divisors n)
+isPrime n = n > 1 && [] == divisors n
   where
     divisors :: Integer -> [Integer]
     divisors n = [ x | x <- [2..(n `div` 2)], n `mod` x == 0]
 
 coeff :: (Integer, Integer) -> Int
-coeff (a,b) = length $ takeWhile isPrime [n^2 + a*n + b | n <- [0..]]
+coeff (a,b) = length $ takeWhile isPrime [(n^2) + (a*n) + b | n <- [0..]]
 
 main = print $ (\(a,b) -> a*b) . snd . maximum $ zip (map coeff l) l
   where
