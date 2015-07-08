@@ -58,5 +58,5 @@ prettify g = unlines $ gaps $ fillempty $ pp (map snd g) []
     gaps      = map (intersperse ' ')
 
 prettyPrint :: Grid -> IO ()
-prettyPrint = putStrLn . prettify
+prettyPrint = putStr . prettify
 

@@ -17,6 +17,6 @@ example =
 
 main = do let ex = build example
           prettyPrint ex
-          putStrLn " =>\n"
+          putStrLn "\n =>\n"
           prettyPrint $ solve ex
 
