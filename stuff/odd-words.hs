@@ -8,6 +8,8 @@ rev :: (Integer, String) -> String
 rev (n, s) |     odd n = reverse s
            | otherwise = s
 
-main = do input <- getArgs
-          putStrLn $ unwords $ map rev $ zip [0..] input
+main = do arg <- fmap (unwords) getArgs
+          let out = unwords $ map rev $ zip [0..] $ words
+                    $ takeWhile (/= '.') arg
+          putStrLn $ out ++ "."
 
