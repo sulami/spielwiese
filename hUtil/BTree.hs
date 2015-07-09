@@ -48,11 +48,11 @@ treeFromList (x:xs) = Node x
                           (treeFromList (drop ((length xs) `div` 2) xs))
 
 -- This builds a binary search tree.
-balancedTreeFromList :: Ord a => [a] -> BTree a
-balancedTreeFromList []     = Empty
-balancedTreeFromList (x:xs) = Node x
-                          (balancedTreeFromList (filter (<x) xs))
-                          (balancedTreeFromList (filter (>x) xs))
+bstreeFromList :: Ord a => [a] -> BTree a
+bstreeFromList []     = Empty
+bstreeFromList (x:xs) = Node x
+                          (bstreeFromList (filter (<x) xs))
+                          (bstreeFromList (filter (>x) xs))
 
 preOrder :: BTree a -> [a]
 preOrder Empty        = []
