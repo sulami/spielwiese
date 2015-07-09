@@ -39,11 +39,20 @@ instance Functor BTree where
   fmap _ Empty        = Empty
   fmap f (Node x l r) = Node (f x) (fmap f l) (fmap f r)
 
-treeFromList :: Ord a => [a] -> BTree a
+-- This tries to build a balanced tree that is dependent on the order of the
+-- elements in the input list, where `preOrder (treeFromList l) == l`.
+treeFromList :: [a] -> BTree a
 treeFromList []     = Empty
 treeFromList (x:xs) = Node x
-                          (treeFromList (filter (<x) xs))
-                          (treeFromList (filter (>x) xs))
+                          (treeFromList (take ((length xs) `div` 2) xs))
+                          (treeFromList (drop ((length xs) `div` 2) xs))
+
+-- This builds a binary search tree.
+balancedTreeFromList :: Ord a => [a] -> BTree a
+balancedTreeFromList []     = Empty
+balancedTreeFromList (x:xs) = Node x
+                          (balancedTreeFromList (filter (<x) xs))
+                          (balancedTreeFromList (filter (>x) xs))
 
 preOrder :: BTree a -> [a]
 preOrder Empty        = []
