@@ -10,6 +10,7 @@ data BTree a = Empty
 instance (Show a) => Show (BTree a) where
   show t = "< " ++ replace '\n' "\n: " (treeshow "" t)
     where
+      treeshow :: Show a => String -> BTree a -> String
       treeshow pref Empty = ""
       treeshow pref (Node x Empty Empty) = (pshow pref x)
       treeshow pref (Node x l     Empty) = (pshow pref x) ++ "\n" ++
@@ -20,12 +21,19 @@ instance (Show a) => Show (BTree a) where
                                            (showSon pref "|--" "|  " l) ++
                                            "\n" ++
                                            (showSon pref "`--" "   " r)
+
+      showSon :: Show a => String -> String -> String -> BTree a -> String
       showSon pref before next t = pref ++ before ++ treeshow (pref ++ next) t
+
+      pshow :: Show a => String -> a -> String
       pshow pref x = replace '\n' ("\n" ++ pref) (show x)
+
+      replace :: Char -> String -> String -> String
       replace c new string = concatMap (change c new) string
-        where
-          change c new x | x == c    = new
-                         | otherwise = [x]
+
+      change :: Char -> String -> Char -> String
+      change c new x | x == c    = new
+                     | otherwise = [x]
 
 instance Functor BTree where
   fmap _ Empty        = Empty
@@ -55,8 +63,10 @@ breadthFirst t = bf [t]
     bf :: [BTree a] -> [a]
     bf [] = []
     bf t  = map nodeValue t ++ bf (concat (map leftAndRight t))
+
     nodeValue :: BTree a -> a
     nodeValue (Node x _ _) = x
+
     leftAndRight :: BTree a -> [BTree a]
     leftAndRight (Node _ Empty Empty) = []
     leftAndRight (Node _ Empty r    ) = [r]
