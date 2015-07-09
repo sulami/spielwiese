@@ -100,3 +100,6 @@ rmFromTree (Node x l r) y |    y == x = fillUp l r
     fillUp l@(Node x lx rx) r@(Node y ly ry) =
         foldl' (\rv e -> addToTree rv e) r (breadthFirst l)
 
+treeSize :: BTree a -> Int
+treeSize = length . preOrder
+
