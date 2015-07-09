@@ -2,6 +2,8 @@ module BTree where
 
 -- Some binary tree utility stuff.
 
+import Data.List (foldl')
+
 data BTree a = Empty
              | Node a (BTree a) (BTree a)
   deriving Show
@@ -41,4 +43,22 @@ breadthFirst t = bf [t]
     leftAndRight (Node _ Empty r    ) = [r]
     leftAndRight (Node _ l     Empty) = [l]
     leftAndRight (Node _ l     r    ) = [l, r]
+
+addToTree :: Ord a => BTree a -> a -> BTree a
+addToTree Empty y        = Node y Empty Empty
+addToTree (Node x l r) y | y < x     = Node x (addToTree l y) r
+                         | otherwise = Node x l (addToTree r y)
+
+rmFromTree :: Ord a => BTree a -> a -> BTree a
+rmFromTree Empty _        = Empty
+rmFromTree (Node x l r) y |    y == x = fillUp l r
+                          |    y  < x = Node x (rmFromTree l y) r
+                          | otherwise = Node x l (rmFromTree r y)
+  where
+    fillUp :: Ord a => BTree a -> BTree a -> BTree a
+    fillUp   Empty            Empty          = Empty
+    fillUp   Empty            (Node y ly ry) = Node y ly ry
+    fillUp   (Node x lx rx)   Empty          = Node x lx rx
+    fillUp l@(Node x lx rx) r@(Node y ly ry) =
+        foldl' (\rv e -> addToTree rv e) r (breadthFirst l)
 
