@@ -6,7 +6,26 @@ import Data.List (foldl')
 
 data BTree a = Empty
              | Node a (BTree a) (BTree a)
-  deriving Show
+
+instance (Show a) => Show (BTree a) where
+  show t = "< " ++ replace '\n' "\n: " (treeshow "" t)
+    where
+      treeshow pref Empty = ""
+      treeshow pref (Node x Empty Empty) = (pshow pref x)
+      treeshow pref (Node x l     Empty) = (pshow pref x) ++ "\n" ++
+                                           (showSon pref "`--" "   " l)
+      treeshow pref (Node x Empty r    ) = (pshow pref x) ++ "\n" ++
+                                           (showSon pref "`--" "   " r)
+      treeshow pref (Node x l     r    ) = (pshow pref x) ++ "\n" ++
+                                           (showSon pref "|--" "|  " l) ++
+                                           "\n" ++
+                                           (showSon pref "`--" "   " r)
+      showSon pref before next t = pref ++ before ++ treeshow (pref ++ next) t
+      pshow pref x = replace '\n' ("\n" ++ pref) (show x)
+      replace c new string = concatMap (change c new) string
+        where
+          change c new x | x == c    = new
+                         | otherwise = [x]
 
 instance Functor BTree where
   fmap _ Empty        = Empty
