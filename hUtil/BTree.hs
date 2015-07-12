@@ -103,3 +103,13 @@ rmFromTree (Node x l r) y |    y == x = fillUp l r
 treeSize :: BTree a -> Int
 treeSize = length . preOrder
 
+paths :: BTree a -> Int -> [[a]]
+paths Empty _ = []
+paths t     d = p t 1 [[]]
+  where
+    p :: BTree a -> Int -> [[a]] -> [[a]]
+    p Empty        _   _  = []
+    p (Node x l r) lvl rv | lvl == d  = [head rv ++ [x]]
+                          | otherwise = (p l (lvl+1) ([(head rv ++ [x])]))
+                                     ++ (p r (lvl+1) ([(head rv ++ [x])]))
+
