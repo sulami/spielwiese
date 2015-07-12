@@ -7,7 +7,7 @@ import Data.List (foldl')
 data BTree a = Empty
              | Node a (BTree a) (BTree a)
 
-instance (Show a) => Show (BTree a) where
+instance Show a => Show (BTree a) where
   show t = "< " ++ replace '\n' "\n: " (treeshow "" t)
     where
       treeshow :: Show a => String -> BTree a -> String
@@ -94,10 +94,10 @@ rmFromTree (Node x l r) y |    y == x = fillUp l r
                           | otherwise = Node x l (rmFromTree r y)
   where
     fillUp :: Ord a => BTree a -> BTree a -> BTree a
-    fillUp   Empty            Empty          = Empty
-    fillUp   Empty            (Node y ly ry) = Node y ly ry
-    fillUp   (Node x lx rx)   Empty          = Node x lx rx
-    fillUp l@(Node x lx rx) r@(Node y ly ry) =
+    fillUp Empty          Empty          = Empty
+    fillUp Empty          (Node y ly ry) = Node y ly ry
+    fillUp (Node x lx rx) Empty          = Node x lx rx
+    fillUp l              r              =
         foldl' (\rv e -> addToTree rv e) r (breadthFirst l)
 
 treeSize :: BTree a -> Int
