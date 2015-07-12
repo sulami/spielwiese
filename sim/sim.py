@@ -16,15 +16,14 @@ def mutate(base, n=4, prob=0.1, rang=0.1):
     return newGen
 
 def test(gen, score):
-    best = (None, -99999999)
-    for ent in gen:
+    best = (gen[0], score(gen[0]))
+    for ent in gen[1:]:
         s = score(ent)
-        if s >= best[1]:
+        if s > best[1]:
             best = (ent, s)
     return best
 
 def run(base, score, c=10, n=4, prob=0.2, rang=0.1):
-    seed()
     line = []
     nbase = base
     for i in range(c):
