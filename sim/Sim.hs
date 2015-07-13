@@ -45,9 +45,21 @@ test f gen = fst $ last $ sortBy s $ zip gen $ map f gen
                     | a < b     = LT
                     | otherwise = EQ
 
+printGen :: Generation -> IO ()
+printGen []     = return ()
+printGen (x:xs) = do printEnt x
+                     printGen xs
+
+printEnt :: Ent -> IO ()
+printEnt []     = return ()
+printEnt (x:xs) = do putStr $ fst x ++ ": "
+                     v <- snd x
+                     print v
+                     printEnt xs
+
 main = do let conf = Config 5 0.5 0.1
-          let base = [("Height", return 100)]
+          let base = [("Height", return 100), ("Weight", return 80)]
           let score = (\e -> 100 - (fromJust $ lookup "Height" e))
           let gen0 = evolution conf base
-          print $ "fds"
+          printGen gen0
 
