@@ -39,11 +39,16 @@ evolution conf base = take (genSize conf) $ mutate conf base
 
 test :: Ord a => (Ent -> a) -> Generation -> Ent
 test f gen = fst $ last $ sortBy s $ zip gen $ map f gen
-  where
-    s :: (Ord a) => (b, a) -> (b, a) -> Ordering
-    s (_, a) (_, b) | a > b     = GT
-                    | a < b     = LT
-                    | otherwise = EQ
+
+run :: Ord a => Config -> Generation -> (Ent -> a) -> [Ent]
+run conf gen f = let winner = fst $ last $ sortBy s $ zip gen $ map f gen
+                     ngen = mutate conf winner
+                  in winner : run conf ngen f
+
+s :: (Ord a) => (b, a) -> (b, a) -> Ordering
+s (_, a) (_, b) | a > b     = GT
+                | a < b     = LT
+                | otherwise = EQ
 
 printGen :: Generation -> IO ()
 printGen []     = return ()
@@ -60,6 +65,7 @@ printEnt (x:xs) = do putStr $ fst x ++ ": "
 main = do let conf = Config 5 0.5 0.1
           let base = [("Height", return 100), ("Weight", return 80)]
           let score = (\e -> 100 - (fromJust $ lookup "Height" e))
-          let gen0 = evolution conf base
-          printGen gen0
+          let gen0 = mutate conf base
+          -- let evo = take 3 $ run conf gen0 score
+          print "fds"
 
