@@ -1,0 +1,5 @@
+#!/usr/bin/python
+
+# To solve this problem, make the './run' executable handle any 
+# appropriate command line arguments and stdin and output the
+# solution to stdout.
