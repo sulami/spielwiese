@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC #-}
+{-# OPTIONS_GHC -O2 #-}
 {-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE FlexibleInstances #-}
 
@@ -37,15 +37,15 @@ mutate conf base = (base : mutate conf (mut base))
 evolution :: Config -> Ent -> Generation
 evolution conf base = take (genSize conf) $ mutate conf base
 
-test :: Ord a => (Ent -> a) -> Generation -> Ent
-test f gen = fst $ last $ sortBy s $ zip gen $ map f gen
+best :: Ord a => (Ent -> a) -> Generation -> Ent
+best f gen = fst $ last $ sortBy s $ zip gen $ map f gen
 
 run :: Ord a => Config -> Generation -> (Ent -> a) -> [Ent]
-run conf gen f = let winner = fst $ last $ sortBy s $ zip gen $ map f gen
-                     ngen = mutate conf winner
+run conf gen f = let winner = best f gen
+                     ngen = evolution conf winner
                   in winner : run conf ngen f
 
-s :: (Ord a) => (b, a) -> (b, a) -> Ordering
+s :: Ord a => (b, a) -> (b, a) -> Ordering
 s (_, a) (_, b) | a > b     = GT
                 | a < b     = LT
                 | otherwise = EQ
@@ -63,9 +63,9 @@ printEnt (x:xs) = do putStr $ fst x ++ ": "
                      printEnt xs
 
 main = do let conf = Config 5 0.5 0.1
-          let base = [("Height", return 100), ("Weight", return 80)]
-          let score = (\e -> 100 - (fromJust $ lookup "Height" e))
-          let gen0 = mutate conf base
-          -- let evo = take 3 $ run conf gen0 score
-          print "fds"
+          let base = [("Height", return 100), ("Weight", return 80)] :: Ent
+          let test = (\e -> 1)
+          let gen0 = evolution conf base
+          let evo = take 5 $ run conf gen0 test
+          printGen evo
 
