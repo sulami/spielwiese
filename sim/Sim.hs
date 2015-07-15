@@ -2,10 +2,12 @@
 {-# LANGUAGE TypeSynonymInstances #-}
 {-# LANGUAGE FlexibleInstances #-}
 
-module Main where
+module Sim (
+  Property, Ent, Generation, Config (..),
+  evolution, run, printEnt, printGen
+) where
 
 import Data.List (sortBy)
-import Data.Maybe (fromJust)
 import System.Random (randomRIO)
 
 type Property   = (String, IO Float)
@@ -61,11 +63,4 @@ printEnt (x:xs) = do putStr $ fst x ++ ": "
                      v <- snd x
                      print v
                      printEnt xs
-
-main = do let conf = Config 5 0.5 0.1
-          let base = [("Height", return 100), ("Weight", return 80)] :: Ent
-          let test = (\e -> 1)
-          let gen0 = evolution conf base
-          let evo = take 5 $ run conf gen0 test
-          printGen evo
 
