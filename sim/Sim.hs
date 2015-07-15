@@ -5,6 +5,18 @@
 -- | This is a simple, generic evolution library. It can use arbitrary entities
 -- and scoring functions to find optimal solutions for a given set of numerical
 -- properties by trial and error and natural selection.
+--
+-- Example usage looks like this:
+--
+-- > module Main where
+-- >
+-- > import Sim
+-- >
+-- > main = do let conf = Config 1000 0.2 0.1
+-- >           let base = [("Height", return 200), ("Weight", return 80)]
+-- >           let test = (\ent -> 1) -- No actual ordering going on here.
+-- >           let gen0 = evolution conf base
+-- >           printGen $ take 5 $ run conf gen0 test
 
 module Sim (
   Property, Ent, Generation, Config (..),
@@ -51,7 +63,7 @@ mutate conf base = mut base : mutate conf base
                     in (n, np)
 
 -- | Generate a generation using a config and an ent as base. Useful to
--- generate the first generation to use with run.
+-- generate the first generation to use with 'run'.
 evolution :: Config -> Ent -> Generation
 evolution conf base = take (genSize conf) $ base : mutate conf base
 
