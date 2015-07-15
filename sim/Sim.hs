@@ -21,7 +21,7 @@ data Config     = Config {
   }
 
 mutate :: Config -> Ent -> [Ent]
-mutate conf base = (base : mutate conf (mut base))
+mutate conf base = mut base : mutate conf base
   where
     mut :: Ent -> Ent
     mut base = map chProp base
@@ -29,7 +29,8 @@ mutate conf base = (base : mutate conf (mut base))
     chProp :: Property -> Property
     chProp (n, p) = let np = do r1 <- randomRIO (0, 1) :: IO Float
                                 let v = if r1 <= mutProbability conf
-                                        then randomRIO (0, mutRange conf)
+                                        then randomRIO (-1 * mutRange conf,
+                                                        mutRange conf)
                                         else return 0
                                 nv <- v
                                 op <- p
@@ -37,7 +38,7 @@ mutate conf base = (base : mutate conf (mut base))
                     in (n, np)
 
 evolution :: Config -> Ent -> Generation
-evolution conf base = take (genSize conf) $ mutate conf base
+evolution conf base = take (genSize conf) $ base : mutate conf base
 
 best :: Ord a => (Ent -> a) -> Generation -> Ent
 best f gen = fst $ last $ sortBy s $ zip gen $ map f gen
