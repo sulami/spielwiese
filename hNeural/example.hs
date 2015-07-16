@@ -10,5 +10,5 @@ x = fromLists $ [[1,0,1], [0,1,1], [1,1,0], [1,1,1], [0,1,0], [1,0,0], [0,0,1]]
 y = transpose $ fromLists $ [[1,1,0,1,0,0,1]]
 
 main = do let syn1 = train syn0 x y 100000
-          print $ predict (fromLists [[0,0,1]]) syn1
+          print $ predict syn1 (fromLists [[0,0,1]])
 
