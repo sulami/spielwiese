@@ -63,6 +63,6 @@ main = do grid <- fmap lines getContents
           let start = findStart grid 0
           let paths = filter (reachesTarget grid)
                       $ map (cut grid) (flood grid start)
-          let short = snd $ minimum $ zip (map length paths) paths
+          let short = head paths
           printPath $ parsePath short
 
