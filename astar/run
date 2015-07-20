@@ -1,26 +1,31 @@
 #!/usr/bin/python
 
+from copy import deepcopy
 from sys import stdin
 
 def visit(map, x, y, paths, visited):
     if (x,y) not in visited and (map[y][x] == '-' or map[y][x] == 'S'):
         visited.add((x, y))
+        v1 = deepcopy(visited)
+        v2 = deepcopy(visited)
+        v3 = deepcopy(visited)
+        v4 = deepcopy(visited)
         p = []
         if x < len(map[0]) - 1:
-            n = visit(map, x+1, y, paths[:-1] + [paths[-1] + 'E'], visited)
-            if n != []:
+            n = visit(map, x+1, y, paths[:-1] + [paths[-1] + 'E'], v1)
+            if n:
                 p += n
         if y > 0:
-            n = visit(map, x, y-1, paths[:-1] + [paths[-1] + 'N'], visited)
-            if n != []:
+            n = visit(map, x, y-1, paths[:-1] + [paths[-1] + 'N'], v2)
+            if n:
                 p += n
         if y < len(map) - 1:
-            n = visit(map, x, y+1, paths[:-1] + [paths[-1] + 'S'], visited)
-            if n != []:
+            n = visit(map, x, y+1, paths[:-1] + [paths[-1] + 'S'], v3)
+            if n:
                 p += n
         if x > 0:
-            n = visit(map, x-1, y, paths[:-1] + [paths[-1] + 'W'], visited)
-            if n != []:
+            n = visit(map, x-1, y, paths[:-1] + [paths[-1] + 'W'], v4)
+            if n:
                 p += n
         return p
 
@@ -28,7 +33,7 @@ def visit(map, x, y, paths, visited):
         return paths
 
     else: # Can't go here, or already been here.
-        return []
+        return None
 
 def find_start(map):
     for y in range(len(map)):
