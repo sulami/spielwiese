@@ -2,25 +2,33 @@
 
 from sys import stdin
 
-def visit(map, x, y, path, visited):
+def visit(map, x, y, paths, visited):
     if (x,y) not in visited and (map[y][x] == '-' or map[y][x] == 'S'):
         visited.add((x, y))
-        if x > 0:
-            visit(map, x-1, y, path + ['W'], visited)
+        p = []
         if x < len(map[0]) - 1:
-            visit(map, x+1, y, path + ['E'], visited)
+            n = visit(map, x+1, y, paths[:-1] + [paths[-1] + 'E'], visited)
+            if n != []:
+                p += n
         if y > 0:
-            visit(map, x, y-1, path + ['N'], visited)
+            n = visit(map, x, y-1, paths[:-1] + [paths[-1] + 'N'], visited)
+            if n != []:
+                p += n
         if y < len(map) - 1:
-            visit(map, x, y+1, path + ['S'], visited)
+            n = visit(map, x, y+1, paths[:-1] + [paths[-1] + 'S'], visited)
+            if n != []:
+                p += n
+        if x > 0:
+            n = visit(map, x-1, y, paths[:-1] + [paths[-1] + 'W'], visited)
+            if n != []:
+                p += n
+        return p
 
-    elif map[y][x] == 'F':
-        for step in path:
-            print(step)
-        return
+    elif (x,y) not in visited and map[y][x] == 'F':
+        return paths
 
-    else: # 'X', can't go here, or already been here.
-        pass
+    else: # Can't go here, or already been here.
+        return []
 
 def find_start(map):
     for y in range(len(map)):
@@ -37,7 +45,9 @@ def main():
 
     (y,x) = find_start(map)
 
-    visit(map, x, y, [], set())
+    results = visit(map, x, y, [""], set())
+
+    print(sorted([(len(r),r) for r in results])[0][1])
 
 if __name__ == '__main__':
     main()
