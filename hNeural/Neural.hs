@@ -10,14 +10,13 @@ import Data.Matrix
 type Data          = Matrix Double
 type Synapse       = Matrix Double
 data NeuralNetwork = NeuralNetwork {
-  layerCount  :: Int,
   shape       :: [Int],
   weights     :: [Synapse]
 } deriving (Show)
 
 -- | Construct a new neural network with the shape supplied.
 mkNeuNet :: [Int] -> NeuralNetwork
-mkNeuNet s = NeuralNetwork (length s) s $ mkSyns $ zip (init s) (tail s)
+mkNeuNet s = NeuralNetwork s $ mkSyns $ zip (init s) (tail s)
 
 mkSyns :: [(Int, Int)] -> [Synapse]
 mkSyns = foldl (\r (y,x) -> r ++ [zero x $ y + 1]) []
