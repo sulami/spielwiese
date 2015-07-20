@@ -1,7 +1,3 @@
-{-# OPTIONS_GHC -O2 #-}
-{-# LANGUAGE TypeSynonymInstances #-}
-{-# LANGUAGE FlexibleInstances #-}
-
 -- | This is a simple, generic evolution library. It can use arbitrary entities
 -- and scoring functions to find optimal solutions for a given set of numerical
 -- properties by trial and error and natural selection.
