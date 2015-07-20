@@ -17,8 +17,9 @@ def visit(map, x, y, path, visited):
     elif map[y][x] == 'F':
         for step in path:
             print(step)
+        return
 
-    else: # 'X', can't go here.
+    else: # 'X', can't go here, or already been here.
         pass
 
 def find_start(map):
