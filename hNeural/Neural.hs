@@ -21,10 +21,13 @@ mkNeuNet s = NeuralNetwork s $ mkSyns $ zip (init s) (tail s)
 mkSyns :: [(Int, Int)] -> [Synapse]
 mkSyns = foldl (\r (y,x) -> r ++ [zero x $ y + 1]) []
 
--- | Run a set of data through all the layers of a neural network.
-run :: NeuralNetwork -> Data -> Data
+-- | Run a set of data through all the layers of a neural network. This returns
+-- all the intermediate steps. To only get the final result, use
+--
+-- > transpose $ last $ run ...
+run :: NeuralNetwork -> Data -> [Data]
 run net d0 = let indata = addBias $ transpose d0
-              in transpose $ foldl runLayer indata $ weights net
+              in scanl runLayer indata $ weights net
   where
     runLayer :: Data -> Synapse -> Data
     runLayer d s = predict s $ addBias d
