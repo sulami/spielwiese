@@ -47,7 +47,9 @@ def main():
 
     results = visit(map, x, y, [""], set())
 
-    print(sorted([(len(r),r) for r in results])[0][1])
+    r = sorted([(len(r),r) for r in results])[0][1]
+    for s in r:
+        print(s)
 
 if __name__ == '__main__':
     main()
