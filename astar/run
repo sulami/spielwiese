@@ -3,7 +3,7 @@
 from sys import stdin
 
 def visit(map, x, y, path, visited):
-    if (x,y) not in visited and map[y][x] == '-' or map[y][x] == 'S':
+    if (x,y) not in visited and (map[y][x] == '-' or map[y][x] == 'S'):
         visited.add((x, y))
         if x > 0:
             visit(map, x-1, y, path + ['W'], visited)
