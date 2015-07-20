@@ -32,7 +32,8 @@ def main():
     map = []
 
     for line in stdin:
-        map.append(line[:-1]) # Get rid of the newlines.
+        if line != '\n':
+            map.append(line[:-1]) # Get rid of the newlines.
 
     (y,x) = find_start(map)
 
