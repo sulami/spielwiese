@@ -1,6 +1,7 @@
 {-# OPTIONS_GHC -O2 #-}
 
 module Neural (
+  mkNeuNet,
   predict, train
   ) where
 
@@ -8,6 +9,18 @@ import Data.Matrix
 
 type Data          = Matrix Double
 type Synapse       = Matrix Double
+data NeuralNetwork = NeuralNetwork {
+  layerCount  :: Int,
+  shape       :: [Int],
+  weights     :: [Synapse]
+} deriving (Show)
+
+-- | Construct a new neural network with the shape supplied.
+mkNeuNet :: [Int] -> NeuralNetwork
+mkNeuNet s = NeuralNetwork (length s) s $ mkSyns $ zip (init s) (tail s)
+
+mkSyns :: [(Int, Int)] -> [Synapse]
+mkSyns = foldl (\r (y,x) -> r ++ [zero x $ y + 1]) []
 
 dot :: Matrix Double -> Matrix Double -> Matrix Double
 dot a b = fromLists [zipWith (*) (toList a) (toList b)]
