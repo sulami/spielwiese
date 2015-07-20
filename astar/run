@@ -1,5 +1,42 @@
 #!/usr/bin/python
 
-# To solve this problem, make the './run' executable handle any 
-# appropriate command line arguments and stdin and output the
-# solution to stdout.
+from sys import stdin
+
+def visit(map, x, y, path, visited):
+    if (x,y) not in visited and map[y][x] == '-' or map[y][x] == 'S':
+        visited.add((x, y))
+        if x > 0:
+            visit(map, x-1, y, path + ['W'], visited)
+        if x < len(map[0]) - 1:
+            visit(map, x+1, y, path + ['E'], visited)
+        if y > 0:
+            visit(map, x, y-1, path + ['N'], visited)
+        if y < len(map) - 1:
+            visit(map, x, y+1, path + ['S'], visited)
+
+    elif map[y][x] == 'F':
+        for step in path:
+            print(step)
+
+    else: # 'X', can't go here.
+        pass
+
+def find_start(map):
+    for y in range(len(map)):
+        for x in range(len(map[y])):
+            if map[y][x] == 'S':
+                return (y,x)
+
+def main():
+    map = []
+
+    for line in stdin:
+        map.append(line[:-1]) # Get rid of the newlines.
+
+    (y,x) = find_start(map)
+
+    visit(map, x, y, [], set())
+
+if __name__ == '__main__':
+    main()
+
