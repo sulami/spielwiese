@@ -12,12 +12,6 @@ findStart (x:xs) n | 'S' `elem` x = (fs x 0, n)
     fs (x:xs) n | 'S' == x  = n
                 | otherwise = fs xs $ n+1
 
-possibleWays :: Grid -> Coord -> Path
-possibleWays g (x,y) = [(x1,y1) | x1 <- [0..(x+1)], y1 <- [0..(y+1)],
-                                  abs (x-x1) + abs (y-y1) == 1,
-                                  y1 < length g, x1 < length (g !! y1),
-                                  g !! y1 !! x1 == 'F' || g !! y1 !! x1 == '-'
-                                  ]
 
 parsePath :: Path -> String
 parsePath p = concat $ map (\(a,b) -> parseDir a b) $ zip (init p) (tail p)
@@ -35,8 +29,19 @@ flood grid pos = fl grid [[pos]]
     fl grid paths = paths ++ fl grid (concat (map (addRoutes grid paths) paths))
 
     addRoutes :: Grid -> [Path] -> Path -> [Path]
-    addRoutes grid ps path = [ path ++ [p] | p <- possibleWays grid $ last path,
-                                             not $ p `elem` (concat ps) ]
+    addRoutes grid ps path = [ path ++ [p] | p <- possibleWays grid ps $ last path ]
+
+    possibleWays :: Grid -> [Path] -> Coord -> Path
+    possibleWays g ps (x,y) = [(x1,y1) | y1 <- [(y-1)..(y+1)],
+                                         y1 >= 0,
+                                         y1 < length g,
+                                         x1 <- [(x-1)..(x+1)],
+                                         x1 >= 0,
+                                         x1 < length (g !! y1),
+                                         abs (x-x1) + abs (y-y1) == 1,
+                                         g !! y1 !! x1 /= 'X',
+                                         not $ (x1,y1) `elem` (concat ps)
+                                         ]
 
 reachesTarget :: Grid -> Path -> Bool
 reachesTarget g p = let (x,y) = last p in g !! y !! x == 'F'
