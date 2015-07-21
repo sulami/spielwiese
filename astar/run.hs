@@ -1,5 +1,7 @@
 module Main where
 
+import           Data.List (nub)
+
 type Grid = [String]
 type Coord = (Int, Int)
 type Path = [Coord]
@@ -38,9 +40,9 @@ flood grid pos = fl grid [[pos]]
                                          x1 <- [(x-1)..(x+1)],
                                          x1 >= 0,
                                          x1 < length (g !! y1),
-                                         abs (x-x1) + abs (y-y1) == 1,
+                                         x-x1 == 0 || y-y1 == 0,
                                          g !! y1 !! x1 /= 'X',
-                                         not $ (x1,y1) `elem` (concat ps)
+                                         not $ (x1,y1) `elem` (nub (concat ps))
                                          ]
 
 reachesTarget :: Grid -> Path -> Bool
