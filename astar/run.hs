@@ -32,11 +32,11 @@ flood :: Grid -> Coord -> [Path]
 flood grid pos = fl grid [[pos]]
   where
     fl :: Grid -> [Path] -> [Path]
-    fl grid paths = paths ++ fl grid (concat (map (addRoutes grid) paths))
+    fl grid paths = paths ++ fl grid (concat (map (addRoutes grid paths) paths))
 
-    addRoutes :: Grid -> Path -> [Path]
-    addRoutes grid path = [ path ++ [p] | p <- possibleWays grid $ last path,
-                                          not $ p `elem` path ]
+    addRoutes :: Grid -> [Path] -> Path -> [Path]
+    addRoutes grid ps path = [ path ++ [p] | p <- possibleWays grid $ last path,
+                                             not $ p `elem` (concat ps) ]
 
 reachesTarget :: Grid -> Path -> Bool
 reachesTarget g p = let (x,y) = last p in g !! y !! x == 'F'
