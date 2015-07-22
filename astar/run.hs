@@ -24,16 +24,23 @@ parsePath p = concat $ map (\(a,b) -> parseDir a b) $ zip (init p) (tail p)
                              | y0 > y1 = "N"
                              | y0 < y1 = "S"
 
-flood :: Grid -> Coord -> Coord -> [Path]
-flood grid fin pos = fl grid fin [[pos]]
+flood :: Grid -> Coord -> Coord -> [(Int, Path)]
+flood grid fin pos = fl grid fin [(cost fin [pos], [pos])]
   where
-    fl :: Grid -> Coord -> [Path] -> [Path]
+    fl :: Grid -> Coord -> [(Int, Path)] -> [(Int, Path)]
     fl grid fin paths
-      | any (\p -> last p == fin) paths = filter (\p -> last p == fin) paths
-      | otherwise = let cheap = map snd $ sort $ zip (map (cost fin) paths) paths
-                        best = head $ dropWhile (\r -> null $ addRoutes grid paths r) cheap
-                        pb = addRoutes grid paths best
-                    in fl grid fin $ filter (/= best) paths ++ pb
+      | any (\(_,p) -> last p == fin) paths = paths
+      | otherwise = let cheap = sort $ paths
+                        deadends = map fst $ takeWhile (\(_,r) -> null r) $ zip cheap $ map (addRoutes grid (map snd paths) . snd) cheap
+                        ndes = map adjustCost deadends
+                        nodeadends = drop (length ndes) cheap
+                        best = head nodeadends
+                        nr = addRoutes grid (map snd paths) $ snd best
+                        pb = zip (map (cost fin) nr) nr
+                    in fl grid fin $ pb ++ tail nodeadends ++ ndes
+      where
+        adjustCost :: (Int, Path) -> (Int, Path)
+        adjustCost (c,p) = (c*10,p)
 
     addRoutes :: Grid -> [Path] -> Path -> [Path]
     addRoutes grid ps path = [path ++ [p] | p <- possibleWays grid ps $ last path]
@@ -64,6 +71,8 @@ printPath (x:xs) = do putStrLn [x]
 main = do grid <- fmap lines getContents
           let start = find grid 'S' 0
           let fin = find grid 'F' 0
-          let path = head $ flood grid fin start
+          let path = snd $ head $ filter (\(_,p) -> last p == fin) $ flood grid fin start
+          -- let paths = flood grid fin start
+          -- print $ length paths
           printPath $ parsePath path
 
