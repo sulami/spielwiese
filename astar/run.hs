@@ -50,7 +50,7 @@ flood grid fin pos = fl grid fin [[pos]]
                                          ]
 
     cost :: Coord -> Path -> Int
-    cost fin path = let l = last path in (length path - 1) + (dist l fin)
+    cost fin path = let l = last path in (length path - 1) + (dist l fin)^2
 
     dist :: Coord -> Coord -> Int
     dist (x0,y0) (x1,y1) = abs (x0-x1) + abs (y0-y1)
