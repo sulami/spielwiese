@@ -1,6 +1,6 @@
 module Main where
 
-import           Data.List (nub)
+import           Data.List (sort, nub)
 
 type Grid = [String]
 type Coord = (Int, Int)
@@ -30,7 +30,8 @@ flood grid fin pos = fl grid fin [[pos]]
     fl :: Grid -> Coord -> [Path] -> [Path]
     fl grid fin paths
       | any (\p -> last p == fin) paths = filter (\p -> last p == fin) paths
-      | otherwise = let best = snd $ minimum $ zip (map (cost fin) paths) paths
+      | otherwise = let cheap = map snd $ sort $ zip (map (cost fin) paths) paths
+                        best = head $ dropWhile (\r -> null $ addRoutes grid paths r) cheap
                         pb = addRoutes grid paths best
                         opb = snd $ minimum $ zip (map (cost fin) pb) pb
                     in fl grid fin $ filter (/= best) paths ++ [opb]
