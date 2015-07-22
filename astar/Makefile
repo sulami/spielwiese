@@ -1,4 +1,4 @@
 all:
-	ghc -O2 -o run run.hs
+	ghc -threaded -O2 -o run run.hs
 
 .PHONY: all

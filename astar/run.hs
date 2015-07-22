@@ -1,6 +1,7 @@
 module Main where
 
 import           Data.List (nub)
+import           GHC.Conc.Sync (par, pseq)
 
 type Grid = [String]
 type Coord = (Int, Int)
@@ -32,7 +33,8 @@ flood grid fin pos = fl grid fin [[pos]]
       | any (\p -> last p == fin) paths = filter (\p -> last p == fin) paths
       | otherwise = let best = snd $ minimum $ zip (map (cost fin) paths) paths
                         pb = addRoutes grid paths best
-                    in fl grid fin $ filter (/= best) paths ++ pb
+                        op = filter (/= best) paths
+                    in fl grid fin $ par op $ pseq pb $ op ++ pb
 
     addRoutes :: Grid -> [Path] -> Path -> [Path]
     addRoutes grid ps path = [path ++ [p] | p <- possibleWays grid ps $ last path]
