@@ -33,8 +33,7 @@ flood grid fin pos = fl grid fin [[pos]]
       | otherwise = let cheap = map snd $ sort $ zip (map (cost fin) paths) paths
                         best = head $ dropWhile (\r -> null $ addRoutes grid paths r) cheap
                         pb = addRoutes grid paths best
-                        opb = snd $ minimum $ zip (map (cost fin) pb) pb
-                    in fl grid fin $ filter (/= best) paths ++ [opb]
+                    in fl grid fin $ filter (/= best) paths ++ pb
 
     addRoutes :: Grid -> [Path] -> Path -> [Path]
     addRoutes grid ps path = [path ++ [p] | p <- possibleWays grid ps $ last path]
