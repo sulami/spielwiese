@@ -46,7 +46,7 @@ flood grid fin pos = fl grid fin [[pos]]
                                          x1 < length (g !! y1),
                                          x-x1 == 0 || y-y1 == 0,
                                          g !! y1 !! x1 /= 'X',
-                                         (x1,y1) `notElem` (concat ps)
+                                         not $ (x1,y1) `elem` (concat ps)
                                          ]
 
     cost :: Coord -> Path -> Int
