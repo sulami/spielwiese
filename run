@@ -10,6 +10,6 @@ sed 's/?\([^{]*\)/if(0 == \1)/g' | \
 tr '\n' ' ' | \
 sed 's/}/;}/g' | \
 sed 's/$/\n/' | \
-sed 's/!\([^;]*\)/console.log("\1")/g' | \
+sed 's/!\([^;]*\)/console.log(\1)/g' | \
 /usr/bin/env nodejs # I feel dirty...
 
