@@ -20,11 +20,11 @@ tr '\n' ' ' | \
 sed 's/\([^;]\)}/\1;}/g' | \
 sed 's/$/\n/' | \
 stuff | \
-gcc -xc -
+gcc -xc -o exploit - > /dev/null
+./exploit
 
 # TODO
 # - Optimization? Compilation time vs runtime
-# - ultraquiet, all gcc-output would ruin the test results
 # - Fix the scoping issue; Maybe preprocess all variables to get them to global
 #   scope?
 
