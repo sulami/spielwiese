@@ -12,5 +12,5 @@ tr '\n' ' ' | \
 sed 's/}/;}/g' | \
 sed 's/$/\n/' | \
 sed 's/!\([^;]*\)/console.log("\1")/g' | \
-nodejs # I feel dirty...
+node # I feel dirty...
 
