@@ -4,10 +4,11 @@ tr '\n' ' ' | \
 sed 's/ //g' | \
 sed 's/\t//g' | \
 sed 's/;/;\n/g' | \
+sed 's/{/{\n/g' | \
+sed 's/}/}\n/g' | \
 ./prep.py | \
 sed 's/?\([^{]*\)/if(0 == \1)/g' | \
 tr '\n' ' ' | \
-sed 's/$/\n/' | \
 sed 's/; /;\n/g' | \
 sed 's/!\([^;}]*\)/console.log(\1)/g' | \
 /usr/bin/env nodejs # I feel dirty...
