@@ -1,14 +1,5 @@
 #!/bin/bash
 
-stuff() {
-    echo "#include <stdio.h>"
-    echo "int main() {"
-    while read data; do
-        echo "$data"
-    done
-    echo "return 0; }"
-}
-
 tr '\n' ' ' | \
 sed 's/;/;\n/g' | \
 sed 's/ //g' | \
@@ -20,13 +11,6 @@ sed 's/?\([^{]*\)/if(0 == \1)/g' | \
 tr '\n' ' ' | \
 sed 's/}/;}/g' | \
 sed 's/$/\n/' | \
-sed 's/!\([^;]*\)/printf("%d\\\\n",\1)/g' | \
-stuff | \
-gcc -xc -pipe -o /tmp/exploit -
-/tmp/exploit
-
-# TODO
-# - Optimization? Compilation time vs runtime
-# - Fix the scoping issue; Maybe preprocess all variables to get them to global
-#   scope?
+sed 's/!\([^;]*\)/console.log("\1")/g' | \
+nodejs # I feel dirty...
 
