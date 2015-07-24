@@ -22,7 +22,7 @@ sed 's/}/;}/g' | \
 sed 's/$/\n/' | \
 sed 's/!\([^;]*\)/printf("%d\\\\n",\1)/g' | \
 stuff | \
-gcc -xc -o /tmp/exploit -
+gcc -xc -pipe -o /tmp/exploit -
 /tmp/exploit
 
 # TODO
