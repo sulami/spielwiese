@@ -9,16 +9,18 @@ stuff() {
     echo "return 0; }"
 }
 
+tr '\n' ' ' | \
+sed 's/;/;\n/g' | \
 sed 's/ //g' | \
 sed 's/\t//g' | \
+./prep.py | \
 sed 's/};/}/g' | \
-sed '/[+-]=/b; s/\([a-zA-Z0-9]*\)=/int \1=/g' | \
 sed 's/\([a-zA-Z0-9]*\)\([+-]\)=/\1=\1\2/g' | \
-sed 's/!\([^;]*\)/printf("%d\\\\n",\1)/g' | \
-sed 's/?\([^{]*\)/if(\1)/g' | \
+sed 's/?\([^{]*\)/if(0 == \1)/g' | \
 tr '\n' ' ' | \
-sed 's/\([^;]\)}/\1;}/g' | \
+sed 's/}/;}/g' | \
 sed 's/$/\n/' | \
+sed 's/!\([^;]*\)/printf("%d\\\\n",\1)/g' | \
 stuff | \
 gcc -xc -o exploit - > /dev/null
 ./exploit
