@@ -3,7 +3,7 @@
 from sys import stdin
 from re  import compile, match
 
-regex = compile('\w=')
+regex = compile('[a-zA-Z0-9]+=')
 code = []
 var = []
 
