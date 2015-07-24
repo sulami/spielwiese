@@ -1,5 +1,12 @@
 #!/bin/bash
 
+stuff() {
+    echo "var bigInt = require("big-integer");"
+    while read data; do
+        echo "$data"
+    done
+}
+
 tr '\n' ' ' | \
 sed 's/;/;\n/g' | \
 sed 's/ //g' | \
