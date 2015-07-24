@@ -13,8 +13,8 @@ sed 's/ //g' | \
 sed 's/\t//g' | \
 ./prep.py | \
 sed 's/};/}/g' | \
-sed 's/\([a-zA-Z0-9]*\)+=\([a-zA-Z0-9-]*\);/\1= bigInt(\1).add(\2);/g' | \
-sed 's/\([a-zA-Z0-9]*\)-=\([a-zA-Z0-9-]*\);/\1= bigInt(\1).minus(\2);/g' | \
+sed 's/\([a-zA-Z0-9]*\)+=\([a-zA-Z0-9]*\);/\1= bigInt(\1).add(\2);/g' | \
+sed 's/\([a-zA-Z0-9]*\)-=\([a-zA-Z0-9]*\);/\1= bigInt(\1).minus(\2);/g' | \
 sed 's/?\([^{]*\)/if(bigInt(\1).isZero())/g' | \
 tr '\n' ' ' | \
 sed 's/}/;}/g' | \
