@@ -19,7 +19,7 @@ sed 's/?\([^{]*\)/if(bigInt(\1).isZero())/g' | \
 tr '\n' ' ' | \
 sed 's/}/;}/g' | \
 sed 's/$/\n/' | \
-sed 's/!\([^;]*\)/console.log(bigInt(\1))/g' | \
+sed 's/!\([^;]*\)/console.log(\1)/g' | \
 stuff | \
 /usr/bin/env nodejs # I feel dirty...
 
