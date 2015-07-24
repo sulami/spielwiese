@@ -1,4 +1,4 @@
 #!/bin/bash
 
-./runhs +RTS -N4
+./runhs
 
