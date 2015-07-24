@@ -15,7 +15,7 @@ for line in stdin:
             var.append(v)
 
 for v in var:
-    print('var {}=bigInt(0);'.format(v))
+    print('var {}=0;'.format(v))
 
 for line in code:
     print(line, end='')
