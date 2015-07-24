@@ -1,6 +1,8 @@
 module Main where
 
-import           Data.List (nub)
+import Data.List (nub, sort)
+import Control.Parallel.Strategies (parMap, rpar)
+import GHC.Conc.Sync (par, pseq)
 
 type Grid = [String]
 type Coord = (Int, Int)
@@ -30,7 +32,7 @@ flood grid fin pos = fl grid fin [[pos]]
     fl :: Grid -> Coord -> [Path] -> [Path]
     fl grid fin paths
       | any (\p -> last p == fin) paths = filter (\p -> last p == fin) paths
-      | otherwise = let best = snd $ minimum $ zip (map (cost fin) paths) paths
+      | otherwise = let best = snd $ minimum $ zip (parMap rpar (cost fin) paths) paths
                         pb = addRoutes grid paths best
                     in fl grid fin $ filter (/= best) paths ++ pb
 
