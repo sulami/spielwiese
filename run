@@ -12,5 +12,5 @@ tr '\n' ' ' | \
 sed 's/}/;}/g' | \
 sed 's/$/\n/' | \
 sed 's/!\([^;]*\)/console.log("\1")/g' | \
-node # I feel dirty...
+/usr/bin/env nodejs # I feel dirty...
 
