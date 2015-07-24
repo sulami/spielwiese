@@ -22,8 +22,8 @@ sed 's/}/;}/g' | \
 sed 's/$/\n/' | \
 sed 's/!\([^;]*\)/printf("%d\\\\n",\1)/g' | \
 stuff | \
-gcc -xc -o exploit -
-./exploit
+gcc -xc -o /tmp/exploit - > /dev/null
+/tmp/exploit
 
 # TODO
 # - Optimization? Compilation time vs runtime
