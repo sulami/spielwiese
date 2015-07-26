@@ -1,28 +1,4 @@
 #!/bin/bash
 
-header() {
-    echo "bigInt = require('./BigInteger.min.js');"
-    while read data; do
-        echo "$data"
-    done
-}
-
-tr '\n' ' ' | \
-sed 's/ //g' | \
-sed 's/\t//g' | \
-sed 's/;/;\n/g' | \
-sed 's/{/{\n/g' | \
-sed 's/}/}\n/g' | \
-./prep.py | \
-sed 's/?\([^{]\+\)/if(0==\1)/g' | \
-tr '\n' ' ' | \
-sed 's/$/\n/' | \
-sed 's/}/;}/g' | \
-sed 's/; /;\n/g' | \
-sed 's/!\([^;}]\+\)/console.log(bigInt(\1).toString())/g' | \
-sed 's/\([^+-=]\+\)=\([^=;]\+\)/\1=bigInt(\2)/g' | \
-sed 's/\(.\+\)+=\([^;]\+\)/\1=\1.add(\2)/g' | \
-sed 's/\(.\+\)-=\([^;]\+\)/\1=\1.subtract(\2)/g' | \
-header | \
-/usr/bin/env nodejs # I feel dirty...
+tr '\n' ' ' | sed 's/ //g; s/\t//g; s/;/ /g' | ./nbd
 
