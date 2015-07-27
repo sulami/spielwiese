@@ -17,8 +17,7 @@ cost :: CostFun
 cost fin path = let l = last path in (length path - 1) + (dist l fin)
   where
     dist :: Coord -> Coord -> Int
-    dist (x0,y0) (x1,y1) = sQ $ (x0-x1)^2 + (y0-y1)^2
-      where sQ = round $ sqrt $ (fromIntegral :: Int -> Float)
+    dist (x0,y0) (x1,y1) = abs (x0-x1) + abs (y0-y1)
 
 find :: Grid -> Char -> Int -> Coord
 find (x:xs) c n | c `elem` x = (f' x c 0, n)
