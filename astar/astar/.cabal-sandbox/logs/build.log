@@ -1,0 +1,11 @@
+
+package: parallel-3.2.0.6
+os: linux
+arch: x86_64
+compiler: ghc-7.10.1
+client: cabal-install-1.22.2.0
+dependencies: deepseq-1.4.1.1 containers-0.5.6.2 base-4.8.0.0
+              array-0.5.1.0
+install-outcome: InstallOk
+docs-outcome: NotTried
+tests-outcome: NotTried
