@@ -17,16 +17,27 @@ instance Show Expr where
 
 type NbdResult = State PState Expr
 
-eval :: Expr -> NbdResult
+eval :: Expr -> NbdResult Expr
+eval NbdNothing = return NbdNothing
 eval (NbdInt x) = return $ NbdInt x
 eval (NbdSymbol x) = do vars <- get
                         let val = lookup x vars
                         return $ NbdInt $ fromJust val
 
-run :: PState -> [Expr] -> NbdResult
+run :: PState -> [Expr] -> NbdResult Expr
 run s0 []     = return NbdNothing
 run s0 (x:xs) = do let (v, s1) = runState (eval x) s0
                    run s1 xs
+
+nbdIsZero :: Expr -> NbdResult Bool
+nbdIsZero e = do v <- eval e
+                 return $ isZero v
+  where
+    isZero (NbdInt n) = n == 0
+
+nbdPrint :: Expr -> NbdResult (IO ())
+nbdPrint e = do v <- eval e
+                return $ print v
 
 main = do input <- fmap words getContents
           mapM_ print input
