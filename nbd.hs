@@ -1,5 +1,6 @@
 module Main where
 
+import Control.Monad.Except
 import Control.Monad.State
 import Data.Maybe (fromJust)
 import qualified Data.Map as Map
@@ -10,6 +11,7 @@ type PState = [(String, Integer)]
 data Expr = NbdInt Integer
           | NbdSymbol String
           | NbdIsZero Expr [Expr]
+          | NbdPrint Expr
           | NbdNothing
 
 instance Show Expr where
@@ -17,8 +19,9 @@ instance Show Expr where
   show (NbdInt x) = show x
   show (NbdSymbol x) = x
   show (NbdIsZero x _) = "<isZero " ++ (show x) ++ ">"
+  show (NbdPrint x) = "<Print " ++ (show x) ++ ">"
 
-type NbdResult a = Control.Monad.State.State PState a
+type NbdResult = StateT PState IO
 
 eval :: Expr -> NbdResult Expr
 eval NbdNothing = return NbdNothing
@@ -32,10 +35,13 @@ eval (NbdIsZero x e) = do y <- nbdIsZero x
                                     inIf <- run s0 e
                                     return inIf
                             else return NbdNothing
+eval (NbdPrint x) = do v <- eval x
+                       liftIO $ print v
+                       return NbdNothing
 
 run :: PState -> [Expr] -> NbdResult Expr
 run s0 []     = return NbdNothing
-run s0 (x:xs) = do let (v, s1) = runState (eval x) s0
+run s0 (x:xs) = do let (v, s1) = runState (return $ eval x) s0
                    run s1 xs
 
 nbdIsZero :: Expr -> NbdResult Bool
@@ -68,6 +74,11 @@ parseIsZero = do char '?' ; skipMany space
                  inner <- parseExpr
                  char '}'
                  return inner
+
+parsePrint :: Parser Expr
+parsePrint = do char '!' ; skipMany space
+                x <- parseValue
+                return $ NbdPrint x
 
 parseExpr :: Parser Expr
 parseExpr = do skipMany space
