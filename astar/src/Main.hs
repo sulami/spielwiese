@@ -2,6 +2,14 @@ module Main where
 
 import Astar
 
+find :: Grid -> Char -> Int -> Coord
+find (x:xs) c n | c `elem` x = (f' x c 0, n)
+                | otherwise  = find xs c $ n+1
+  where
+    f' :: String -> Char -> Int -> Int
+    f' (x:xs) c n | c == x    = n
+                  | otherwise = f' xs c $ n+1
+
 drawPath :: Grid -> Path -> Grid
 drawPath = foldr (\(x,y) r -> replace r x y '*')
 

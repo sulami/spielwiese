@@ -1,6 +1,6 @@
 module Astar (
   Grid, Coord, Path,
-  find, flood
+  flood
   ) where
 
 import Data.List (nub, sort)
@@ -10,14 +10,6 @@ import GHC.Conc.Sync (par, pseq)
 type Grid = [String]
 type Coord = (Int, Int)
 type Path = [Coord]
-
-find :: Grid -> Char -> Int -> Coord
-find (x:xs) c n | c `elem` x = (f' x c 0, n)
-                | otherwise  = find xs c $ n+1
-  where
-    f' :: String -> Char -> Int -> Int
-    f' (x:xs) c n | c == x    = n
-                  | otherwise = f' xs c $ n+1
 
 flood :: Grid -> Coord -> Coord -> [Path]
 flood grid fin pos = fl grid fin [[pos]]
