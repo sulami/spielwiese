@@ -1,4 +1,7 @@
-module Main where
+module Astar (
+  Grid, Coord, Path,
+  find, flood
+  ) where
 
 import Data.List (nub, sort)
 import Control.Parallel.Strategies (parMap, rpar)
@@ -28,7 +31,8 @@ flood grid fin pos = fl grid fin [[pos]]
                     in fl grid fin $ filter (/= best) paths ++ pb
 
     addRoutes :: Grid -> [Path] -> Path -> [Path]
-    addRoutes grid ps path = [path ++ [p] | p <- possibleWays grid ps $ last path]
+    addRoutes grid ps path = [path ++ [p] | p <- possibleWays grid ps
+                                                 $ last path]
 
     possibleWays :: Grid -> [Path] -> Coord -> Path
     possibleWays g ps (x,y) = [(x1,y1) | y1 <- [(y-1)..(y+1)],
@@ -47,19 +51,4 @@ flood grid fin pos = fl grid fin [[pos]]
 
     dist :: Coord -> Coord -> Int
     dist (x0,y0) (x1,y1) = abs (x0-x1) + abs (y0-y1)
-
-drawPath :: Grid -> Path -> Grid
-drawPath = foldr (\(x,y) r -> replace r x y '*')
-
-replace :: [[a]] -> Int -> Int -> a -> [[a]]
-replace o x y c = let (rpre,rpost) = splitAt y o
-                      row = head rpost
-                      (cpre,cpost) = splitAt x row
-                  in rpre ++ [cpre ++ [c] ++ tail cpost] ++ tail rpost
-
-main = do grid <- fmap lines getContents
-          let start = find grid 'S' 0
-          let fin = find grid 'F' 0
-          let path = head $ flood grid fin start
-          mapM_ putStrLn $ drawPath grid path
 
