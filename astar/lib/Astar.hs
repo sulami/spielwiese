@@ -4,7 +4,6 @@ module Astar (
   flood
   ) where
 
-import Data.List (nub, sort)
 import Control.Parallel.Strategies (parMap, rpar)
 import GHC.Conc.Sync (par, pseq)
 
