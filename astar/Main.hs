@@ -16,13 +16,14 @@ find (x:xs) c n | c `elem` x = (f' x c 0, n)
     f' (x:xs) c n | c == x    = n
                   | otherwise = f' xs c $ n+1
 
-flood :: Grid -> Coord -> Coord -> [(Int, Path)]
-flood grid fin pos = fl grid fin [(cost fin [pos], [pos])]
+flood :: Grid -> Coord -> Coord -> [Path]
+flood grid fin pos = fl grid fin [[pos]]
   where
-    fl :: Grid -> Coord -> [(Int, Path)] -> [(Int, Path)]
+    fl :: Grid -> Coord -> [Path] -> [Path]
     fl grid fin paths
       | any (\p -> last p == fin) paths = filter (\p -> last p == fin) paths
-      | otherwise = let best = snd $ minimum $ zip (parMap rpar (cost fin) paths) paths
+      | otherwise = let best = snd $ minimum
+                               $ zip (parMap rpar (cost fin) paths) paths
                         pb = addRoutes grid paths best
                     in fl grid fin $ filter (/= best) paths ++ pb
 
