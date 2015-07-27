@@ -1,0 +1,4 @@
+#!/bin/bash
+
+tr '\n' ' ' | sed 's/ //g; s/\t//g; s/;/ /g' | ./nbd
+
