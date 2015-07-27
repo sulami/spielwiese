@@ -16,16 +16,6 @@ find (x:xs) c n | c `elem` x = (f' x c 0, n)
     f' (x:xs) c n | c == x    = n
                   | otherwise = f' xs c $ n+1
 
-
-parsePath :: Path -> String
-parsePath p = concat $ map (\(a,b) -> parseDir a b) $ zip (init p) (tail p)
-  where
-    parseDir :: Coord -> Coord -> String
-    parseDir (x0,y0) (x1,y1) | x0 > x1 = "W"
-                             | x0 < x1 = "E"
-                             | y0 > y1 = "N"
-                             | y0 < y1 = "S"
-
 flood :: Grid -> Coord -> Coord -> [(Int, Path)]
 flood grid fin pos = fl grid fin [(cost fin [pos], [pos])]
   where
