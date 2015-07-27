@@ -15,8 +15,8 @@ type Path = [Coord]
 type PossibleWaysFun = Grid -> [Path] -> Coord -> Path
 type CostFun = Coord -> Path -> Int
 
-flood :: Grid -> Coord -> Coord -> PossibleWaysFun -> CostFun -> [Path]
-flood grid fin pos pwf cf = fl grid fin pwf cf [[pos]]
+flood :: Grid -> Coord -> Coord -> PossibleWaysFun -> CostFun -> Path
+flood grid fin pos pwf cf = head $ fl grid fin pwf cf [[pos]]
   where
     fl :: Grid -> Coord -> PossibleWaysFun -> CostFun -> [Path] -> [Path]
     fl grid fin pwf cf paths

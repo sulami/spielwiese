@@ -39,6 +39,6 @@ replace o x y c = let (rpre,rpost) = splitAt y o
 main = do grid <- fmap lines getContents
           let start = find grid 'S' 0
           let fin = find grid 'F' 0
-          let path = head $ flood grid fin start possibleWays cost
+          let path = flood grid fin start possibleWays cost
           mapM_ putStrLn $ drawPath grid path
 
