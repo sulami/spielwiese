@@ -3,6 +3,7 @@ module Main where
 import Control.Monad.State
 import Data.Maybe (fromJust)
 import qualified Data.Map as Map
+import Text.ParserCombinators.Parsec
 
 type PState = [(String, Integer)]
 
@@ -15,7 +16,7 @@ instance Show Expr where
   show (NbdSymbol x) = x
   show NbdNothing = ""
 
-type NbdResult = State PState Expr
+type NbdResult a = Control.Monad.State.State PState a
 
 eval :: Expr -> NbdResult Expr
 eval NbdNothing = return NbdNothing
@@ -38,6 +39,16 @@ nbdIsZero e = do v <- eval e
 nbdPrint :: Expr -> NbdResult (IO ())
 nbdPrint e = do v <- eval e
                 return $ print v
+
+parseInteger :: Parser Expr
+parseInteger = do sign <- option "" (string "-")
+                  number <- many1 digit
+                  return $ NbdInt $ read $ sign ++ number
+
+parseSymbol :: Parser Expr
+parseSymbol = do f <- letter
+                 r <- many (letter <|> digit)
+                 return $ NbdSymbol $ f : r
 
 main = do input <- fmap words getContents
           mapM_ print input
