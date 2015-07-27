@@ -57,14 +57,18 @@ flood grid fin pos = fl grid fin [[pos]]
     dist :: Coord -> Coord -> Int
     dist (x0,y0) (x1,y1) = abs (x0-x1) + abs (y0-y1)
 
-printPath :: String -> IO ()
-printPath []     = return ()
-printPath (x:xs) = do putStrLn [x]
-                      printPath xs
+drawPath :: Grid -> Path -> Grid
+drawPath = foldr (\(x,y) r -> replace r x y '*')
+
+replace :: [[a]] -> Int -> Int -> a -> [[a]]
+replace o x y c = let (rpre,rpost) = splitAt y o
+                      row = head rpost
+                      (cpre,cpost) = splitAt x row
+                  in rpre ++ [cpre ++ [c] ++ tail cpost] ++ tail rpost
 
 main = do grid <- fmap lines getContents
           let start = find grid 'S' 0
           let fin = find grid 'F' 0
           let path = head $ flood grid fin start
-          printPath $ parsePath path
+          mapM_ putStrLn $ drawPath grid path
 
