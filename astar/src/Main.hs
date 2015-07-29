@@ -3,15 +3,14 @@ module Main where
 import Astar
 
 possibleWays :: PossibleWaysFun
-possibleWays g ps (x,y) = [ (x1,y1) | y1 <- [(y-1)..(y+1)],
-                                      y1 >= 0,
-                                      y1 < length g,
-                                      x1 <- [(x-1)..(x+1)],
-                                      x1 >= 0,
-                                      x1 < length (g !! y1),
-                                      x-x1 == 0 || y-y1 == 0,
-                                      g !! y1 !! x1 /= 'X',
-                                      not $ (x1,y1) `elem` (concat ps) ]
+possibleWays g (x,y) = [ (x1,y1) | y1 <- [(y-1)..(y+1)],
+                                   y1 >= 0,
+                                   y1 < length g,
+                                   x1 <- [(x-1)..(x+1)],
+                                   x1 >= 0,
+                                   x1 < length (g !! y1),
+                                   x-x1 == 0 || y-y1 == 0,
+                                   g !! y1 !! x1 /= 'X' ]
 
 cost :: CostFun
 cost fin path = let l = last path in (length path - 1) + (dist l fin)

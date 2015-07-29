@@ -11,7 +11,7 @@ type Grid = [String]
 type Coord = (Int, Int)
 type Path = [Coord]
 
-type PossibleWaysFun = Grid -> [Path] -> Coord -> Path
+type PossibleWaysFun = Grid -> Coord -> Path
 type CostFun = Coord -> Path -> Int
 
 flood :: Grid -> Coord -> Coord -> PossibleWaysFun -> CostFun -> Path
@@ -26,5 +26,7 @@ flood grid fin pos pwf cf = head $ fl grid fin pwf cf [[pos]]
                     in fl grid fin pwf cf $ filter (/= best) paths ++ pb
 
     addRoutes :: Grid -> [Path] -> Path -> PossibleWaysFun -> [Path]
-    addRoutes grid ps path pwf = [path ++ [p] | p <- pwf grid ps $ last path]
+    addRoutes grid ps path pwf =
+      [ path ++ [p] | p <- filter (`notElem` (concat ps)) $ pwf grid
+                           $ last path ]
 
