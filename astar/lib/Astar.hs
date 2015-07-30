@@ -5,7 +5,6 @@ module Astar (
   ) where
 
 import Control.Parallel.Strategies (parMap, rpar)
-import GHC.Conc.Sync (par, pseq)
 
 type Grid = [String]
 type Coord = (Int, Int)
@@ -26,7 +25,6 @@ flood grid fin pos pwf cf = head $ fl grid fin pwf cf [[pos]]
                     in fl grid fin pwf cf $ filter (/= best) paths ++ pb
 
     addRoutes :: Grid -> [Path] -> Path -> PossibleWaysFun -> [Path]
-    addRoutes grid ps path pwf =
-      [ path ++ [p] | p <- filter (`notElem` (concat ps)) $ pwf grid
-                           $ last path ]
+    addRoutes grid ps path pwf = let cps = concat ps in
+      [ path ++ [p] | p <- filter (`notElem` cps) $ pwf grid $ last path ]
 
