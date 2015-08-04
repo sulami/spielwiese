@@ -11,9 +11,15 @@ display = do
   renderPrimitive Points $ mapM_ (\(x,y,z) -> vertex $ Vertex3 x y z) myPoints
   flush
 
+reshape :: ReshapeCallback
+reshape size = do
+  viewport $= (Position 0 0, size)
+  postRedisplay Nothing
+
 main = do
   (_progName, _args) <- getArgsAndInitialize
   _window <- createWindow "Hello, World!"
   displayCallback $= display
+  reshapeCallback $= Just reshape
   mainLoop
 
