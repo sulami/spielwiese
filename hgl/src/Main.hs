@@ -1,20 +1,20 @@
 module Main where
 
-import Graphics.UI.GLUT (
-  getArgsAndInitialize, createWindow,
-  displayCallback, reshapeCallback, keyboardMouseCallback,
-  mainLoop,
-  ($=)
-  )
+import Data.IORef
+
+import Graphics.UI.GLUT
 
 import Engine.Display
 import Engine.Input
 
 main = do
   (_progName, _args) <- getArgsAndInitialize
+  initialDisplayMode $= [DoubleBuffered]
   _window <- createWindow "Hello, World!"
-  displayCallback $= display
+  angle <- newIORef 0.0
+  displayCallback $= display angle
   reshapeCallback $= Just reshape
   keyboardMouseCallback $= Just keyboardMouse
+  idleCallback $= Just (idle angle)
   mainLoop
 
