@@ -11,7 +11,7 @@ myPoints = [ (sin (2*pi*k/12), cos (2*pi*k/12), 0) | k <- [1..12] ]
 
 display :: IORef GLfloat -> IORef (GLfloat, GLfloat) -> DisplayCallback
 display angle pos = do
-  clear [ ColorBuffer ]
+  clear [ColorBuffer, DepthBuffer]
   loadIdentity
   (x',y') <- get pos
   translate $ Vector3 x' y' 0
