@@ -11,10 +11,12 @@ main = do
   (_progName, _args) <- getArgsAndInitialize
   initialDisplayMode $= [DoubleBuffered]
   _window <- createWindow "Hello, World!"
-  angle <- newIORef 0.0
-  displayCallback $= display angle
+  angle <- newIORef 0
+  delta <- newIORef 1
+  pos <- newIORef (0,0)
+  displayCallback $= display angle pos
   reshapeCallback $= Just reshape
-  keyboardMouseCallback $= Just keyboardMouse
-  idleCallback $= Just (idle angle)
+  keyboardMouseCallback $= Just (keyboardMouse delta pos)
+  idleCallback $= Just (idle angle delta)
   mainLoop
 
