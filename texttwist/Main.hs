@@ -23,24 +23,24 @@ printState s0 = putStrLn $ unwords $ map filtrate s0
                    | otherwise = "[" ++ show (length w) ++ " letters]"
 
 mainLoop :: String -> GameState -> IO ()
-mainLoop init s0 = if all snd s0
-                     then putStrLn "Fin!"
-                     else do printState s0
-                             putStr prompt
-                             hFlush stdout
-                             g <- getLine
-                             let s1 = guess s0 g
-                             mainLoop init s1
+mainLoop w0 s0 = if all snd s0
+                   then putStrLn "Fin!"
+                   else do printState s0
+                           putStr prompt
+                           hFlush stdout
+                           g <- getLine
+                           let s1 = guess s0 g
+                           mainLoop w0 s1
   where
     prompt :: String
     prompt = let d = show $ length $ filter snd s0
-              in "[" ++ d ++ "/" ++ show (length s0) ++ "] " ++ init ++ " > "
+              in "[" ++ d ++ "/" ++ show (length s0) ++ "] " ++ w0 ++ " > "
 
 main = do wordlist <- fmap lines $ readFile "words"
           let initlist = filter (\w -> length w > 3 && length w < 7) wordlist
           initn <- randomRIO (0, length initlist - 1)
-          let init = initlist !! initn
-          let words = subwords wordlist init
+          let w0 = initlist !! initn
+          let words = subwords wordlist w0
           let s0 = zip words $ repeat False
-          mainLoop (sort init) s0
+          mainLoop (sort w0) s0
 
