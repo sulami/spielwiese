@@ -27,6 +27,7 @@ executable gl
 
 library
   exposed-modules:     Engine.Display
+                     , Engine.Input
   build-depends:       base >=4.7 && <4.9
                      , GLUT >=2.7
   hs-source-dirs:      lib
