@@ -21,7 +21,7 @@ printState :: GameState -> IO ()
 printState s0 = putStrLn $ unwords $ map filtrate s0
   where
     filtrate (w,s) | s         = "\x1b[32m" ++ w ++ "\x1b[39m"
-                   | otherwise = "[" ++ show (length w) ++ " letters]"
+                   | otherwise = [ '_' | _ <- [1..(length w)] ]
 
 mainLoop :: String -> GameState -> IO ()
 mainLoop w0 s0 = if all snd s0
