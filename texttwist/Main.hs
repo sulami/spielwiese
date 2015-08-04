@@ -8,8 +8,9 @@ import System.IO (hFlush, stdout)
 type GameState = [(String, Bool)]
 
 subwords :: [String] -> String -> [String]
-subwords list base = sortBy (comparing length) $ nub $ filter (`elem` list)
-                     $ concat $ filter (\w -> 2 < length w) $ map permutations
+subwords list base = sortBy (comparing length) $ sort $ nub
+                     $ filter (`elem` list) $ concat
+                     $ filter (\w -> 2 < length w) $ map permutations
                      $ subsequences base
 
 guess :: GameState -> String -> GameState
