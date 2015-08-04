@@ -20,6 +20,15 @@ executable gl
   -- other-modules:       
   -- other-extensions:    
   build-depends:       base >=4.7 && <4.9
+                     , gl
                      , GLUT >=2.7
   hs-source-dirs:      src
   default-language:    Haskell2010
+
+library
+  exposed-modules:     Engine.Display
+  build-depends:       base >=4.7 && <4.9
+                     , GLUT >=2.7
+  hs-source-dirs:      lib
+  default-language:    Haskell2010
+
