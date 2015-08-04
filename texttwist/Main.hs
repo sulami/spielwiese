@@ -20,7 +20,7 @@ guess s0 w0 | w0 `elem` (map fst s0) = map (\(w,s) -> (w,s || w0 == w)) s0
 printState :: GameState -> IO ()
 printState s0 = putStrLn $ unwords $ map filtrate s0
   where
-    filtrate (w,s) | s         = w
+    filtrate (w,s) | s         = "\x1b[32m" ++ w ++ "\x1b[39m"
                    | otherwise = "[" ++ show (length w) ++ " letters]"
 
 mainLoop :: String -> GameState -> IO ()
