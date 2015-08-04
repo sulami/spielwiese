@@ -23,7 +23,7 @@ printState s0 = putStrLn $ unwords $ map filtrate s0
                    | otherwise = "[" ++ show (length w) ++ " letters]"
 
 mainLoop :: String -> GameState -> IO ()
-mainLoop init s0 = if fin s0
+mainLoop init s0 = if all snd s0
                      then putStrLn "Fin!"
                      else do printState s0
                              putStr prompt
@@ -32,8 +32,6 @@ mainLoop init s0 = if fin s0
                              let s1 = guess s0 g
                              mainLoop init s1
   where
-    fin :: GameState -> Bool
-    fin = all snd
     prompt :: String
     prompt = let d = show $ length $ filter snd s0
               in "[" ++ d ++ "/" ++ show (length s0) ++ "] " ++ init ++ " > "
