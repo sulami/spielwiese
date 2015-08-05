@@ -38,7 +38,7 @@ mainLoop w0 s0 = if all snd s0
               in "[" ++ d ++ "/" ++ show (length s0) ++ "] " ++ w0 ++ " > "
 
 main = do wordlist <- fmap lines $ readFile "words"
-          let initlist = filter (\w -> length w > 3 && length w < 7) wordlist
+          let initlist = filter (\w -> length w == 6) wordlist
           initn <- randomRIO (0, length initlist - 1)
           let w0 = initlist !! initn
           let words = subwords wordlist w0
