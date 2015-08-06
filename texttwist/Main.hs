@@ -2,8 +2,9 @@ module Main where
 
 import Data.Ord (comparing)
 import Data.List (nub, permutations, sort, sortBy, subsequences)
-import System.Random (randomRIO)
+import System.Console.ANSI (clearScreen)
 import System.IO (hFlush, stdout)
+import System.Random (randomRIO)
 
 type GameState = [(String, Bool)]
 
@@ -26,7 +27,8 @@ printState s0 = putStrLn $ unwords $ map filtrate s0
 mainLoop :: String -> GameState -> IO ()
 mainLoop w0 s0 = if all snd s0
                    then putStrLn "Fin!"
-                   else do printState s0
+                   else do clearScreen
+                           printState s0
                            putStr prompt
                            hFlush stdout
                            g <- getLine
