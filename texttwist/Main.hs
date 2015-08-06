@@ -47,8 +47,7 @@ mainLoop w0 gs0@(GameState g0 s0) = if all snd g0
                                               putStr $ prompt gs0 w0
                                               hFlush stdout
                                               g <- getLine
-                                              let g1 = guess gs0 g
-                                              mainLoop w0 g1
+                                              mainLoop w0 $ guess gs0 g
 
 main = do wordlist <- fmap lines $ readFile "words"
           let initlist = filter (\w -> length w == 6) wordlist
