@@ -11,9 +11,8 @@ data GameState = GameState [(String, Bool)] Int
 
 subwords :: [String] -> String -> [String]
 subwords list base = sortBy (comparing length) $ sort $ nub
-                     $ filter (`elem` list) $ concat
-                     $ filter (\w -> 2 < length w) $ map permutations
-                     $ subsequences base
+                     $ filter (`elem` list) $ filter (\w -> 3 <= length w)
+                     $ concat $ map permutations $ subsequences base
 
 guess :: GameState -> String -> GameState
 guess (GameState g0 s0) w0
