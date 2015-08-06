@@ -1,12 +1,13 @@
 module Main where
 
-import Data.Ord (comparing)
 import Data.List (nub, permutations, sort, sortBy, subsequences)
+import Data.Maybe (fromJust)
+import Data.Ord (comparing)
 import System.Console.ANSI (clearScreen, setCursorPosition)
 import System.IO (hFlush, stdout)
 import System.Random (randomRIO)
 
-data GameState = GameState [(String, Bool)] Integer
+data GameState = GameState [(String, Bool)] Int
 
 subwords :: [String] -> String -> [String]
 subwords list base = sortBy (comparing length) $ sort $ nub
@@ -16,12 +17,16 @@ subwords list base = sortBy (comparing length) $ sort $ nub
 
 guess :: GameState -> String -> GameState
 guess (GameState g0 s0) w0
-  | w0 `elem` (map fst g0) = GameState (map (\(w,s) -> (w,s || w0 == w)) g0) s0
-  | otherwise              = GameState g0 s0
+  | new       = GameState (map (\(w,s) -> (w,s || w0 == w)) g0) (s0 + length w0)
+  | otherwise = GameState g0 s0
+    where
+      new :: Bool
+      new = w0 `elem` (map fst g0) && not (fromJust (lookup w0 g0))
 
 printState :: GameState -> IO ()
 printState (GameState g0 s0) = putStrLn $ unwords $ map filtrate g0
   where
+    filtrate :: (String, Bool) -> String
     filtrate (w,s) | s         = "\x1b[32m" ++ w ++ "\x1b[39m"
                    | otherwise = [ '_' | _ <- [1..(length w)] ]
 
@@ -39,7 +44,8 @@ mainLoop w0 gs0@(GameState g0 s0) = if all snd g0
   where
     prompt :: String
     prompt = let d = show $ length $ filter snd g0
-              in "[" ++ d ++ "/" ++ show (length g0) ++ "] " ++ w0 ++ " > "
+                 ad = show $ length g0
+              in concat [ "[", d, "/", ad, "|", show s0, "] ", w0, " > " ]
 
 main = do wordlist <- fmap lines $ readFile "words"
           let initlist = filter (\w -> length w == 6) wordlist
