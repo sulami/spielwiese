@@ -2,7 +2,7 @@ module Main where
 
 import Data.Ord (comparing)
 import Data.List (nub, permutations, sort, sortBy, subsequences)
-import System.Console.ANSI (clearScreen)
+import System.Console.ANSI (clearScreen, setCursorPosition)
 import System.IO (hFlush, stdout)
 import System.Random (randomRIO)
 
@@ -28,6 +28,7 @@ mainLoop :: String -> GameState -> IO ()
 mainLoop w0 s0 = if all snd s0
                    then putStrLn "Fin!"
                    else do clearScreen
+                           setCursorPosition 0 0
                            printState s0
                            putStr prompt
                            hFlush stdout
