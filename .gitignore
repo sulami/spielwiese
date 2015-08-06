@@ -12,6 +12,7 @@
 !*.d
 !*.go
 !*.hs
+!*.scm
 !*.input
 !*.cabal
 !LICENSE
