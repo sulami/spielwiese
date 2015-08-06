@@ -17,18 +17,27 @@ subwords list base = sortBy (comparing length) $ sort $ nub
 
 guess :: GameState -> String -> GameState
 guess (GameState g0 s0) w0
-  | new       = GameState (map (\(w,s) -> (w,s || w0 == w)) g0) (s0 + length w0)
+  | new       = GameState (map setNew g0) $ s0 + length w0
   | otherwise = GameState g0 s0
     where
       new :: Bool
       new = w0 `elem` (map fst g0) && not (fromJust (lookup w0 g0))
 
+      setNew :: (String, Bool) -> (String, Bool)
+      setNew (w,s) = (w, s || w0 == w)
+
+wordToStr :: (String, Bool) -> String
+wordToStr (w,s) | s         = "\x1b[32m" ++ w ++ "\x1b[39m"
+                | otherwise = [ '_' | _ <- [1..(length w)] ]
+
+prompt :: GameState -> String -> String
+prompt (GameState g0 s0) ls =
+  let d = show $ length $ filter snd g0
+      ad = show $ length g0
+  in concat [ "[", d, "/", ad, "|", show s0, "] ", ls, " > " ]
+
 printState :: GameState -> IO ()
-printState (GameState g0 s0) = putStrLn $ unwords $ map filtrate g0
-  where
-    filtrate :: (String, Bool) -> String
-    filtrate (w,s) | s         = "\x1b[32m" ++ w ++ "\x1b[39m"
-                   | otherwise = [ '_' | _ <- [1..(length w)] ]
+printState (GameState g0 s0) = putStrLn $ unwords $ map wordToStr g0
 
 mainLoop :: String -> GameState -> IO ()
 mainLoop w0 gs0@(GameState g0 s0) = if all snd g0
@@ -36,16 +45,11 @@ mainLoop w0 gs0@(GameState g0 s0) = if all snd g0
                                       else do clearScreen
                                               setCursorPosition 0 0
                                               printState gs0
-                                              putStr prompt
+                                              putStr $ prompt gs0 w0
                                               hFlush stdout
                                               g <- getLine
                                               let g1 = guess gs0 g
                                               mainLoop w0 g1
-  where
-    prompt :: String
-    prompt = let d = show $ length $ filter snd g0
-                 ad = show $ length g0
-              in concat [ "[", d, "/", ad, "|", show s0, "] ", w0, " > " ]
 
 main = do wordlist <- fmap lines $ readFile "words"
           let initlist = filter (\w -> length w == 6) wordlist
