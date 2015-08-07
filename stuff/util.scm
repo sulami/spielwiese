@@ -12,3 +12,9 @@
             '()
             (cons s (cl (+ s 1) e)))))
 
+; Construct a list from s to e defining the step size.
+(define cls
+        (lambda (s ss e)
+          (if (> s e)
+            '()
+            (cons s (cls (+ s ss) ss e)))))
