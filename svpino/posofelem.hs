@@ -33,3 +33,8 @@ splitPos n l = find n (l, 0)
             mid :: [a] -> Int
             mid l = (length l) `div` 2
 
+-- This is a very short version, that is also the fastest one, thanks to lazy
+-- partial evaluation.
+shortPos :: (Ord a) => a -> [a] -> Int
+shortPos n l = length $ takeWhile (< n) l
+
