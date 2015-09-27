@@ -4,7 +4,7 @@
 module Video (
 ) where
 
-import           Data.List (foldl')
+import           Data.List (unfoldr)
 
 -- | The datatype used for single colour channels. Possibly subject to changes.
 -- Colours are expected to be between 0 and 255.
@@ -65,19 +65,24 @@ frameToChunks :: (Int, Int) -> PixelFrame -> ChunkFrame
 frameToChunks (cw,ch) (PixelFrame w h ps) = ChunkFrame w h $ toChunks ps
   where
     toChunks :: [Pixel] -> [Chunk]
-    toChunks [] = []
-    toChunks ps = let (top,rest) = splitAt (w * ch) ps
-                      crow = map (Chunk cw ch . avgColour) . cols $ toLines top
-                  in crow ++ toChunks rest
-      where
-        cols :: [[Pixel]] -> [[Pixel]]
-        cols []     = []
-        cols (c:cs) = concatMap (take cw) cs : cols cs
+    -- FIXME set the dimensions properly for the bottom/right border.
+    toChunks = map (Chunk cw ch . avgColour) . chunks
 
-    toLines :: [Pixel] -> [[Pixel]]
-    toLines [] = []
-    toLines ps = let (a,b) = splitAt w ps
-                  in a : toLines b
+    chunks :: [a] -> [[a]]
+    chunks [] = []
+    chunks all = let rows = unfoldr toRows all
+                  in chunks' rows
+
+    toRows :: [a] -> Maybe ([a], [a])
+    toRows [] = Nothing
+    toRows l  = Just $ splitAt 5 l
+
+    chunks' :: [[a]] -> [[a]]
+    chunks' [] = []
+    chunks' rs = chunks'' (take 2 rs) ++ chunks' (drop 2 rs)
+
+    chunks'' ([]:_) = []
+    chunks'' rs = concatMap (take 2) rs : chunks'' (map (drop 2) rs)
 
 -- | Convert a ChunkFrame to a PixelFrame.
 frameToPixels :: ChunkFrame -> PixelFrame
