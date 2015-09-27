@@ -32,7 +32,10 @@ data Chunk = Chunk
   { chunkWidth  :: Int
   , chunkHeight :: Int
   , chunkColour :: Colour
-  } deriving (Show)
+  }
+
+instance Show Chunk where
+  show (Chunk w h c) = "Chunk " ++ show w ++ "x" ++ show h ++ ": " ++ show c
 
 -- | A single frame, composed of Pixels.
 data PixelFrame = PixelFrame
