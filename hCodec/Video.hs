@@ -69,9 +69,7 @@ frameToChunks (cw,ch) (PixelFrame w h ps) = ChunkFrame w h $ toChunks ps
     toChunks = map (Chunk cw ch . avgColour) . chunks
 
     chunks :: [a] -> [[a]]
-    chunks [] = []
-    chunks all = let rows = unfoldr toRows all
-                  in chunks' rows
+    chunks = chunks' . unfoldr toRows
 
     toRows :: [a] -> Maybe ([a], [a])
     toRows [] = Nothing
