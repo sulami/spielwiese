@@ -76,14 +76,15 @@ frameToChunks (cw,ch) (PixelFrame w h ps) = ChunkFrame w h $ toChunks ps
 
     toRows :: [a] -> Maybe ([a], [a])
     toRows [] = Nothing
-    toRows l  = Just $ splitAt 5 l
+    toRows l  = Just $ splitAt w l
 
     chunks' :: [[a]] -> [[a]]
     chunks' [] = []
-    chunks' rs = chunks'' (take 2 rs) ++ chunks' (drop 2 rs)
+    chunks' rs = chunks'' (take ch rs) ++ chunks' (drop ch rs)
 
+    chunks'' :: [[a]] -> [[a]]
     chunks'' ([]:_) = []
-    chunks'' rs = concatMap (take 2) rs : chunks'' (map (drop 2) rs)
+    chunks'' rs = concatMap (take cw) rs : chunks'' (map (drop cw) rs)
 
 -- | Convert a ChunkFrame to a PixelFrame.
 frameToPixels :: ChunkFrame -> PixelFrame
