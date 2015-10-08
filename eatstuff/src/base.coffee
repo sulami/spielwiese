@@ -3,7 +3,7 @@ addCheckbox = (name) ->
   elem = $("
     <div class='item'>
       <div class='ui checkbox'>
-        <input name='#{name}' type='checkbox' id='ec-#{name}'>
+        <input name='#{name}' type='checkbox' class='ec' id='ec-#{name}'>
         <label>#{name}</label>
       </div>
     </div>
@@ -34,12 +34,20 @@ class Food
   toggle: ->
     if @allowed then @forbid() else @allow()
 
+  # Check if the current status is correct and take action if not
+  check: (ecs) ->
+    newStatus = (@forbidden(ec) for ec in ecs)
+    if false in newStatus and @allowed
+      @forbid()
+    else if false not in newStatus and not @allowed
+      @allow()
+
 # Add all the foods to the left column. For initial setup only. Returns the
 # Food object for registering it in the global list
 addFood = (name) ->
   elem = $("<div class='item' id='food-#{name}'>#{name}</div>")
   $("div#allowed").append(elem)
-  return new Food name
+  return new Food [name, "Vegan"]
 
 # Run this as soon as the page is loaded
 jQuery ->
@@ -49,11 +57,13 @@ jQuery ->
   eatingClasses = [ "Vegan", "Vegetarian", "Muslim", "Jewish" ]
   addCheckbox(ec) for ec in eatingClasses.sort()
 
+  forbiddenClasses = []
+
   # List the different foods for adding them easily
   # TODO sort them in categories to check for status
   foods = [ "Pork", "Fish", "Ham", "Milk", "Cheese" ]
   allFoods = (addFood(f) for f in foods.sort())
 
   # Testing area
-  $("input#ec-Vegan").click(-> f.toggle() for f in allFoods)
+  $("input.ec").click(-> f.check(forbiddenClasses) for f in allFoods)
 
