@@ -44,10 +44,10 @@ class Food
 
 # Add all the foods to the left column. For initial setup only. Returns the
 # Food object for registering it in the global list
-addFood = (name) ->
-  elem = $("<div class='item' id='food-#{name}'>#{name}</div>")
+addFood = (food) ->
+  elem = $("<div class='item' id='food-#{food.name}'>#{food.name}</div>")
   $("div#allowed").append(elem)
-  return new Food name
+  return new Food [food.name].concat(food.forbidden)...
 
 # Run this as soon as the page is loaded
 jQuery ->
@@ -61,8 +61,12 @@ jQuery ->
 
   # List the different foods for adding them easily
   # TODO sort them in categories to check for status
-  foods = [ "Pork", "Fish", "Ham", "Milk", "Cheese" ]
-  allFoods = (addFood(f) for f in foods.sort())
+  foods = [ {name: "Pork",    forbidden: ["Vegan", "Vegetarian"]},
+            {name: "Fish",    forbidden: ["Vegan", "Vegetarian"]},
+            {name: "Ham",     forbidden: ["Vegan", "Vegetarian"]},
+            {name: "Milk",    forbidden: ["Vegan"]},
+            {name: "Cheese",  forbidden: ["Vegan"]} ]
+  allFoods = (addFood(f) for f in foods)
 
   # Change the allowed classes, trigger new checks for the food
   $("input.ec").click(->
