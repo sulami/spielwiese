@@ -47,7 +47,7 @@ class Food
 addFood = (name) ->
   elem = $("<div class='item' id='food-#{name}'>#{name}</div>")
   $("div#allowed").append(elem)
-  return new Food [name, "Vegan"]
+  return new Food name
 
 # Run this as soon as the page is loaded
 jQuery ->
@@ -64,6 +64,13 @@ jQuery ->
   foods = [ "Pork", "Fish", "Ham", "Milk", "Cheese" ]
   allFoods = (addFood(f) for f in foods.sort())
 
-  # Testing area
-  $("input.ec").click(-> f.check(forbiddenClasses) for f in allFoods)
+  # Change the allowed classes, trigger new checks for the food
+  $("input.ec").click(->
+    className = $(@).prop("name")
+    if $(@).prop("checked")
+      forbiddenClasses.push(className)
+    else
+      forbiddenClasses = (ec for ec in forbiddenClasses when ec != className)
+    f.check(forbiddenClasses) for f in allFoods
+    )
 
