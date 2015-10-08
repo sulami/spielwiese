@@ -1,9 +1,3 @@
-# Disable an element if not already
-disable = (element) ->
-  disabledClass = "disabled"
-  unless $(element).hasClass(disabledClass)
-    $(element).addClass(disabledClass)
-
 # Add a checkbox for an eating class
 addCheckbox = (name) ->
   elem = $("
