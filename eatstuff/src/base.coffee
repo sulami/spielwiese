@@ -37,9 +37,9 @@ class Food
   # Check if the current status is correct and take action if not
   check: (ecs) ->
     newStatus = (@forbidden(ec) for ec in ecs)
-    if false in newStatus and @allowed
+    if true in newStatus and @allowed
       @forbid()
-    else if false not in newStatus and not @allowed
+    else if true not in newStatus and not @allowed
       @allow()
 
 # Add all the foods to the left column. For initial setup only. Returns the
@@ -54,16 +54,14 @@ jQuery ->
 
   # List the different classes that a person can be part of and add a checkbox
   # for each one
-  eatingClasses = [ "Vegan", "Vegetarian", "Muslim", "Jewish" ]
+  eatingClasses = [ "Hinduism", "Vegan", "Vegetarian", "Muslim", "Jewish" ]
   addCheckbox(ec) for ec in eatingClasses.sort()
 
   forbiddenClasses = []
 
   # List the different foods for adding them easily
-  # TODO sort them in categories to check for status
-  foods = [ {name: "Pork",    forbidden: ["Vegan", "Vegetarian"]},
+  foods = [ {name: "Pork",    forbidden: ["Jewish", "Muslim", "Vegan", "Vegetarian"]},
             {name: "Fish",    forbidden: ["Vegan", "Vegetarian"]},
-            {name: "Ham",     forbidden: ["Vegan", "Vegetarian"]},
             {name: "Milk",    forbidden: ["Vegan"]},
             {name: "Cheese",  forbidden: ["Vegan"]} ]
   allFoods = (addFood(f) for f in foods)
