@@ -3,30 +3,46 @@ addCheckbox = (name) ->
   elem = $("
     <div class='item'>
       <div class='ui checkbox'>
-        <input name='#{name}' type='checkbox'>
+        <input name='#{name}' type='checkbox' id='ec-#{name}'>
         <label>#{name}</label>
       </div>
     </div>
     ")
-  $("div#eatingClasses").append($(elem))
+  $("div#eatingClasses").append(elem)
 
-# A food. Keeps track of which eating classes disallow it
+# A food. Keeps track of which eating classes disallow it and handles changes
+# in allowance
 class Food
-  constructor: (@name, forbiddenIn...) ->
+  constructor: (@name, @forbiddenIn...) ->
+    @allowed = true
+
+  # Check if this food is forbidden when using an eating class
+  forbidden: (ec) ->
+    return ec in @forbiddenIn
+
+  # Remove this food from the list of allowed ones
+  forbid: ->
+    @allowed = false
+    $("div#forbidden").append($("div#food-#{@name}"))
+
+  # Add this food to the list of allowed ones
+  allow: ->
+    @allowed = true
+    $("div#allowed").append($("div#food-#{@name}"))
+
+  # Change the food status to whatever it is not right now aka toggle it
+  toggle: ->
+    if @allowed then @forbid() else @allow()
 
 # Add all the foods to the left column. For initial setup only. Returns the
 # Food object for registering it in the global list
 addFood = (name) ->
-  elem = $("<div class='item'>#{name}</div>")
-  $("div#allowed").append($(elem))
-  return new Food $(name)
+  elem = $("<div class='item' id='food-#{name}'>#{name}</div>")
+  $("div#allowed").append(elem)
+  return new Food name
 
 # Run this as soon as the page is loaded
 jQuery ->
-
-  # Add disable callback to relevant buttons
-  $("button.oneuse").click ->
-    disable this
 
   # List the different classes that a person can be part of and add a checkbox
   # for each one
@@ -37,4 +53,7 @@ jQuery ->
   # TODO sort them in categories to check for status
   foods = [ "Pork", "Fish", "Ham", "Milk", "Cheese" ]
   allFoods = (addFood(f) for f in foods.sort())
+
+  # Testing area
+  $("input#ec-Vegan").click(-> f.toggle() for f in allFoods)
 
