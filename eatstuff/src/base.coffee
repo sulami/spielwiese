@@ -54,19 +54,25 @@ jQuery ->
 
   # List the different classes that a person can be part of and add a checkbox
   # for each one
-  eatingClasses = [ "Buddhism", "Fruitarianism", "Gluten-free",
-                    "Hinduism", "Islam", "Judaism", "Mormonism",
-                    "Pescetarianism", "Veganism", "Vegetarianism" ]
+  eatingClasses = [ "Fruitarianism", "Gluten-free", "Hinduism", "Islam",
+                    "Judaism", "Mormonism", "Pescetarianism", "Veganism",
+                    "Vegetarianism" ]
   addCheckbox(ec) for ec in eatingClasses
 
   forbiddenClasses = []
 
   # List the different foods for adding them easily
-  foods = [ {name: "Pork",    forbidden: ["Judaism", "Islam", "Veganism",
-                                          "Vegetarianism"]},
-            {name: "Fish",    forbidden: ["Veganism", "Vegetarianism"]},
-            {name: "Milk",    forbidden: ["Veganism"]},
-            {name: "Cheese",  forbidden: ["Veganism"]} ]
+  foods = [
+    {name: "Pork",      forbidden: ["Fruitarianism, Judaism", "Islam",
+                                    "Veganism", "Vegetarianism",
+                                    "Pescetarianism"]},
+    {name: "Fish",      forbidden: ["Fruitarianism", "Veganism",
+                                    "Vegetarianism"]},
+    {name: "Milk",      forbidden: ["Fruitarianism", "Veganism"]},
+    {name: "Cheese",    forbidden: ["Fruitarianism", "Veganism"]},
+    {name: "Shellfish", forbidden: ["Fruitarianism", "Veganism",
+                                    "Vegetarianism"]},
+    {name: "Alcohol",   forbidden: ["Islam"]} ]
   allFoods = (addFood(f) for f in foods)
 
   # Change the allowed classes, trigger new checks for the food
