@@ -6,7 +6,9 @@ import Data.Bits ((.&.), (.|.), complement, shiftL, shiftR)
 import Data.Maybe (fromJust, isJust)
 import Data.Word (Word16)
 
-import Data.HashMap.Lazy (HashMap, delete, filterWithKey, fromList, lookup, map, union, elems)
+import Data.HashMap.Lazy (
+  HashMap, delete, filterWithKey, fromList, lookup, map, union, elems
+  )
 
 data AExpr = AProvide String
            | ANot String
@@ -22,7 +24,8 @@ isValue (AValue _) = True
 isValue _          = False
 
 isVal :: HashMap String AExpr -> String -> Bool
-isVal el e = any (`elem` ['0'..'9']) e || (isJust (lookup e el) && isValue (fromJust (lookup e el)))
+isVal el e = any (`elem` ['0'..'9']) e
+             || (isJust (lookup e el) && isValue (fromJust (lookup e el)))
 
 solvable :: HashMap String AExpr -> AExpr -> Bool
 solvable _  (AValue e)    = False
