@@ -6,6 +6,7 @@
 -- Disclaimer: This was before I found out Haskell actually has a proper data
 -- type for graphs, so this is a bit ghetto, but works.
 
+import Data.Ord (comparing)
 import qualified Data.List as L
 import qualified Data.Maybe as M
 
@@ -22,47 +23,77 @@ import qualified Data.Maybe as M
 distances :: [(String, [(String, Integer)])]
 distances =
   [
-    ("Aachen", [
-      ("Bonn",        91),
-      ("Duesseldorf", 80),
-      ("Frankfurt",  259),
-      ("Koeln",       70),
-      ("Wuppertal",  121)
+    ("Faerun", [
+      ("Tristram",       65),
+      ("Tambi",         129),
+      ("Norrath",       144),
+      ("Snowdin",        71),
+      ("Straylight",    137),
+      ("AlphaCentauri",   3),
+      ("Abre",          149)
     ]),
-    ("Bonn", [
-      ("Aachen",      91),
-      ("Duesseldorf", 77),
-      ("Frankfurt",  175),
-      ("Koeln",       27),
-      ("Wuppertal",   84)
+    ("Tristram", [
+      ("Faerun",         65),
+      ("Tambi",          63),
+      ("Norrath",         4),
+      ("Snowdin",       105),
+      ("Straylight",    125),
+      ("AlphaCentauri",  55),
+      ("Abre",           14)
     ]),
-    ("Duesseldorf", [
-      ("Aachen",      80),
-      ("Bonn",        77),
-      ("Frankfurt",  232),
-      ("Koeln",       47),
-      ("Wuppertal",   29)
+    ("Tambi", [
+      ("Faerun",        129),
+      ("Tristram",       63),
+      ("Norrath",        68),
+      ("Snowdin",        52),
+      ("Straylight",     65),
+      ("AlphaCentauri",  22),
+      ("Abre",          143)
     ]),
-    ("Frankfurt", [
-      ("Aachen",     259),
-      ("Bonn",       175),
-      ("Duesseldorf",232),
-      ("Koeln",      189),
-      ("Wuppertal",  236)
+    ("Norrath", [
+      ("Faerun",        144),
+      ("Tristram",        4),
+      ("Tambi",          68),
+      ("Snowdin",         8),
+      ("Straylight",     23),
+      ("AlphaCentauri", 136),
+      ("Abre",          115)
     ]),
-    ("Koeln", [
-      ("Aachen",      70),
-      ("Bonn",        27),
-      ("Duesseldorf", 47),
-      ("Frankfurt",  189),
-      ("Wuppertal",   55)
+    ("Snowdin", [
+      ("Faerun",         71),
+      ("Tristram",      105),
+      ("Tambi",          52),
+      ("Norrath",         8),
+      ("Straylight",    101),
+      ("AlphaCentauri",  84),
+      ("Abre",           96)
     ]),
-    ("Wuppertal", [
-      ("Aachen",     121),
-      ("Bonn",        84),
-      ("Duesseldorf", 29),
-      ("Frankfurt",  236),
-      ("Koeln",       55)
+    ("Straylight", [
+      ("Faerun",        137),
+      ("Tristram",      125),
+      ("Tambi",          65),
+      ("Norrath",        23),
+      ("Snowdin",       101),
+      ("AlphaCentauri", 107),
+      ("Abre",           14)
+    ]),
+    ("AlphaCentauri", [
+      ("Faerun",          3),
+      ("Tristram",       55),
+      ("Tambi",          22),
+      ("Norrath",       136),
+      ("Snowdin",        84),
+      ("Straylight",    107),
+      ("Abre",           46)
+    ]),
+    ("Abre", [
+      ("Faerun",        149),
+      ("Tristram",       14),
+      ("Tambi",         143),
+      ("Norrath",       115),
+      ("Snowdin",        96),
+      ("Straylight",     14),
+      ("AlphaCentauri",  46)
     ])
   ]
 
@@ -87,10 +118,8 @@ get c = foldr (\(k, v) no -> if c == k then Just v else no) Nothing
 
 -- For this, we will be using this function that returns the closest city to
 -- another city given, chosen from a list of city/distance sets.
-closest :: (Real v) => [(k, v)] -> (k, v)
-closest c = L.sortBy (\(a1, b1) (a2, b2) -> if      b1 < b2 then LT
-                                            else if b1 > b2 then GT
-                                            else                 EQ) c !! 0
+closest :: (Ord v) => [(k, v)] -> (k, v)
+closest = L.minimumBy (comparing snd)
 
 -- Here we just rotate a list.
 rotate :: [a] -> [a]
@@ -103,12 +132,12 @@ both a b x = a x && b x
 -- This is a helper function that counts the number of occurences of an element
 -- in a list of this elements type.
 count' :: (Eq a) => a -> [a] -> Int
-count' e = foldr (\m n -> if m == e then n+1 else n) 0
+count' e = foldr (\m n -> if m == e then n + 1 else n) 0
 
 -- Given a path in the form of a list of city names, calculate the length of
 -- the path travelled.
 pathLength :: (Eq k, Num v) => [k] -> [(k, [(k, v)])] -> v
-pathLength p l = pathLength' p 0 l
+pathLength p = pathLength' p 0
   where
     pathLength' :: (Eq k, Num v) => [k] -> v -> [(k, [(k, v)])] -> v
     pathLength' [x]    d l = d
@@ -119,24 +148,24 @@ pathLength p l = pathLength' p 0 l
 -- This hack adds the first city again and also adds the distance from the
 -- last back to the first city.
 addLast :: (Eq k, Real v) => ([k], v) -> [(k, [(k, v)])] -> ([k], v)
-addLast (c, n) l = (c ++ [c !! 0], n + (M.fromJust (dist (last c) (c !! 0) l)))
+addLast (c, n) l = (c ++ [head c], n + M.fromJust (dist (last c) (head c) l))
 
 -- This will be the actual algorithm. It will start and end at the first city
 -- in the map, because I am lazy like this.
-tsp_nn :: (Eq k, Real v) => [(k, [(k, v)])] -> ([k], v)
-tsp_nn l = addLast (nn ([fst (l !! 0)], 0) l) l
+tspNN :: (Eq k, Real v) => [(k, [(k, v)])] -> ([k], v)
+tspNN l = addLast (nn ([fst (head l)], 0) l) l
   where
     nn :: (Eq k, Real v) => ([k], v) -> [(k, [(k, v)])] -> ([k], v)
     nn p           [x]    = p
-    nn (prev, num) (x:xs) = nn ((prev ++ [fst (next x xs)]),
-                                num + (snd (next x xs)))
+    nn (prev, num) (x:xs) = nn (prev ++ [fst (next x xs)],
+                                num + snd (next x xs))
                                (moveup (fst (next x xs)) xs)
     -- This returns the next city/distance to visit.
     next :: (Eq k, Real v) => (k, [(k, v)]) -> [(k, [(k, v)])] -> (k, v)
     next c l = closest $ filter' l (snd c)
     -- This rotates the list until the city we are looking for is in front.
     moveup :: (Eq k) => k -> [(k, [(k, v)])] -> [(k, [(k, v)])]
-    moveup f (x:xs) | fst x == f = [x] ++ xs
+    moveup f (x:xs) | fst x == f = x : xs
                     |  otherwise = moveup f (xs ++ [x])
     -- This is a helper function that filters a list of city/distances tuples
     -- so that the returned list consists only of cities that are also in the
@@ -147,14 +176,14 @@ tsp_nn l = addLast (nn ([fst (l !! 0)], 0) l) l
 -- As a next step we will rotate the map before running nearest neighbour so we
 -- start at each city, and then chose the smallest distance traveled. This is a
 -- O(n*n) = O(n^2) algorithm.
-tsp_nn_rot :: (Eq k, Real v) => [(k, [(k, v)])] -> ([k], v)
-tsp_nn_rot l = best $ tsp_nn_rot' [] (length l) l
+tspNNRot :: (Eq k, Real v) => [(k, [(k, v)])] -> ([k], v)
+tspNNRot l = best $ tsp_nn_rot' [] (length l) l
   where
     -- We run nn once for every possible starting city...
     tsp_nn_rot' :: (Eq k, Real v) => [([k], v)] -> Int -> [(k, [(k, v)])]
                    -> [([k], v)]
     tsp_nn_rot' r 0 l = r
-    tsp_nn_rot' r n l = tsp_nn_rot' (r ++ [tsp_nn l]) (n-1) (rotate l)
+    tsp_nn_rot' r n l = tsp_nn_rot' (r ++ [tspNN l]) (n-1) (rotate l)
     -- ...and select the best result. For this we abuse the `closest` function
     -- which just happens to do the right thing already, because we only care
     -- about the second half of the tuples.
@@ -164,15 +193,15 @@ tsp_nn_rot l = best $ tsp_nn_rot' [] (length l) l
 -- Now on to something different, the definitve best solution to the problem,
 -- at least in terms of the best result. We iterate through every possible
 -- solution and choose the best one.
-tsp_all :: (Eq k, Ord k, Real v) => [(k, [(k, v)])] -> (v, [k])
-tsp_all l = let paths = map (\l -> l ++ [head l]) $ L.permutations $ map fst l
-                dists = map (`pathLength` l) paths
+tspAll :: (Eq k, Ord k, Real v) => [(k, [(k, v)])] -> (v, [k])
+tspAll l = let paths = map (\l -> l ++ [head l]) . L.permutations $ map fst l
+               dists = map (`pathLength` l) paths
             in minimum $ zip dists paths
 
 -- The next algorithm we will be looking at is the greedy algorithm. It will
 -- try to accumulate the shortest possible edges to build the graph this way.
-tsp_greedy :: (Eq k, Real v) => [(k, [(k, v)])] -> ([k], v)
-tsp_greedy l = addLast (buildGraph (tsp_greedy' (buildList l) []) l) l
+tspGreedy :: (Eq k, Real v) => [(k, [(k, v)])] -> ([k], v)
+tspGreedy l = addLast (buildGraph (tsp_greedy' (buildList l) []) l) l
   where
     tsp_greedy' :: (Eq k, Real v) => [((k,k), v)] -> [((k,k), v)]
                    -> [((k,k), v)]
@@ -185,8 +214,8 @@ tsp_greedy l = addLast (buildGraph (tsp_greedy' (buildList l) []) l) l
     -- This function builds a list of possible vertices from the input dataset
     -- of edges and distances.
     buildList :: (Eq k, Real v) => [(k, [(k, v)])] -> [((k, k), v)]
-    buildList = foldr (\(a,v) acc1 -> acc1 ++ (foldr (\(b,d) acc2 ->
-                                      acc2 ++ [((a,b), d)]) [] v)) []
+    buildList = foldr (\(a,v) acc1 -> acc1 ++ foldr (\(b,d) acc2 ->
+                                      acc2 ++ [((a,b), d)]) [] v) []
     -- Build the resulting graph from a list of edges. This assumes there is a
     -- graph spanning all vertices but not cycling. So we look for an edge with
     -- a vertex that is only used once and start constructing the graph from
@@ -194,7 +223,7 @@ tsp_greedy l = addLast (buildGraph (tsp_greedy' (buildList l) []) l) l
     -- in handy here.
     buildGraph :: (Eq k, Real v) => [((k, k), v)] -> [(k, [(k, v)])]
                   -> ([k], v)
-    buildGraph e l = dist' (buildGraph' [] (first' e) e) l
+    buildGraph e = dist' (buildGraph' [] (first' e) e)
       where
         buildGraph' :: (Eq k, Real v) => [k] -> k -> [((k, k), v)] -> [k]
         buildGraph' r c [] = r ++ [c]
@@ -202,7 +231,7 @@ tsp_greedy l = addLast (buildGraph (tsp_greedy' (buildList l) []) l) l
                                        (filter (filter' ((c, next' l c), 0)) l)
         -- Find one of the vertices that is present only once.
         first' :: (Eq k, Real v) => [((k, k), v)] -> k
-        first' l = fst $ closest $ foldr (\e r -> r ++ [(e, count'' e l)]) []
+        first' l = fst . closest $ foldr (\e r -> r ++ [(e, count'' e l)]) []
                                          (get' l)
         -- Given one vertex, return the other/next one for constructing the
         -- graph.
@@ -215,7 +244,7 @@ tsp_greedy l = addLast (buildGraph (tsp_greedy' (buildList l) []) l) l
         -- Calculate the distance traveled from a list of cities.
         dist' :: (Eq k, Real v) => [k] -> [(k, [(k, v)])] -> ([k], v)
         dist' k l = foldr (\e (k, d) -> (k ++ [e],
-                                         d + (M.fromJust (dist (last k) e l))))
+                                         d + M.fromJust (dist (last k) e l)))
                           (take 1 k, 0) (tail k)
     -- And again we can abuse closest to find the shortest possible edge in a
     -- list of edges.
@@ -231,28 +260,25 @@ tsp_greedy l = addLast (buildGraph (tsp_greedy' (buildList l) []) l) l
     -- We also need a filter out the edges that involve at least one vertex
     -- that is already twice in the list of selected edges.
     filter'' :: (Eq k) => [((k, k), v)] -> ((k, k), v) -> Bool
-    filter'' l ((a1, b1), _) | foldr (\(a,b) n -> if a1 == a then n + 1
-                                             else if a1 == b then n + 1
-                                             else n) 0 (map fst l) >= 2 = False
-                             | foldr (\(a,b) n -> if b1 == a then n + 1
-                                             else if b1 == b then n + 1
-                                             else n) 0 (map fst l) >= 2 = False
+    filter'' l ((a1, b1), _) | foldr ((\(a,b) n -> if (a1 == a) || (a1 == b)
+                                then n + 1 else n) . fst) 0 l >= 2 = False
+                             | foldr ((\(a,b) n -> if (b1 == a) || (b1 == b)
+                                then n + 1 else n) . fst) 0 l >= 2 = False
                              |                                otherwise = True
     -- At last, we need to filter out any edge that would close the cycle
     -- before we have visitited every vertex/city. Therefore, we filter out all
     -- edges that would lead to a list of edges where every vertex is exactly
     -- twice in the list, thus we would have a cycle.
     filter''' :: (Eq k, Real v) => [((k, k), v)] -> ((k, k), v) -> Bool
-    filter''' l ((a1, b1), _) = if minimum (foldr
+    filter''' l ((a1, b1), _) = minimum (foldr
               (\e r -> r ++ [count'' e (l ++ [((a1, b1), 0)])])
-              [] (get' (l ++ [((a1, b1), 0)]))) >= 2 then False else True
+              [] (get' (l ++ [((a1, b1), 0)]))) < 2
     -- Create a list of unique vertices from our data layout.
     get' :: (Eq k) => [((k, k), v)] -> [k]
-    get' l = L.nub $ foldr (\(a1, b1) r -> r ++ [a1, b1]) [] (map fst l)
+    get' = L.nub . foldr ((\(a1, b1) r -> r ++ [a1, b1]) . fst) []
     -- This is a modified count version that counts the number of
     -- occurences of a vertex in a list of edges, specialized for our data
     -- layout.
     count'' :: (Eq k) => k -> [((k, k), v)] -> Int
-    count'' a l = count' a (foldr (\(a1, b1) r -> r ++ [a1, b1]) []
-                         (map fst l))
+    count'' a l = count' a (foldr ((\(a1, b1) r -> r ++ [a1, b1]) . fst) [] l)
 
