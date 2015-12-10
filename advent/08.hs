@@ -1,30 +1,20 @@
 module Main where
 
-alphaNum :: String
-alphaNum = ['0'..'9'] ++ ['a'..'z']
-
-validTokens :: String
-validTokens = alphaNum ++ ['\\','"']
-
 memoryLength :: String -> Int
 memoryLength [] = 0
 memoryLength (x:xs)
-  | x `elem` alphaNum = 1 + memoryLength xs
-  | x == '"'          = memoryLength xs
-  | x == '\\'         = if head xs `elem` ['\\','"']
-                          then 1 + memoryLength (drop 1 xs)
-                          else 1 + memoryLength (drop 3 xs)
+  | x == '"'  = memoryLength xs
+  | x == '\\' = if head xs `elem` ['\\','"']
+                  then 1 + memoryLength (drop 1 xs)
+                  else 1 + memoryLength (drop 3 xs)
+  | otherwise = 1 + memoryLength xs
 
 encodedLength :: String -> Int
-encodedLength [] = 0
-encodedLength (x:xs)
-  | x `elem` alphaNum           = 1 + encodedLength xs
-  | x == '\\'                   = 2 + encodedLength xs
-  | x == '"'                    = 2 + encodedLength xs
+encodedLength = foldr (\c r -> if c `elem` ['\\','"'] then r + 2 else r + 1) 0
 
 main = do
   indata <- readFile "08.input"
-  let pd = filter (`elem` validTokens) indata
+  let pd = concat $ lines indata
       cl = length pd
       ml = memoryLength pd
       nl = length $ lines indata
