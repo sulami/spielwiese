@@ -22,5 +22,7 @@ check pw = any (`BS.isInfixOf` pw) [ BS.pack [c,c+1,c+2] | c <- [97..120] ]
 
 main = do
   let indata = "vzbxkghb"
-  print . head . filter check $ iterate incPasswd indata
+      passwords = filter check $ iterate incPasswd indata
+  print $ head passwords
+  print $ passwords !! 1
 
