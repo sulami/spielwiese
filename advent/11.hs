@@ -12,7 +12,7 @@ incChar True  122 = (True, 97)     -- z -> a
 incChar True  c   = (False, c + 1)
 
 incPasswd :: ByteString -> ByteString
-incPasswd pw = snd $ BS.mapAccumR incChar True pw
+incPasswd = snd . BS.mapAccumR incChar True
 
 check :: ByteString -> Bool
 check pw = any (`BS.isInfixOf` pw) [ BS.pack [c,c+1,c+2] | c <- [97..120] ]
@@ -21,8 +21,7 @@ check pw = any (`BS.isInfixOf` pw) [ BS.pack [c,c+1,c+2] | c <- [97..120] ]
            [ BS.pack [c,c] | c <- [97..122] ])
 
 main = do
-  let indata = "vzbxkghb"
-      passwords = filter check $ iterate incPasswd indata
+  let passwords = filter check $ iterate incPasswd "vzbxkghb"
   print $ head passwords
   print $ passwords !! 1
 
