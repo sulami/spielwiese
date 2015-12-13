@@ -1,5 +1,6 @@
 module Main where
 
+import Control.Arrow (second)
 import Data.List (maximumBy, minimumBy, partition, permutations)
 import Data.Maybe (fromJust)
 import Data.Ord (comparing)
@@ -28,14 +29,18 @@ readValues (l:ls) = let ws = words l
                         b = init $ last ws
                         h = read $ ws !! 3
                         fh = if "lose" `elem` ws then (- h) else h
-                      in (a, [(b, fh)]) : readValues ls
+                    in (a, [(b, fh)]) : readValues ls
 
 merge :: [(String, [(String, Integer)])] -> [(String, [(String, Integer)])]
 merge []         = []
 merge ((x,y):xs) = let (same,diff) = partition (\(a,_) -> x == a) xs
                     in (x, y ++ concatMap snd same) : merge diff
 
+addMyself :: [(String, [(String, Integer)])] -> [(String, [(String, Integer)])]
+addMyself l = ("I", map (\x -> (fst x, 0)) l) : map (second ((:) ("I", 0))) l
+
 main = do
   indata <- merge . readValues . lines <$> readFile "13.input"
   print . maximumBy (comparing fst) $ tsp indata
+  print . maximumBy (comparing fst) . tsp $ addMyself indata
 
