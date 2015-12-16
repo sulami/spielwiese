@@ -14,8 +14,17 @@ readData l = let fl = filter (not . (`elem` [':',','])) l
 match :: [(String, Int)] -> (Int, [(String, Int)]) -> Bool
 match want = all (\(k,v) -> v == fromJust (lookup k want)) . snd
 
+match2 :: [(String, Int)] -> (Int, [(String, Int)]) -> Bool
+match2 want = all right . snd
+  where
+    right :: (String, Int) -> Bool
+    right (k,v)
+      | k == "cats" || k == "trees"           = v >  fromJust (lookup k want)
+      | k == "pomeranians" || k == "goldfish" = v <  fromJust (lookup k want)
+      | otherwise                             = v == fromJust (lookup k want)
+
 main = do
-  indata <- lines <$> readFile "16.input"
+  indata <- zip [1..] . map readData . lines <$> readFile "16.input"
   let want = [("children",3),
               ("cats",7),
               ("samoyeds",2),
@@ -26,5 +35,6 @@ main = do
               ("trees",3),
               ("cars",2),
               ("perfumes",1)]
-  print . filter (match want) . zip [1..] $ map readData indata
+  print $ filter (match want) indata
+  print $ filter (match2 want) indata
 
