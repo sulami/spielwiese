@@ -51,9 +51,10 @@ score s = let countLetters = fromIntegral . (`BS.count` cleanedInput)
               occurences = map (id &&& countLetters) [97..122]
           in sum (map compare occurences) / floatLength
   where
-    -- Remove all characters we do not account for
+    -- Remove all characters we do not account for and convert to lowercase
     cleanedInput :: ByteString
-    cleanedInput = BS.filter (`elem` [97..122]) s
+    cleanedInput = BS.filter (`elem` [97..122]) $
+      BS.map (\w -> if w < 97 then w + 32 else w) s
 
     -- We need this in a couple of places
     floatLength :: Float
