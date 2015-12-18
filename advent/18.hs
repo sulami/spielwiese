@@ -22,8 +22,11 @@ step b0 = B (width b0) (height b0) . listArray (0,width b0 * height b0 - 1) $
   where
     lives :: (Int, Int) -> Bool
     lives coords = let n = length . filter inspect $ surFields coords
-                       t = inspect coords
-                    in (not t && n == 3) || (t && n >= 2 && n <= 3)
+                       before = inspect coords
+                       corner = coords `elem` [(0,0), (width b0 - 1,0),
+                                (0,height b0 - 1), (width b0 - 1,height b0 - 1)]
+                    in corner ||
+                      (not before && n == 3) || (before && n >= 2 && n <= 3)
 
     inspect :: (Int, Int) -> Bool
     inspect (x,y) = content b0 ! (width b0 * y + x)
