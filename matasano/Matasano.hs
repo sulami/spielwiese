@@ -8,7 +8,7 @@
 module Matasano where
 
 import           Control.Arrow ((&&&), second)
-import           Data.Bits (xor)
+import           Data.Bits (popCount, xor)
 import           Data.Maybe (fromMaybe, isJust)
 import           Data.String (IsString)
 
@@ -35,14 +35,26 @@ fromHex (Hex bs) = unhex bs
 unsafeFromHex :: HexByteString -> ByteString
 unsafeFromHex (Hex bs) = fromMaybe (error "Failed to unhex") $ unhex bs
 
+-- | Use a bytestring function on a hex encoded bytestring
+onHex :: (ByteString -> a) -> HexByteString -> a
+onHex f (Hex bs) = f bs
+
 -- | Check if a hex encoded bytestring is valid
 checkHex :: HexByteString -> Bool
 checkHex = isJust . fromHex
 
--- | 'xor' two hex encoded bytestrings. Caution: Assumes valid input data
-xorByteString :: HexByteString -> HexByteString -> HexByteString
-xorByteString a b = toHex . BS.pack $
+-- | XOR two hex encoded bytestrings. Caution: Assumes valid input data
+xorHexByteString :: HexByteString -> HexByteString -> HexByteString
+xorHexByteString a b = toHex . BS.pack $
   BS.zipWith xor (unsafeFromHex a) (unsafeFromHex b)
+
+-- | XOR two bytestrings
+xorByteString :: ByteString -> ByteString -> ByteString
+xorByteString a b = BS.pack $ BS.zipWith xor a b
+
+-- | Calculate the Hamming distance of two hex encoded bytestrings
+hammingDistance :: ByteString -> ByteString -> Int
+hammingDistance a = BS.foldl (\acc w -> acc + popCount w) 0 . xorByteString a
 
 -- | Score a string based on letter-frequency compared to average English.
 -- Lower scores are better, and generally English should have a score below 0.6
