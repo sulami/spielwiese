@@ -7,12 +7,15 @@ import System.Console.ANSI (clearScreen, setCursorPosition)
 import System.IO (hFlush, stdout)
 import System.Random (randomRIO)
 
-data GameState = GameState [(String, Bool)] Int
+data GameState = GameState
+  { solutions :: [(String, Bool)]
+  , points    :: Int
+  }
 
 subwords :: [String] -> String -> [String]
-subwords list base = sortBy (comparing length) $ sort $ nub
-                     $ filter (`elem` list) $ filter (\w -> 3 <= length w)
-                     $ concat $ map permutations $ subsequences base
+subwords list base = sortBy (comparing length) . sort . nub
+                     . filter (`elem` list) . filter (\w -> 3 <= length w)
+                     . concatMap permutations $ subsequences base
 
 guess :: GameState -> String -> GameState
 guess (GameState g0 s0) w0
@@ -20,7 +23,7 @@ guess (GameState g0 s0) w0
   | otherwise = GameState g0 s0
     where
       new :: Bool
-      new = w0 `elem` (map fst g0) && not (fromJust (lookup w0 g0))
+      new = w0 `elem` map fst g0 && not (fromJust $ lookup w0 g0)
 
       setNew :: (String, Bool) -> (String, Bool)
       setNew (w,s) = (w, s || w0 == w)
@@ -30,26 +33,27 @@ wordToStr (w,s) | s         = "\x1b[32m" ++ w ++ "\x1b[39m"
                 | otherwise = [ '_' | _ <- [1..(length w)] ]
 
 prompt :: GameState -> String -> String
-prompt (GameState g0 s0) ls =
-  let d = show $ length $ filter snd g0
-      ad = show $ length g0
-  in concat [ "[", d, "/", ad, "|", show s0, "] ", ls, " > " ]
+prompt (GameState ss ps) ls =
+  let d = show . length $ filter snd ss
+      ad = show $ length ss
+  in concat [ "[", d, "/", ad, "|", show ps, "] ", ls, " > " ]
 
 printState :: GameState -> IO ()
-printState (GameState g0 s0) = putStrLn $ unwords $ map wordToStr g0
+printState gs = putStrLn . unwords . map wordToStr $ solutions gs
 
 mainLoop :: String -> GameState -> IO ()
-mainLoop w0 gs0@(GameState g0 s0) = if all snd g0
-                                      then putStrLn "Fin!"
-                                      else do clearScreen
-                                              setCursorPosition 0 0
-                                              printState gs0
-                                              putStr $ prompt gs0 w0
-                                              hFlush stdout
-                                              g <- getLine
-                                              mainLoop w0 $ guess gs0 g
+mainLoop w gs = if all snd (solutions gs)
+                  then putStrLn "Fin!"
+                  else do
+                    clearScreen
+                    setCursorPosition 0 0
+                    printState gs
+                    putStr $ prompt gs w
+                    hFlush stdout
+                    g <- getLine
+                    mainLoop w $ guess gs g
 
-main = do wordlist <- fmap lines $ readFile "words"
+main = do wordlist <- lines <$> readFile "words"
           let initlist = filter (\w -> length w == 6) wordlist
           initn <- randomRIO (0, length initlist - 1)
           let w0 = initlist !! initn
