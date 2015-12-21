@@ -37,7 +37,11 @@ unsafeFromHex (Hex bs) = fromMaybe (error "Failed to unhex") $ unhex bs
 
 -- | Use a bytestring function on a hex encoded bytestring
 onHex :: (ByteString -> a) -> HexByteString -> a
-onHex f (Hex bs) = f bs
+onHex f (Hex a) = f a
+
+-- | Like 'onHex' but with two arguments
+onHex2 :: (ByteString -> ByteString -> a) -> HexByteString -> HexByteString -> a
+onHex2 f (Hex a) (Hex b) = f a b
 
 -- | Check if a hex encoded bytestring is valid
 checkHex :: HexByteString -> Bool
@@ -95,4 +99,9 @@ score s = let countLetters = fromIntegral . (`BS.count` cleanedInput)
     -- English text
     compare :: (Word8, Float) -> Float
     compare (w,n) = abs . (n -) . fromMaybe 0 $ lookup w relativeBaseline
+
+-- | Break a ByteString into chunks of n characters
+chunks :: Int -> ByteString -> [ByteString]
+chunks n bs = let (a,b) = BS.splitAt n bs
+              in a : if not (BS.null b) then chunks n b else []
 
