@@ -1,6 +1,6 @@
 module Sudoku (build, prettify, prettyPrint, solve) where
 
-import Data.List (intersperse)
+import           Data.List (intersperse)
 
 type Value = Int
 type Coord = Int
@@ -23,8 +23,8 @@ get :: Grid -> Coord -> Value
 get g n = snd $ g !! n
 
 options :: Grid -> Cell -> [Value]
-options g (n, _) = let r = (rowWise n) ++ (colWise n) ++ (boxWise n) in
-                    filter (`notElem` (map (get g) r)) [1..9]
+options g (n, _) = let r = rowWise n ++ colWise n ++ boxWise n
+                    in filter (`notElem` map (get g) r) [1..9]
 
 change :: Grid -> Cell -> Grid
 change g (n, v) = map (\(gn, gv) -> if gn == n then (n, v) else (gn, gv)) g
@@ -32,28 +32,28 @@ change g (n, v) = map (\(gn, gv) -> if gn == n then (n, v) else (gn, gv)) g
 fill :: Grid -> Cell -> Grid
 fill g c@(n, v) | n >= 81          = g
                 | v /= 0           = fill g next
-                | length opts == 1 = fill (change g (n, (head opts))) next
+                | length opts == 1 = fill (change g (n, head opts)) next
                 | otherwise        = fill g next
   where
     next = (n + 1, get g (n + 1))
     opts = options g c
 
 solved :: Grid -> Bool
-solved = foldr (\(_, v) r -> if v == 0 then False else r) True
+solved = foldr (\(_, v) r -> ((v /= 0) && r)) True
 
 solve :: Grid -> Grid
 solve g | solved g  = g
         | otherwise = solve $ fill g (0, get g 0)
 
 build :: [Value] -> Grid
-build vs = zip [0..] vs
+build = zip [0..]
 
 prettify :: Grid -> String
 prettify g = unlines $ gaps $ fillempty $ pp (map snd g) []
   where
     pp [] r   = r
     pp g  r   = pp (drop 9 g) $ r ++ [cosho (take 9 g)]
-    cosho     = concat . (map show)
+    cosho     = concatMap show
     fillempty = map (map (\e -> if e == '0' then '_' else e))
     gaps      = map (intersperse ' ')
 
