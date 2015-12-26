@@ -7,8 +7,8 @@ import           Data.Matrix
 type Data          = Matrix Double
 type Synapse       = Matrix Double
 data NeuralNetwork = NeuralNetwork
-  { shape   :: [Int]
-  , weights :: [Synapse]
+  { _shape   :: [Int]
+  , _weights :: [Synapse]
   } deriving (Show)
 
 -- | Construct a new neural network with the shape supplied.
@@ -24,7 +24,7 @@ mkSyns = foldl (\r (y,x) -> r ++ [zero x $ y + 1]) []
 -- > transpose . last $ run ...
 run :: NeuralNetwork -> Data -> [Data]
 run net d0 = let indata = addBias $ transpose d0
-              in scanl runLayer indata $ weights net
+              in scanl runLayer indata $ _weights net
   where
     runLayer :: Data -> Synapse -> Data
     runLayer d s = predict s $ addBias d
