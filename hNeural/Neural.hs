@@ -30,7 +30,7 @@ run net d0 = let indata = addBias $ transpose d0
     runLayer d s = predict s $ addBias d
 
     addBias :: Data -> Data
-    addBias d = d <-> fromLists [[1 | c <- [1..(ncols d)]]]
+    addBias d = d <-> fromLists [ [ 1 | c <- [1..(ncols d)] ] ]
 
 dot :: Matrix Double -> Matrix Double -> Matrix Double
 dot a b = fromLists [zipWith (*) (toList a) (toList b)]
