@@ -13,6 +13,7 @@
 !*.go
 !*.hs
 !*.scm
+!*.scala
 !*.input
 !*.cabal
 !LICENSE
