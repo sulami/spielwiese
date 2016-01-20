@@ -39,5 +39,5 @@ maximumMay (x:xs) = Just $ foldr max x xs
 
 minimumMay :: Ord a => [a] -> Maybe a
 minimumMay []     = Nothing
-maximumMay (x:xs) = Just $ foldr min x xs
+minimumMay (x:xs) = Just $ foldr min x xs
 
