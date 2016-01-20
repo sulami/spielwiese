@@ -54,3 +54,22 @@ queryGreek gk k = case lookupMay k gk of
                           Nothing -> Nothing
                           Just th -> divMay (fromInteger tm) (fromInteger th)
 
+-- 204
+
+chain :: (a -> Maybe b) -> Maybe a -> Maybe b
+chain _  Nothing  = Nothing
+chain fn (Just x) = fn x
+
+link :: Maybe a -> (a -> Maybe b) -> Maybe b
+link = flip chain
+
+queryGreek2 :: GreekData -> String -> Maybe Double
+queryGreek2 gk k = let xs = lookupMay k gk
+                       tm = xs `link` tailMay `link` maximumMay
+                       lh = liftMay fromInteger $ xs `link` headMay
+                    in lh `link` (\x -> liftMay fromInteger tm `link` divMay x)
+  where
+    liftMay :: (a -> b) -> Maybe a -> Maybe b
+    liftMay _ Nothing  = Nothing
+    liftMay f (Just x) = Just $ f x
+
