@@ -58,4 +58,12 @@ repRandom []     s = ([], s)
 repRandom (g:gs) s = let (rv,ns) = g s
                       in (rv : fst (repRandom gs ns), ns)
 
+-- 106
+
+genTwo :: Gen a -> (a -> Gen b) -> Gen b
+genTwo g fn s = let (rv0,ns0) = g s
+                in fn rv0 ns0
+
+mkGen :: a -> Gen a
+mkGen x s = (x, s)
 
