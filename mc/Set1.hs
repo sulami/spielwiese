@@ -51,4 +51,11 @@ generalB :: (a -> b) -> Gen a -> Gen b
 generalB fn gen s = let (rv,ns) = gen s
                     in (fn rv, ns)
 
+-- 105
+
+repRandom :: [Gen a] -> Gen [a]
+repRandom []     s = ([], s)
+repRandom (g:gs) s = let (rv,ns) = g s
+                      in (rv : fst (repRandom gs ns), ns)
+
 
