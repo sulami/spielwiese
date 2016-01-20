@@ -73,3 +73,18 @@ queryGreek2 gk k = let xs = lookupMay k gk
     liftMay _ Nothing  = Nothing
     liftMay f (Just x) = Just $ f x
 
+-- 205
+
+addSalaries :: [(String, Integer)] -> String -> String -> Maybe Integer
+addSalaries si n0 n1 = let s0 = lookupMay n0 si
+                           s1 = lookupMay n1 si
+                        in yLink (+) s0 s1
+
+yLink :: (a -> b -> c) -> Maybe a -> Maybe b -> Maybe c
+yLink _ Nothing  _        = Nothing
+yLink _ _        Nothing  = Nothing
+yLink f (Just x) (Just y) = Just $ f x y
+
+mkMaybe :: a -> Maybe a
+mkMaybe = Just
+
