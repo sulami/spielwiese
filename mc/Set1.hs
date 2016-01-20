@@ -37,4 +37,18 @@ randOdd = generalA (+1) randEven
 randTen :: Gen Integer
 randTen = generalA (*10) rand
 
+-- 104
+
+randPair :: Gen (Char, Integer)
+randPair = generalB (\n -> (toLetter n, n^2)) rand
+
+generalPair :: Gen a -> Gen b -> Gen (a,b)
+generalPair g0 g1 s = let (rv0,ns0) = g0 s
+                          (rv1,ns1) = g1 s
+                      in ((rv0,rv1), ns0)
+
+generalB :: (a -> b) -> Gen a -> Gen b
+generalB fn gen s = let (rv,ns) = gen s
+                    in (fn rv, ns)
+
 
