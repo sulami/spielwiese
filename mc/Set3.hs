@@ -33,3 +33,15 @@ allPairs2 = allPerms (,)
 allCards2 :: [Int] -> [String] -> [Card]
 allCards2 = allPerms Card
 
+-- 304
+
+allPerms3 :: (a -> b -> c -> d) -> [a] -> [b] -> [c] -> [d]
+allPerms3 _  [] _  _  = []
+allPerms3 _  _  [] _  = []
+allPerms3 _  _  _  [] = []
+allPerms3 fn l0 l1 l2 = concatMap (\e0 ->
+                          concatMap (\e1 ->
+                            map (fn e0 e1) l2
+                          ) l1
+                        ) l0
+
