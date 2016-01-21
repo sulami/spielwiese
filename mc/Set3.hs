@@ -20,3 +20,16 @@ instance Show Card where
 allCards :: [Int] -> [String] -> [Card]
 allCards rs ss = concatMap (\r -> map (Card r) ss) rs
 
+-- 303
+
+allPerms :: (a -> b -> c) -> [a] -> [b] -> [c]
+allPerms _  [] _  = []
+allPerms _  _  [] = []
+allPerms fn l0 l1 = concatMap (\e -> map (fn e) l1) l0
+
+allPairs2 :: [a] -> [b] -> [(a,b)]
+allPairs2 = allPerms (,)
+
+allCards2 :: [Int] -> [String] -> [Card]
+allCards2 = allPerms Card
+
