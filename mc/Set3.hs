@@ -23,8 +23,6 @@ allCards rs ss = concatMap (\r -> map (Card r) ss) rs
 -- 303
 
 allPerms :: (a -> b -> c) -> [a] -> [b] -> [c]
-allPerms _  [] _  = []
-allPerms _  _  [] = []
 allPerms fn l0 l1 = concatMap (\e -> map (fn e) l1) l0
 
 allPairs2 :: [a] -> [b] -> [(a,b)]
@@ -36,9 +34,6 @@ allCards2 = allPerms Card
 -- 304
 
 allPerms3 :: (a -> b -> c -> d) -> [a] -> [b] -> [c] -> [d]
-allPerms3 _  [] _  _  = []
-allPerms3 _  _  [] _  = []
-allPerms3 _  _  _  [] = []
 allPerms3 fn l0 l1 l2 = concatMap (\e0 ->
                           concatMap (\e1 ->
                             map (fn e0 e1) l2
