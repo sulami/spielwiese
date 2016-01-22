@@ -40,3 +40,17 @@ allPerms3 fn l0 l1 l2 = concatMap (\e0 ->
                           ) l1
                         ) l0
 
+-- 305
+
+permStep :: [a -> b] -> [a] -> [b]
+permStep fns xs = concatMap (`map` xs) fns
+
+ap :: (a -> b -> c) -> [a] -> [b] -> [c]
+ap fn = permStep . map fn
+
+ap3 :: (a -> b -> c -> d) -> [a] -> [b] -> [c] -> [d]
+ap3 fn l0 = permStep . ap fn l0
+
+ap4 :: (a -> b -> c -> d -> e) -> [a] -> [b] -> [c] -> [d] -> [e]
+ap4 fn l0 l1 = permStep . ap3 fn l0 l1
+
