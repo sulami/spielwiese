@@ -17,4 +17,4 @@
 !*.input
 !*.cabal
 !LICENSE
-
+!*.hy
