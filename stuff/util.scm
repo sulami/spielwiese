@@ -1,8 +1,8 @@
 ; Factorial (n!).
 (define (fact n)
-        (if (eq? 1 n)
-          n
-          (* n (fact (- n 1)))))
+  (if (eq? 1 n)
+    n
+    (* n (fact (- n 1)))))
 
 ;; Python-like range
 (define range
