@@ -4,24 +4,11 @@
           n
           (* n (fact (- n 1)))))
 
-; Construct a list from s to e defining the step size.
-(define (cls s ss e)
-        (if (> s e)
-          '()
-          (cons s (cls (+ s ss) ss e))))
-
-; Construct a list from s to e.
-(define (cl s e)
-        (cls s 1 e))
-
-; Construct a list from 1 to e with step size 1.
-(define (oneto e)
-        (cl 1 e))
-
-; Gambit-c does not have filter.
-(define (filter f l)
-        (if (< 0 (length l))
-          (let ((e (if (f (car l)) (list (car l)) '())))
-            (append e (filter f (cdr l))))
-            '()))
-
+;; Python-like range
+(define range
+  (case-lambda
+    ((t) (range 0 t 1))
+    ((f t) (range f t 1))
+    ((f t s) (if (>= f t)
+                 '()
+                 (cons f (range (+ f s) t s))))))
