@@ -13,6 +13,7 @@
 !*.go
 !*.hs
 !*.scm
+!*.lisp
 !*.scala
 !*.input
 !*.cabal
