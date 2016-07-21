@@ -19,3 +19,4 @@
 !*.cabal
 !LICENSE
 !*.hy
+!*.rkt
