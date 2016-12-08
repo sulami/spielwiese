@@ -1,6 +1,6 @@
 module Main where
 
-import           Data.List (elemIndices, nub, sort, sortBy)
+import           Data.List (elemIndices, isInfixOf, nub, sort, sortBy)
 import           Data.Ord  (comparing)
 
 type Room = (String, String, Int)
@@ -24,10 +24,21 @@ calcChecksum input = take 5 . sortBy mostOccurrences . nub $ sort input
 checkChecksum :: Room -> Bool
 checkChecksum (name, cs, _) = cs == calcChecksum name
 
+decypher :: Room -> Room
+decypher (name, cs, sid) =
+  let allchars = cycle ['a'..'z']
+      translate c = allchars !! (sid + head (elemIndices c allchars))
+  in (map translate name, cs, sid)
+
+findNPOs :: Room -> Bool
+findNPOs (name, _, _) = "northpoleobject" `isInfixOf` name
+
 thrd :: (a, b, c) -> c
 thrd (_, _, x) = x
 
 main :: IO ()
 main = do
   indata <- map readRoom . lines <$> readFile "04.input"
-  print . sum . map thrd $ filter checkChecksum indata
+  let realRooms = filter checkChecksum indata
+  print . sum $ map thrd realRooms
+  print . thrd . head . filter findNPOs $ map decypher realRooms
