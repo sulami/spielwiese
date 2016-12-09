@@ -1,5 +1,7 @@
 module Main where
 
+import           Data.List (isInfixOf)
+
 type IPv7Address = ([String], [String])
 
 readAddress :: String -> IPv7Address
@@ -23,9 +25,30 @@ hasABBA :: String -> Bool
 hasABBA s = length s >= 4 && (isABBA (take 4 s) || hasABBA (tail s))
 
 hasTLS :: IPv7Address -> Bool
-hasTLS (regs, hyps) = any hasABBA regs && all (not . hasABBA) hyps
+hasTLS (sups, hyps) = any hasABBA sups && all (not . hasABBA) hyps
+
+palindrome :: String -> Bool
+palindrome l = l == reverse l
+
+findABAs :: String -> [String]
+findABAs s
+  | length s < 3                              = []
+  | palindrome (take 3 s) && head s /= s !! 1 = take 3 s : findABAs (tail s)
+  | otherwise                                 = findABAs (tail s)
+
+hasSSL :: IPv7Address -> Bool
+hasSSL (sups, hyps) = not $ null [bab | bab <- findBABs sups,
+                                        hyp <- hyps,
+                                        bab `isInfixOf` hyp]
+  where
+    findBABs :: [String] -> [String]
+    findBABs = map invert . concatMap findABAs
+
+    invert :: String -> String
+    invert (a:b:_) = [b,a,b]
 
 main :: IO ()
 main = do
   indata <- map readAddress . lines <$> readFile "07.input"
   print . length $ filter hasTLS indata
+  print . length $ filter hasSSL indata
