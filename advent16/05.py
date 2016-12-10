@@ -3,7 +3,7 @@
 
 from itertools import count
 from hashlib import md5
-from sys import stdin
+from sys import stdin, stdout
 
 def find_password(door_id):
     password = ''
@@ -11,21 +11,26 @@ def find_password(door_id):
         hashed = md5((door_id + str(i)).encode()).hexdigest()
         if hashed[:5] == '00000':
             password += hashed[5]
+            print('\r' + password, end='')
+            stdout.flush()
             if len(password) == 8:
-                print(password)
+                print()
                 break
 
 
 def find_password2(door_id):
     password = list('________')
+    print('\r' + ''.join(password), end='')
     for i in count():
         hashed = md5((door_id + str(i)).encode()).hexdigest()
         if hashed[:5] == '00000':
             pos = hashed[5]
             if pos in '01234567' and password[int(pos)] == '_':
                 password[int(pos)] = hashed[6]
+                print('\r' + ''.join(password), end='')
+                stdout.flush()
                 if '_' not in password:
-                    print(''.join(password))
+                    print()
                     break
 
 
