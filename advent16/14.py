@@ -1,5 +1,10 @@
-from itertools import count
+"""
+More MD5, more Python. Again, pipe in with `echo -n`.
+"""
+
 from hashlib import md5
+from itertools import count, chain
+from sys import stdin
 
 
 def hash(plaintext):
@@ -13,24 +18,37 @@ def search_hashes(salt):
         yield (i, hash(salt + str(i)))
 
 
-def solve():
+def triplet(string):
+    """Return the first triplet in a string"""
+    for i in range(len(string) - 2):
+        if string[i] == string[i+1] == string[i+2]:
+            return string[i]
+    return None
+
+
+def solve(salt):
     findings = {}
-    for i, cypher in search_hashes('abc'):
+    otpks = []
+    for i, cypher in search_hashes(salt):
+        if len(otpks) >= 64 and i - max(otpks) > 1000:
+            return sorted(list(set(otpks)))[63]
+
         findings[i] = []
 
-        # repeaters2 = [''.join([c for _ in range(5)]) for c in set(cypher)]
-        # for rep in repeaters2:
-        #     if rep in cypher:
-        #         findings[i] += rep[0]
+        for j, chars in findings.items():
+            if not chars or i - j > 1000:
+                continue
+            if ''.join([chars[0] for _ in range(5)]) in cypher:
+                otpks.insert(0, j)
 
-        repeaters = [''.join([c for _ in range(3)]) for c in set(cypher)]
-        for rep in repeaters:
-            if rep in cypher:
-                findings[i] += rep[0]
+        tripl = triplet(cypher)
+        if tripl:
+            findings[i] += tripl
 
 
 def main():
-    print(solve())
+    salt = stdin.read()
+    print(solve(salt))
 
 
 if __name__ == '__main__':
