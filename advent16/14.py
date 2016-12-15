@@ -12,10 +12,13 @@ def hash(plaintext):
     return md5(plaintext.encode()).hexdigest()
 
 
-def search_hashes(salt):
+def search_hashes(salt, stretching=0):
     """Iterator to hash a salt with an increasing integer"""
     for i in count(0, 1):
-        yield (i, hash(salt + str(i)))
+        intermediate = hash(salt + str(i))
+        for j in range(stretching):
+            intermediate = hash(intermediate)
+        yield (i, intermediate)
 
 
 def triplet(string):
@@ -26,10 +29,10 @@ def triplet(string):
     return None
 
 
-def solve(salt):
+def solve(salt, stretching=0):
     findings = {}
     otpks = []
-    for i, cypher in search_hashes(salt):
+    for i, cypher in search_hashes(salt, stretching=stretching):
         if len(otpks) >= 64 and i - max(otpks) > 1000:
             return sorted(list(set(otpks)))[63]
 
@@ -49,6 +52,7 @@ def solve(salt):
 def main():
     salt = stdin.read()
     print(solve(salt))
+    print(solve(salt, stretching=2016))
 
 
 if __name__ == '__main__':
