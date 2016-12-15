@@ -1,11 +1,12 @@
 class BunnyComputer:
-    def __init__(self, instructions):
+    def __init__(self, instructions, extra_kwargs={}):
         self.a = 0
         self.b = 0
         self.c = 0
         self.d = 0
         self.instructions = instructions
         self.pos = 0
+        self.__dict__.update(extra_kwargs)
 
     def _access(self, addr):
         if addr in "abcd":
@@ -38,6 +39,10 @@ def main():
     with open('12.input', 'r') as fp:
         instructions = fp.read().splitlines()
         bc = BunnyComputer(instructions)
+        bc.run()
+        print(bc.a)
+
+        bc = BunnyComputer(instructions, extra_kwargs={'c': 1})
         bc.run()
         print(bc.a)
 
