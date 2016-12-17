@@ -40,6 +40,7 @@ def main():
     screen = Screen()
     screen.run(indata)
     print(sum([len([cell for cell in row if cell]) for row in screen.cells]))
+    screen.show()
 
 if __name__ == '__main__':
     main()
