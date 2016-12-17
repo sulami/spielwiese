@@ -27,3 +27,4 @@ main :: IO ()
 main = do
   indata <- getLine
   putStrLn . checksum . take 272 $ generateRandom 272 indata
+  putStrLn . checksum . take 35651584 $ generateRandom 35651584 indata
