@@ -41,7 +41,7 @@ def build_list(s, l):
         return build_list(rest, l)
 
 def process(s):
-    return build_list(s, [])[1][0]
+    return build_list(s.replace(' ', ''), [])[1][0]
 
 def test(s):
     print(s, end=' => ')
@@ -54,3 +54,5 @@ test("[[]]")
 test("[[],[]]")
 test("[12345]")
 test("[1,[], 2]")
+test("[1,[1,[2,3],5],2]")
+test("[1, 2, [3, [4, 5], [], 6, 7], 8")
