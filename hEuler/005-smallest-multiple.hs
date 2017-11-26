@@ -9,12 +9,8 @@
 
 {-# OPTIONS_GHC -O2 #-}
 
-check :: Integer -> Bool
-check n = foldr (\e r -> if n `mod` e == 0 then r else False) True [1..20]
+check :: Int -> Bool
+check n = all ((== 0) . (mod n)) [20,19..1]
 
-work :: Integer -> Integer
-work n | check n   = n
-       | otherwise = work (n+1)
-
-main = print $ work 1
-
+main :: IO ()
+main = print . head $ filter check [1..]
