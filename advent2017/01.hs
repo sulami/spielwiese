@@ -6,10 +6,19 @@ module Main where
 main :: IO ()
 main = do
   input <- getLine
-  let result = sum . map (read . (:[])) $ matchesNext input :: Int
-  print result
+  print . sum . readDigits $ matchesNext input
+  print . sum . readDigits $ matchesHalfway input
+
+readDigits :: String -> [Int]
+readDigits = map (read . (:[]))
 
 matchesNext :: String -> String
-matchesNext xs = filter (/= ' ') $ zipWith sameOrBlank xs (tail $ cycle xs)
+matchesNext = matchesSomething (tail . cycle)
+
+matchesHalfway :: String -> String
+matchesHalfway = matchesSomething (\s -> drop (length s `div` 2) $ cycle s)
+
+matchesSomething :: (String -> String) -> String -> String
+matchesSomething trans xs = filter (/= ' ') $ zipWith sameOrBlank xs $ trans xs
   where sameOrBlank a b |    a == b = a
                         | otherwise = ' '
