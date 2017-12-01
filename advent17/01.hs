@@ -19,5 +19,5 @@ matchesHalfway :: String -> String
 matchesHalfway = matchesSomething (\s -> drop (length s `div` 2) $ cycle s)
 
 matchesSomething :: (String -> String) -> String -> String
-matchesSomething trans xs = filter (/= ' ') . zipWith sameOrBlank xs $ trans xs
-  where sameOrBlank a b = if a == b then a else ' '
+matchesSomething trans xs = concat . zipWith sameOrEmpty xs $ trans xs
+  where sameOrEmpty a b = if a == b then [a] else []
