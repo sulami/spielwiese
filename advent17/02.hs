@@ -6,10 +6,14 @@ module Main where
 main :: IO ()
 main = do
   input <- map (map read . words) . lines <$> getContents
-  print $ checksum input
+  print $ checksum minMax input
+  print $ checksum evenDivide input
 
-checksum :: [[Int]] -> Int
-checksum = sum . map lineDiff
+checksum :: ([Int] -> Int) -> [[Int]] -> Int
+checksum f = sum . map f
 
-lineDiff :: [Int] -> Int
-lineDiff line = maximum line - minimum line
+minMax :: [Int] -> Int
+minMax line = maximum line - minimum line
+
+evenDivide :: [Int] -> Int
+evenDivide line = head [x `div` y | x <- line, y <- line, x `mod` y == 0]
