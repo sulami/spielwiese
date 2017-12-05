@@ -3,25 +3,29 @@
 
 module Main where
 
+type ModifierF = Int -> Int
+
 main :: IO ()
 main = do
   input <- map read . lines <$> getContents :: IO [Int]
-  print $ walk input
+  print $ walk modify1 0 0 input
+  print $ walk modify2 0 0 input
 
-walk :: [Int] -> Int
-walk = walk' 0 0
-  where
-    walk' :: Int -> Int -> [Int] -> Int
-    walk' ctr pos maze
-      | pos < 0 || pos >= length maze = ctr
-      |                     otherwise = let (np, nm) = jump pos maze
-                                        in walk' (ctr + 1) np nm
+walk :: ModifierF -> Int -> Int -> [Int] -> Int
+walk modifier ctr pos maze
+  | pos < 0 || pos >= length maze = ctr
+  |                     otherwise = let (np, nm) = jump modifier pos maze
+                                    in walk modifier (ctr + 1) np nm
 
-jump :: Int -> [Int] -> (Int, [Int])
-jump pos maze = let npos = pos + maze !! pos
-                    nmaze = updateMaze
-                in (npos, nmaze)
-  where
-    updateMaze :: [Int]
-    updateMaze = let (h,t) = splitAt pos maze
-                  in h ++ [head t + 1] ++ tail t
+jump :: ModifierF -> Int -> [Int] -> (Int, [Int])
+jump modifier pos maze = let npos = pos + maze !! pos
+                             (h,t) = splitAt pos maze
+                             nmaze = h ++ [modifier $ head t] ++ tail t
+                          in (npos, nmaze)
+
+modify1 :: ModifierF
+modify1 = (+ 1)
+
+modify2 :: ModifierF
+modify2 n |    n >= 3 = n - 1
+          | otherwise = n + 1
