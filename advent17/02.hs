@@ -3,17 +3,20 @@
 
 module Main where
 
+type ChecksumF = [Int] -> Int
+type CheckSum = Int
+
 main :: IO ()
 main = do
   input <- map (map read . words) . lines <$> getContents
   print $ checksum minMax input
   print $ checksum evenDivide input
 
-checksum :: ([Int] -> Int) -> [[Int]] -> Int
+checksum :: ChecksumF -> [[Int]] -> CheckSum
 checksum f = sum . map f
 
-minMax :: [Int] -> Int
+minMax :: ChecksumF
 minMax line = maximum line - minimum line
 
-evenDivide :: [Int] -> Int
+evenDivide :: ChecksumF
 evenDivide line = head [x `div` y | x <- line, y <- line, x `mod` y == 0]

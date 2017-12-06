@@ -4,20 +4,22 @@
 module Main where
 
 type ModifierF = Int -> Int
+type Maze = [Int]
+type Instruction = Int
 
 main :: IO ()
 main = do
-  input <- map read . lines <$> getContents :: IO [Int]
+  input <- map read . lines <$> getContents :: IO Maze
   print $ walk modify1 0 0 input
   print $ walk modify2 0 0 input
 
-walk :: ModifierF -> Int -> Int -> [Int] -> Int
+walk :: ModifierF -> Int -> Instruction -> Maze -> Int
 walk modifier ctr pos maze
   | pos < 0 || pos >= length maze = ctr
   |                     otherwise = let (np, nm) = jump modifier pos maze
                                     in walk modifier (ctr + 1) np nm
 
-jump :: ModifierF -> Int -> [Int] -> (Int, [Int])
+jump :: ModifierF -> Instruction -> Maze -> (Instruction, Maze)
 jump modifier pos maze = let npos = pos + maze !! pos
                              (h,t) = splitAt pos maze
                              nmaze = h ++ [modifier $ head t] ++ tail t
