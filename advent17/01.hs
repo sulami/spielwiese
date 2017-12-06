@@ -20,4 +20,4 @@ matchesHalfway = matchesSomething (\s -> drop (length s `div` 2) $ cycle s)
 
 matchesSomething :: (String -> String) -> String -> String
 matchesSomething trans xs = concat . zipWith sameOrEmpty xs $ trans xs
-  where sameOrEmpty a b = if a == b then [a] else []
+  where sameOrEmpty a b = [ a | a == b ]
