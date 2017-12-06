@@ -12,8 +12,8 @@ main :: IO ()
 main = do
   input <- map read . words <$> getLine :: IO Bank
   let dupe = findDupe [input]
-  print . (\x -> x - 1) $ length dupe
-  print . (\x -> x - 1) . length $ findDupe [head dupe]
+  print . subtract 1 $ length dupe
+  print . subtract 1 . length $ findDupe [head dupe]
 
 findDupe :: [Bank] -> [Bank]
 findDupe xs = let newBank = step $ head xs
