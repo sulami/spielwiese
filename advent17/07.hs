@@ -3,7 +3,8 @@
 
 module Main where
 
-import           Data.List (isInfixOf)
+import           Data.List (groupBy, isInfixOf, sortBy)
+import           Data.Ord  (comparing)
 
 data Program = Program
   { name     :: String
@@ -26,7 +27,8 @@ main = do
   putStrLn $ name root
   let tree = buildTree root input
       imbalanced = last . filter (not. balanced) $ trav tree
-  print . map weights $ carrying imbalanced
+      imbalancedWeights = map weights $ carrying imbalanced
+  print $ balance imbalancedWeights
 
 findRoot :: [String] -> Program
 findRoot []     = undefined
@@ -42,7 +44,7 @@ findRoot (x:xs) = findRoot' (readProgram x)
 
 buildTree :: Program -> [String] -> Program
 buildTree root ss = let children = [ readProgram c | c <- ss,
-                                     let this = head (words c),
+                                     let this = head $ words c,
                                      let thisChildren = drop 3 . words $ string root,
                                      let onlyChars = filter (`elem` ['a'..'z']),
                                      this `elem` map onlyChars thisChildren ]
@@ -63,3 +65,9 @@ balanced p = let ws = map weights (carrying p)
 
 trav :: Program -> [Program]
 trav root = root : concatMap trav (carrying root)
+
+balance :: [ProgramWeight] -> Int
+balance ws = let groups = groupBy (\x y -> snd x == snd y) ws
+                 [bad:_, good:_] = sortBy (comparing length) groups
+                 correction = snd bad - snd good
+             in fst bad - correction
