@@ -28,7 +28,7 @@ step bank = let maxValue = maximum bank
                 ones = replicate (highest + 1) 0 ++ replicate maxValue 1
                 (h,t) = splitAt highest bank
                 base = h ++ [0] ++ drop 1 t
-            in foldr (zipWith (+) . take size . (++ repeat 0)) base $ segment size ones
+            in foldr (zipWith (+) . (++ repeat 0)) base $ segment size ones
 
 segment :: Int -> [a] -> [[a]]
 segment _ [] = []
