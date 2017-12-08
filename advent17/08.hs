@@ -60,8 +60,10 @@ type State = [(String, Int)]
 main :: IO ()
 main = do
   input <- map readInstruction . lines <$> getContents
-  let final = foldr executeInstruction [] $ reverse input
+  let steps = scanr executeInstruction [] $ reverse input
+      final = head steps
   print . maximum $ map snd final
+  print . maximum . map snd $ concat steps
 
 executeInstruction :: Instruction -> State -> State
 executeInstruction instr s0
