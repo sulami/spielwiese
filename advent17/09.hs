@@ -23,8 +23,16 @@ score = score' 0
 
 main :: IO ()
 main = do
-  input <- filter (/= ',') . clean <$> getLine
-  print . sum . map score . fst $ readGroup input
+  input <- getLine
+  let nonIgnored = stripIgnored input
+      cleaned = filter (/= ',') $ clean nonIgnored
+  print . sum . map score . fst $ readGroup cleaned
+  print . length . concat $ garbage nonIgnored
+
+stripIgnored :: String -> String
+stripIgnored ""       = ""
+stripIgnored ('!':xs) = stripIgnored $ tail xs
+stripIgnored (x:xs)   = x : stripIgnored xs
 
 clean :: String -> String
 clean []       = []
@@ -33,7 +41,12 @@ clean ('<':xs) = clean $ dropGarbage xs
 clean (x:xs)   = x : clean xs
 
 dropGarbage :: String -> String
-dropGarbage ('!':xs) = dropGarbage $ tail xs
 dropGarbage ('>':xs) = xs
 dropGarbage (_:xs)   = dropGarbage xs
 dropGarbage []       = []
+
+garbage :: String -> [String]
+garbage ('<':xs) = let (this, rest) = span (/= '>') xs
+                   in this : garbage rest
+garbage (_:xs)   = garbage xs
+garbage []       = []
