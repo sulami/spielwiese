@@ -3,12 +3,24 @@
 
 module Main where
 
+import           Data.Bits (xor)
+import           Data.Char (ord)
+import           Numeric   (showHex)
+
 type State = (Int, Int, [Int])
 
 main :: IO ()
 main = do
-  input <- reverse . read . ('[' :) . (++ "]") <$> getLine
-  print . solve $ foldr step (0, 0, [0..255]) input
+  input <- getLine
+  let input1 = reverse . read . ('[' :) $ input ++ "]"
+      input2 = reverse . (++ [17, 31, 73, 47, 23]) $ map ord input
+      sparse = thrd . (!! 64) $ iterate (\st -> foldr step st input2) (0, 0, [0..255])
+  print . solve $ foldr step (0, 0, [0..255]) input1
+  putStrLn . concatMap (showHex' . foldr1 xor) $ segment 16 sparse
+
+showHex' :: Int -> String
+showHex' i = let o = showHex i ""
+             in if length o == 1 then '0':o else o
 
 solve :: State -> Int
 solve = (\[x, y] -> x * y) . take 2 . thrd
@@ -37,3 +49,7 @@ shift n xs = shift (n - 1) $ last xs : init xs
 
 thrd :: (a, b, c) -> c
 thrd (_, _, x) = x
+
+segment :: Int -> [a] -> [[a]]
+segment _ [] = []
+segment i xs = let (h, t) = splitAt i xs in h : segment i t
