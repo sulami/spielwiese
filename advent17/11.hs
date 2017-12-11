@@ -21,7 +21,9 @@ readDirection s = case s of
 main :: IO ()
 main = do
   input <- reverse . map readDirection . splitOn (== ',') <$> getLine
-  print . solve $ foldr move (0,0) input
+  let path = scanr move (0,0) input
+  print . solve $ head path
+  print . maximum $ map solve path
 
 splitOn :: (a -> Bool) -> [a] -> [[a]]
 splitOn _ [] = []
