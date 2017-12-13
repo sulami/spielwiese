@@ -8,10 +8,14 @@ type Firewall = (Int, Int)
 readFirewall :: String -> Firewall
 readFirewall s = let [a,b] = map read . words $ filter (/= ':') s :: [Int] in (a, b)
 
-severity :: Firewall -> Int
-severity (d,r) = if d `mod` ((r - 1) * 2) == 0 then d * r else 0
+severity :: Int -> Firewall -> Int
+severity offset (d,r) = if caught offset (d,r) then d * r else 0
+
+caught :: Int -> Firewall -> Bool
+caught offset (d,r) = (offset + d) `mod` ((r - 1) * 2) == 0
 
 main :: IO ()
 main = do
   input <- map readFirewall . lines <$> getContents
-  print . sum $ map severity input
+  print . sum $ map (severity 0) input
+  print . fst . head . filter snd $ map (\x -> (x, not (any (caught x) input))) [0..]
