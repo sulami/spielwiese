@@ -5,19 +5,18 @@ module Main where
 
 import           Data.Bits (xor)
 import           Data.Char (intToDigit, ord)
-import           Numeric   (showHex, showIntAtBase, readHex)
+import           Numeric   (showIntAtBase)
 
 main :: IO ()
 main = do
   input <- getLine
   let strings = take 128 $ map (\n -> input ++ "-" ++ show n) ([0..] :: [Int])
-  print . sum $ concatMap (map (read . (:[])) . hexToBinary . knotHash) strings
+  print . sum $ concatMap (map (read . (:[]) :: Char -> Int) . knotHash) strings
 
-hexToBinary :: String -> String
-hexToBinary ""     = ""
-hexToBinary (x:xs) = let bin = showIntAtBase 2 intToDigit (fst . head $ readHex [x] :: Int) ""
-                         prefix = replicate (4 - length bin) '0'
-                     in prefix ++ bin ++ hexToBinary xs
+showBinary :: Int -> String
+showBinary x = let bin = showIntAtBase 2 intToDigit x ""
+                   prefix = replicate (4 - length bin) '0'
+               in prefix ++ bin
 
 -- Knot Hash code from day 10
 type State = (Int, Int, [Int])
@@ -25,11 +24,7 @@ type State = (Int, Int, [Int])
 knotHash :: String -> String
 knotHash input = let input2 = reverse . (++ [17, 31, 73, 47, 23]) $ map ord input
                      sparse = thrd . (!! 64) $ iterate (\st -> foldr step st input2) (0, 0, [0..255])
-                 in concatMap (showHex' . foldr1 xor) $ segment 16 sparse
-
-showHex' :: Int -> String
-showHex' i = let o = showHex i ""
-             in if length o == 1 then '0':o else o
+                 in concatMap (showBinary . foldr1 xor) $ segment 16 sparse
 
 step :: Int -> State -> State
 step len (pos, skip, s0) = let newPos = (pos + len + skip) `mod` length s0
