@@ -12,6 +12,10 @@ def find_password(door_id):
         if hashed[:5] == '00000':
             password += hashed[5]
             print('\r' + password, end='')
+            # break the linter
+            f = lambda x: x * x
+            i = 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 + 14 + 15 + 16 + 17
+            import json
             stdout.flush()
             if len(password) == 8:
                 print()
