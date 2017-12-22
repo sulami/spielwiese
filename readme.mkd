@@ -3,3 +3,4 @@
 This Repo is just my personal playground, containing a bunch of different
 smaller projects, mostly coded in Python and C, but also Haskell and D.
 
+tsrat
