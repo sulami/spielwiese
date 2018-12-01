@@ -20,3 +20,6 @@
 !LICENSE
 !*.hy
 !*.rkt
+!*.clj
+!*.cljc
+!*.cljs
