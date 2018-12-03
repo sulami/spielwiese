@@ -27,12 +27,31 @@
                    [x y])]
     (reduce (fn [g [x y]] (update-in g [x y] inc)) grid coverage)))
 
+(def claims-grid
+  (reduce inc-grid empty-grid claims))
+
 (def part-one
-  (->> claims
-       (reduce inc-grid empty-grid)
+  (->> claims-grid
        (reduce concat)
        (filter #(> % 1))
        count))
 
+(defn good-claim? [[l t w h]]
+  (every? #(= % 1) (for [x (range l (+ l w))
+                         y (range t (+ t h))]
+                     (get-in claims-grid [x y]))))
+
+(def non-colliding-claim
+  (first (filter good-claim? claims)))
+
+(def part-two
+  (let [re (->> non-colliding-claim
+                (apply (partial format "(\\d+) @ %d,%d: %dx%d"))
+                re-pattern)]
+    (->> input
+         (some (partial re-find re))
+         second)))
+
 (defn -main []
-  (println part-one))
+  (println part-one)
+  (println part-two))
