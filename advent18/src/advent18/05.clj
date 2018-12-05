@@ -2,7 +2,7 @@
   (:require [clojure.string :as str]))
 
 (def input
-  (->>  "../../resources/05.input"
+  (->>  "resources/05.input"
         slurp
         str/trim))
 
