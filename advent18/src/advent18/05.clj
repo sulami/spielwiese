@@ -28,5 +28,16 @@
        (iterate-until-unchanged (partial f []))
        count))
 
+(def part-two
+  (->> input
+       str/lower-case
+       set
+       (map (fn [c] (->> input
+                         (filter #(not= (str/upper-case %) (str/upper-case c)))
+                         (iterate-until-unchanged (partial f []))
+                         count)))
+       (reduce min)))
+
 (defn -main []
-  (println part-one))
+  (println part-one)
+  (println part-two))
