@@ -3,7 +3,10 @@ use std::str::FromStr;
 
 pub fn solve() {
     let input = fs::read_to_string("inputs/04.txt").expect("failed to read input");
-    let pairs: Vec<Pair> = input.lines().map(|l| l.parse().unwrap()).collect();
+    let pairs: Vec<Pair> = input
+        .lines()
+        .map(|l| l.parse().expect("failed to parse pair"))
+        .collect();
     println!(
         "day 4-1: {}",
         pairs.iter().filter(|p| fully_contains(p)).count()
@@ -21,7 +24,7 @@ impl FromStr for Pair {
     type Err = &'static str;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if let [first, second] = s.split(',').collect::<Vec<&str>>()[..2] {
+        if let Some((first, second)) = s.split_once(',') {
             Ok(Self {
                 first: first.parse()?,
                 second: second.parse()?,
@@ -42,10 +45,10 @@ impl FromStr for Range {
     type Err = &'static str;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if let [start, end] = s.split('-').collect::<Vec<&str>>()[..2] {
+        if let Some((start, end)) = s.split_once('-') {
             Ok(Range {
-                start: start.parse().unwrap(),
-                end: end.parse().unwrap(),
+                start: start.parse().map_err(|_| "invalid range start")?,
+                end: end.parse().map_err(|_| "invalid range end")?,
             })
         } else {
             Err("invalid range")
