@@ -46,7 +46,7 @@ pub fn solve() {
     println!("day 3-2: {}", badges.iter().map(get_priority).sum::<u32>());
 }
 
-fn split_in_half<'a>(rs: &'a str) -> (&'a str, &'a str) {
+fn split_in_half(rs: &str) -> (&str, &str) {
     let l = rs.len() / 2;
     (&rs[..l], &rs[l..])
 }
