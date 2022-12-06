@@ -1,8 +1,7 @@
 use std::collections::{HashMap, HashSet};
-use std::fs;
 
 pub fn solve() {
-    let input = fs::read_to_string("inputs/03.txt").expect("failed to read input");
+    let input = include_str!("../inputs/03.txt");
     let rucksacks: Vec<&str> = input.lines().collect();
     let duplicates: Vec<char> = rucksacks
         .iter()

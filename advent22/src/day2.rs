@@ -1,8 +1,6 @@
-use std::fs;
-
 #[allow(clippy::identity_op)]
 pub fn solve() {
-    let input = fs::read_to_string("inputs/02.txt").expect("failed to read input");
+    let input = include_str!("../inputs/02.txt");
 
     let part1 = |plays: &str| -> i32 {
         match plays {
@@ -36,6 +34,6 @@ pub fn solve() {
 
     let calculate = |i: &str, strategy: fn(&str) -> i32| -> i32 { i.lines().map(strategy).sum() };
 
-    println!("day 2-1: {}", calculate(&input, part1));
-    println!("day 2-2: {}", calculate(&input, part2));
+    println!("day 2-1: {}", calculate(input, part1));
+    println!("day 2-2: {}", calculate(input, part2));
 }

@@ -1,7 +1,5 @@
-use std::fs;
-
 pub fn solve() {
-    let input = fs::read_to_string("inputs/01.txt").expect("failed to read input file");
+    let input = include_str!("../inputs/01.txt");
     let count_calories = |elf: &str| -> u32 {
         elf.split_whitespace()
             .map(|n| n.parse::<u32>().expect("failed to parse calories"))

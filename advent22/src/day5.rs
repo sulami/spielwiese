@@ -1,8 +1,7 @@
-use std::fs;
 use std::str::FromStr;
 
 pub fn solve() {
-    let input = fs::read_to_string("inputs/05.txt").expect("failed to read input");
+    let input = include_str!("../inputs/05.txt");
     let stack_tops = |stacks: &Stacks| -> String {
         stacks
             .crates
