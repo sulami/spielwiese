@@ -9,13 +9,13 @@ pub fn solve() {
             let (a, b) = split_in_half(s);
             let sa: HashSet<char> = a.chars().collect();
             let sb: HashSet<char> = b.chars().collect();
-            let both: Vec<&char> = sa.intersection(&sb).collect();
-            **both.first().expect("no misplaced item found")
+            let both: Vec<char> = sa.intersection(&sb).copied().collect();
+            both.first().expect("no misplaced item found").to_owned()
         })
         .collect();
     let priorities_map: HashMap<char, u32> = ('a'..='z').chain('A'..='Z').zip(1..).collect();
     let get_priority =
-        |c: &char| -> u32 { *priorities_map.get(c).expect("unable to find priority") };
+        |c: &char| -> &u32 { priorities_map.get(c).expect("unable to find priority") };
     println!(
         "day 3-1: {}",
         duplicates.iter().map(get_priority).sum::<u32>()
@@ -29,10 +29,10 @@ pub fn solve() {
                 let sb: HashSet<char> = b.chars().collect();
                 let sc: HashSet<char> = c.chars().collect();
                 sa.intersection(&sb)
-                    .map(|x| x.to_owned())
+                    .copied()
                     .collect::<HashSet<char>>()
                     .intersection(&sc)
-                    .map(|x| x.to_owned())
+                    .copied()
                     .collect::<Vec<char>>()
                     .first()
                     .expect("no common badge item found")
